@@ -9,10 +9,10 @@ const RELATIONSHIPS = {
 
 
 const ENTITIES = {
-    USER,
-    COMMENT,
-    DOMAIN,
-    PAGE,
+    USER: "USER",
+    COMMENT: "COMMENT",
+    DOMAIN: "DOMAIN",
+    PAGE: "PAGE",
 }
 
 

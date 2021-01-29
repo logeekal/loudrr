@@ -1,8 +1,19 @@
 {
+  "scripts": {
+    "test": "jest --config='jest.config.json'"
+  },
   "dependencies": {
+    "@types/jest": "^26.0.20",
+    "axios": "^0.21.1",
     "cross-env": "^7.0.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "neo4j": "^2.0.0-RC2"
-  }
+    "jest": "^26.6.3",
+    "neo4j": "^2.0.0-RC2",
+    "neo4j-driver": "^4.2.2"
+  },
+  "devDependencies": {
+    "jest-extended": "^0.11.5"
+  },
+  "jest": {}
 }
