@@ -1,0 +1,30 @@
+const RELATIONSHIPS = {
+    HAS_DOMAIN: 'HAS_DOMAIN',
+    HAS_COMMENT: 'HAS_COMMENT',
+    REPLY_OF: 'REPLY_OF',
+    COMMENTED: 'COMMENTED',
+    HAS_REPLY: 'HAS_REPLY',
+    HAS_PAGE: 'HAS_PAGE'
+}
+
+
+const ENTITIES = {
+    USER,
+    COMMENT,
+    DOMAIN,
+    PAGE,
+}
+
+
+const COMMENT_STATUS = {
+    POSTED: 'POSTED',
+    DRAFT:'DRAFT',
+    DELETED: 'DELETED'
+}
+
+
+module.exports = {
+    RELATIONSHIPS,
+    ENTITIES,
+    COMMENT_STATUS,
+}
