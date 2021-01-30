@@ -17,7 +17,20 @@ async function getAvatar (seed) {
 
 
 
+function convertNeo4jResultToObject(results) {
+    const allPageswithComments = {}
+    results.records.forEach(record => {
+        record.keys.forEach(key => {
+            if(!(key in allPageswithComments))     allPageswithComments[key] = [];
 
+            const val =  record._fields[record._fieldLookup[key]]
+            allPageswithComments[key].push(val.properties || val )
+        })
+    })
+
+    return allPageswithComments;
+
+}
 
 
 
@@ -32,6 +45,7 @@ function getTestAvatar () {
 module.exports = {
     getCurrentDate,    
     getAvatar,
-    getTestAvatar
-
+    getTestAvatar,
+    convertNeo4jResultToObject
+    
 }
