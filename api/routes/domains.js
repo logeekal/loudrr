@@ -50,3 +50,6 @@ router.post("/pages", async (req, res) => {
         res.send(400).send(err)
     }
 })
+
+
+module.exports = router;

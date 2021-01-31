@@ -27,27 +27,6 @@ router.post("/create", async (req, res) => {
 });
 
 
-//add password hashing middleware
-router.post("/login", async(req, res)=> {
-    /**
-     * 
-     * req body: {
-     *  email
-     *  password
-     * }
-     */
 
-    const { email, password } = req.body();
-    if(!email, !password){
-        res.status(401).send(`Either email or password is missing`);
-    }
-    try{
-        const loggedInUser = await dbAdapter.loginUser(email, password);
-        res.send(loggedInUser);
-    }catch(err){
-        res.status(401).send(err);
-    }
-
-})
-
+module.exports = router;
 
