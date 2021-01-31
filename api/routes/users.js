@@ -13,7 +13,7 @@ router.post("/create", async (req, res) => {
    * }
    */
 
-  const { email, password, name } = req.body();
+  const { email, password, name } = req.body;
 
   if (!email || !password || !name) {
     res.status(400).send("Mandatory field missing");

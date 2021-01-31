@@ -17,10 +17,22 @@ app.use(
     secret: "$$$$ SAMPLE_SECRET_OF_COMMENTER_APP $$$$$$",
     resave: false,
     saveUninitialized: true,
+    cookie: {
+      secure: false
+    }
   })
 );
 app.use(passport.initialize());
 app.use(passport.session());
+
+passport.use(localStrategy);
+
+
+
+// app.use((req,res,next)=>{
+//   console.log(req);
+//   next();
+// })
 
 
 //routeHandlers
