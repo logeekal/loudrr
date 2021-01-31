@@ -9,6 +9,7 @@ const {
   getPagesForDomain,
   getAllChildComments,
   getFirstLevelChildComments,
+  loginUser
 } = require("../dbAdapter");
 const { COMMENT_STATUS } = require("../constant");
 require("jest-extended");
@@ -58,7 +59,6 @@ describe("Neo4jAdapter Testing", () => {
       "name",
       "email",
       "createDate",
-      "password",
       "updateDate",
       "avatar",
     ]);
@@ -85,16 +85,43 @@ describe("Neo4jAdapter Testing", () => {
 
     const results = await createUser(user.email, user.name, null, avatar);
     expect(results).toBeObject();
-    expect(results).toContainKeys([
+    expect(results).toContainAllKeys([
       "name",
       "email",
       "createDate",
-      "password",
       "updateDate",
       "avatar",
     ]);
     expect(results["email"]).toEqual(user.email);
   });
+
+  test("Creating a user and then login with correct password should be successful", async ()=> {
+    const user1 =  users[0];
+
+    const createdUser = await createUser(user1.email, user1.name, user1.password, avatar);
+
+    const loggedInUser = await loginUser(createdUser.email, user1.password);
+
+    expect(loggedInUser).toBeObject();
+    expect(loggedInUser).toContainAllKeys(['email','name', 'avatar','createDate', 'updateDate']);
+    expect(loggedInUser.createDate.toString()).toEqual(createdUser.createDate.toString())
+
+  })
+
+  test("Creating a user and then login with wrong password should throw an error", async ()=> {
+    const user1 =  users[0];
+
+    const createdUser = await createUser(user1.email, user1.name, user1.password, avatar);
+
+    await expect(loginUser(createdUser.email, 'wrong password')).rejects.toThrow('Credentials do not Match')
+
+  })
+
+  test("login with non-existing user should throw an error", async ()=> {
+
+    await expect(loginUser('Non-existing email', 'wrong password')).rejects.toThrow('User with email Non-existing email does not exist')
+
+  })
 
   test("Creating a user without name/email/avatar should error out", async () => {
     const user1 = users[0];

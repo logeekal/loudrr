@@ -28,7 +28,12 @@ async function createUser(email, name, password, avatar) {
   });
 
   session.close();
-  return results.records[0].get("newUser").properties;
+
+  const {
+    password: createdPassword,
+    ...createdUserWithoutPassword
+  } = results.records[0].get("newUser").properties;
+  return createdUserWithoutPassword;
 }
 
 async function createDomain(domainAddress, domainCreatedBy) {
@@ -144,7 +149,6 @@ async function createChildComment(
     `CREATE (user)-[:${RELATIONSHIPS.COMMENTED}]->(comment) ` +
     `RETURN comment, parentComment.id as parentCommentId`;
 
-
   const results = await session.run(query);
 
   session.close();
@@ -161,6 +165,34 @@ function checkMandatory(obj) {
   }
 }
 
+async function loginUser(userEmail, userPassword) {
+  checkMandatory({ userEmail });
+  checkMandatory({ userPassword });
+
+  const session = db.session();
+
+  const existingUser = await getUser(userEmail);
+
+  if (!existingUser) {
+    throw new Error(`User with email ${userEmail} does not exists`);
+  }
+
+  const query =
+    `MATCH (user:${ENTITIES.USER}{email:'${userEmail}',password:'${userPassword}'}) ` +
+    `RETURN user `;
+
+  const results = await session.run(query);
+
+  if (results.records.length > 0) {
+    const { password, ...createdUserWithoutPassword } = results.records[0].get(
+      "user"
+    ).properties;
+    return createdUserWithoutPassword;
+  } else {
+    throw new Error("Credentials do not Match");
+  }
+}
+
 async function getUser(userEmail) {
   const session = db.session({ defaultAccessMode: neo4j.session.READ });
   checkMandatory({ userEmail });
@@ -171,7 +203,11 @@ async function getUser(userEmail) {
 
   session.close();
 
-  return results.records[0];
+  if (results.records.length > 0) {
+    return results.records[0].get("u").properties;
+  } else {
+    return null;
+  }
 }
 
 async function getDomainsforUser(userEmail) {
@@ -227,12 +263,11 @@ async function getPagesForDomain(domainKey) {
 
   session.close();
 
-
   return convertNeo4jResultToObject(results);
 }
 
 async function getAllCommentsByUser(userEmail) {
-  checkMandatory(userEmail);
+  checkMandatory({ userEmail });
 
   const session = db.session({ defaultAccessMode: neo4j.session.READ });
 
@@ -251,57 +286,105 @@ async function getAllCommentsByUser(userEmail) {
   return results.records;
 }
 
+async function getCommentById(commentId) {
+  checkMandatory({ commentId });
+
+  const session = db.session();
+
+  const query =
+    `MATCH (comment:${ENTITIES.COMMENT}{id:'${commentId}'}) ` +
+    `RETURN comment`;
+
+  const results = session.run(query);
+
+  if (results.records.length > 0) {
+    return results.records.get("comment").properties;
+  } else {
+    return null;
+  }
+}
+
+async function updateCommentStatus(commentId, status) {
+  checkMandatory({ commentId });
+
+  if (
+    ![
+      COMMENT_STATUS.POSTED.toLowerCase(),
+      COMMENT_STATUS.DRAFT.toLowerCase(),
+    ].includes(status.toLowerCase())
+  ) {
+    throw new Error("Wrong comment status");
+  }
+
+  const session = db.session();
+
+  const existingComment = await getCommentById(commentId);
+  if (!existingComment) {
+    throw new Error(`Comment with id ${commentId} does not exist`);
+  }
+
+  const query =
+    `MATCH(comment:${ENTITIES.COMMENT}{id:'${commentId}'}) ` +
+    `SET comment.status=${status}, comment.updateDate=timestamp() ` +
+    `RETURN comment`;
+
+  const results = session.run(query);
+
+  session.close();
+
+  return results.records[0].get(["comment"]).properties;
+}
+
 /**
- * 
- * @typedef allComments 
- * 
+ *
+ * @typedef allComments
+ *
  * @property {array} comments
  * @property {array} parentIds
  */
 /**
  * @param  {string} commentId
- * 
+ *
  * @returns {allComments}
  */
 async function getAllChildComments(commentId) {
-  checkMandatory({commentId});
+  checkMandatory({ commentId });
 
   const session = db.session({ defaultAccessMode: neo4j.session.READ });
 
-  const query = `MATCH (parentComment:${ENTITIES.COMMENT}{id:'${commentId}'}) `+ 
-                `MATCH  (parentComment)-[:${RELATIONSHIPS.HAS_REPLY}*]->(child) `+
-                `MATCH (child)-[:${RELATIONSHIPS.REPLY_OF}]->(x) ` +
-                `RETURN child as comments, x.id as parentIds`;
- 
+  const query =
+    `MATCH (parentComment:${ENTITIES.COMMENT}{id:'${commentId}'}) ` +
+    `MATCH  (parentComment)-[:${RELATIONSHIPS.HAS_REPLY}*]->(child) ` +
+    `MATCH (child)-[:${RELATIONSHIPS.REPLY_OF}]->(x) ` +
+    `RETURN child as comments, x.id as parentIds`;
+
   const results = await session.run(query);
 
-    session.close()
+  session.close();
   return convertNeo4jResultToObject(results);
-  
-
 }
 
 function getVariableName(obj) {
   return Object.keys(obj)[0];
 }
 
-async function getFirstLevelChildComments(commentId){
-    checkMandatory({commentId});
-
+async function getFirstLevelChildComments(commentId) {
+  checkMandatory({ commentId });
 
   const session = db.session({ defaultAccessMode: neo4j.session.READ });
 
-  const query = `MATCH (parentComment:${ENTITIES.COMMENT}{id:'${commentId}'}) ` +
-                `MATCH (parentComment)-[:${RELATIONSHIPS.HAS_REPLY}]->(comment) `+
-                `RETURN comment`;
-   
+  const query =
+    `MATCH (parentComment:${ENTITIES.COMMENT}{id:'${commentId}'}) ` +
+    `MATCH (parentComment)-[:${RELATIONSHIPS.HAS_REPLY}]->(comment) ` +
+    `RETURN comment`;
+
   const results = await session.run(query);
 
-  session.close()
-  if(results.records.length > 0){
-    return results.records.map(record=> record.get('comment').properties);
-  }else{
-      return []
+  session.close();
+  if (results.records.length > 0) {
+    return results.records.map((record) => record.get("comment").properties);
+  } else {
+    return [];
   }
 }
 
@@ -310,9 +393,12 @@ module.exports = {
   createDomain,
   createParentComment,
   createChildComment,
+  updateCommentStatus,
   getUser,
   getDomainsforUser,
   getPagesForDomain,
   getFirstLevelChildComments,
   getAllChildComments,
+  loginUser,
+
 };
