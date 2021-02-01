@@ -1,4 +1,4 @@
-html,
+/* html,
 body {
   padding: 0;
   margin: 0;
@@ -9,8 +9,14 @@ body {
 a {
   color: inherit;
   text-decoration: none;
-}
+} */
 
 * {
   box-sizing: border-box;
+}
+
+.text-gradient-primary {
+  background: linear-gradient(to right, #842eb4, #528bd3);
+  background-clip: text;
+  color: transparent;
 }

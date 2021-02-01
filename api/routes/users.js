@@ -30,6 +30,7 @@ router.post("/create", async (req, res) => {
     const createdUser = await dbAdapter.createUser(email,name,passwordHash,'avatar');
     res.send(200).send(createdUser);
   } catch (err) {
+    console.log(err);
     res.status(500).send(err);
   }
 });

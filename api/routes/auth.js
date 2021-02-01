@@ -37,8 +37,6 @@ router.post("/login", passport.authenticate('local'), async(req, res)=> {
     //     res.status(400).send(err);
     // }
 
-    console.log(req.session);
-
     res.send(`Authenticated User : ${JSON.stringify(req.user)}`)
 })
 

@@ -22,9 +22,18 @@ const COMMENT_STATUS = {
     DELETED: 'DELETED'
 }
 
+const DOMAIN_STATUS = {
+    ACTIVE: 'ACTIVE',
+    INACTIVE: 'INACTIVE'
+}
+
+const ROBOHASH_URL = 'https://robohash.org';
+
 
 module.exports = {
     RELATIONSHIPS,
     ENTITIES,
     COMMENT_STATUS,
+    DOMAIN_STATUS,
+    ROBOHASH_URL
 }

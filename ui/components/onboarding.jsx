@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Box,
   Button,
   FormControl,
   FormHelperText,
@@ -10,7 +11,7 @@ import {
 import API from "../service/service";
 import { REQUEST_STATES } from "../utils/constants";
 
-const OnBoarding = ({ mode }) => {
+const OnBoarding = ({ mode, OnSuccess }) => {
   const [requestState, setRequestState] = React.useState(REQUEST_STATES.IDLE);
   const toast = useToast();
 
@@ -55,12 +56,13 @@ const OnBoarding = ({ mode }) => {
           status: "success",
           isClosable: true
         })
+      OnSuccess();
     }else{
         console.log(loggedInUserRequest)
     }
   };
 
-  return (
+  return ( <React.Fragment>
     <form onSubmit={mode === "signin" ? handleSignin : handleSignup}>
       {mode === "signup" && (
         <React.Fragment>
@@ -74,16 +76,16 @@ const OnBoarding = ({ mode }) => {
           </FormControl>
         </React.Fragment>
       )}
-      <FormControl id="email" isRequired>
-        <FormLabel>Email Address</FormLabel>
+      <FormControl id="email" isRequired >
+        <FormLabel mt={mode === 'signup' && 5}>Email Address</FormLabel>
         <Input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
       </FormControl>
-      <FormControl id="password" isRequired mt={5}>
-        <FormLabel>Password</FormLabel>
+      <FormControl id="password" isRequired >
+        <FormLabel mt={5}>Password</FormLabel>
         <Input
           type="password"
           value={password}
@@ -93,7 +95,7 @@ const OnBoarding = ({ mode }) => {
       {mode === "signup" && (
         <React.Fragment>
           <FormControl id="confirm-password" isRequired>
-            <FormLabel>Password</FormLabel>
+            <FormLabel mt={5}>Confirm Password</FormLabel>
             <Input
               type="password"
               value={confirmPassword}
@@ -109,6 +111,12 @@ const OnBoarding = ({ mode }) => {
       )}
       <Button width="full" type="submit" mt={5}> {mode} </Button>
     </form>
+    <Box mt={10} with="full">
+     <Button  width="full" bg="red.300" >Sign in with Google</Button> 
+     <Button mt={4} width="full" bg="blue.500" color="white">Sign in with Facebook</Button> 
+     <Button mt={4} width="full" bg="grey" color="white">Sign in with Github</Button> 
+    </Box>
+</React.Fragment>
   );
 };
 

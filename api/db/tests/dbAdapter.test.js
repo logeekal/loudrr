@@ -9,9 +9,12 @@ const {
   getPagesForDomain,
   getAllChildComments,
   getFirstLevelChildComments,
-  loginUser
+  loginUser,
+  updateDomainStatus,
+  updateCommentStatus,
+
 } = require("../dbAdapter");
-const { COMMENT_STATUS } = require("../constant");
+const { COMMENT_STATUS, DOMAIN_STATUS } = require("../constant");
 require("jest-extended");
 const { getAvatar, getTestAvatar } = require("../utils");
 
@@ -40,6 +43,11 @@ describe("Neo4jAdapter Testing", () => {
     await setup(db);
   });
   beforeEach(async () => {
+    const session = db.session();
+    await session.run("MATCH (n) DETACH DELETE n");
+    await session.close();
+  });
+  afterEach(async () => {
     const session = db.session();
     await session.run("MATCH (n) DETACH DELETE n");
     await session.close();
@@ -155,6 +163,7 @@ describe("Neo4jAdapter Testing", () => {
     expect(domain).toContainAllKeys([
       "address",
       "key",
+      "status",
       "createDate",
       "updateDate",
     ]);
@@ -176,6 +185,22 @@ describe("Neo4jAdapter Testing", () => {
     expect(bothDomains[1].address).toBeOneOf([domainAddress1, domainAddress2]);
     expect(bothDomains[0].address === bothDomains[1].address).not.toBeTruthy();
   });
+
+ test("Creating a user and domain and updating domain status should be successfull", async ()=> {
+    const user = users[0];
+
+    const domainAddress = "marriedfriends";
+
+    const createdUser = await createUser(user.email, user.name, null, avatar);
+
+    const createdDomain = await createDomain(domainAddress, user.email);
+    console.log(createdDomain);
+
+    const updatedDomain  = await updateDomainStatus(createdDomain.key, DOMAIN_STATUS.INACTIVE);
+
+    expect(updatedDomain.status).toBe(DOMAIN_STATUS.INACTIVE);
+    expect(createdDomain.status).toBe(DOMAIN_STATUS.ACTIVE)
+  })
 
   test("Creation and retrieval of 2 Page and parent comments should be successful ", async () => {
     const user = users[0];

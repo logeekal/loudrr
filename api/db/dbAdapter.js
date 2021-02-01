@@ -1,8 +1,9 @@
 const { db } = require("./");
-const { RELATIONSHIPS, ENTITIES, COMMENT_STATUS } = require("./constant");
+const { RELATIONSHIPS, ENTITIES, COMMENT_STATUS, DOMAIN_STATUS, ROBOHASH_URL} = require("./constant");
 const uuid = require("uuid");
 const { convertNeo4jResultToObject } = require("./utils");
 const neo4j = require("neo4j-driver");
+const bcrypt = require('bcrypt');
 
 async function createUser(email, name, password, avatar) {
   let localPassword = null;
@@ -15,6 +16,8 @@ async function createUser(email, name, password, avatar) {
     let uuidPass = uuid.v4();
     localPassword = uuidPass.substr(0, uuidPass.indexOf("-"));
   }
+
+  const AVATAR_URL = ROBOHASH_URL + `/${bcrypt.hashSync(email,2)}`
   // returning cypher query.
   const cypher =
     `CREATE (newUser:${ENTITIES.USER}{email:$email,name:$name,password:$password,avatar:$avatar,createDate:timestamp(),updateDate:timestamp()})` +
@@ -24,7 +27,7 @@ async function createUser(email, name, password, avatar) {
     email,
     name,
     password: password || localPassword,
-    avatar: avatar,
+    avatar: AVATAR_URL,
   });
 
   session.close();
@@ -48,7 +51,7 @@ async function createDomain(domainAddress, domainCreatedBy) {
 
   const query =
     `MATCH (u:${ENTITIES.USER}{email:'${domainCreatedBy}'}) ` +
-    `CREATE (u)-[:${RELATIONSHIPS.HAS_DOMAIN}]->(domain:${ENTITIES.DOMAIN}{address:'${domainAddress}',key:'${domainKey}',createDate:timestamp(),updateDate:timestamp()}) ` +
+    `CREATE (u)-[:${RELATIONSHIPS.HAS_DOMAIN}]->(domain:${ENTITIES.DOMAIN}{address:'${domainAddress}',key:'${domainKey}',status:'${DOMAIN_STATUS.ACTIVE}',createDate:timestamp(),updateDate:timestamp()}) ` +
     `RETURN domain`;
 
   const results = await session.run(query);
@@ -335,6 +338,32 @@ async function updateCommentStatus(commentId, status) {
   return results.records[0].get(["comment"]).properties;
 }
 
+async function updateDomainStatus(domainKey, status) {
+  checkMandatory({domainKey});
+  checkMandatory({status});
+
+
+  if(!(Object.values(DOMAIN_STATUS).includes(status))){
+    throw new Error('Invalid Domain status')
+  }
+
+  const session = db.session();
+
+  const query = `MATCH (domain:${ENTITIES.DOMAIN}{key:'${domainKey}'}) ` + 
+                `SET domain.status='${status}',domain.updateDate=timestamp() ` +
+                `RETURN domain`
+  
+  const results =  await session.run(query);
+
+
+
+  if(!results.records ||  results.records.length === 0) {
+    throw new Error('Invalid domain Key')
+  }
+
+  return results.records[0].get('domain').properties;
+}
+
 /**
  *
  * @typedef allComments
@@ -394,11 +423,12 @@ module.exports = {
   createParentComment,
   createChildComment,
   updateCommentStatus,
+  updateDomainStatus,
   getUser,
   getDomainsforUser,
   getPagesForDomain,
   getFirstLevelChildComments,
   getAllChildComments,
   loginUser,
-
+  
 };

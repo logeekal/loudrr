@@ -3,7 +3,8 @@ import Head from "next/head";
 import { useEffect } from "react";
 import APIService from "../../service/service";
 
-export default function DashBoard() {
+export default function DashBoard(props) {
+  console.log(props)
   // useEffect(()=> {
   //     APIService.auth()
   //         .then(res=> {
@@ -19,7 +20,7 @@ export default function DashBoard() {
   return (
     <div className="dashboard-page">
       <Head>
-        <title>Dashboard for the user</title>
+        <title>Dashboard of {props.user.name}</title>
       </Head>
     </div>
   );
