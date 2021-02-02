@@ -214,10 +214,7 @@ export async function getServerSideProps(context) {
           : undefined,
       }
     );
-    console.log(authenticatedUser.data);
-    console.log("------------------");
-    console.log(authenticatedUser.status);
-    console.log("------------------");
+    console.log('User validated Redirecting to dashboard')
     return {
       redirect: {
         destination: "/dashboard",

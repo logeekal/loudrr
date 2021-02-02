@@ -9,7 +9,10 @@ const router = express.Router();
  *
  */
 router.post("/", async (req, res) => {
-  const { email } = req.body();
+  const {
+    user: { email },
+  } = req.session.passport;
+  console.log(email);
 
   try {
     const domains = await dbAdapter.getDomainsforUser(email);
@@ -23,33 +26,35 @@ router.post("/", async (req, res) => {
  * Authorized - insert email in request
  */
 router.post("/pages", async (req, res) => {
-  const { key: domainKey } = req.body();
+  const { key: domainKey } = req.body;
+  console.log(domainKey);
 
   try {
     const pagesWithComments = await dbAdapter.getPagesForDomain(domainKey);
     res.send(pagesWithComments);
   } catch (err) {
+    console.log(err);
     res.status(500).send(err);
   }
 });
 
-
 /**
  * Authorized
  * Req body should have email and domain address
- * 
+ *
  */
- router.post("/create", async (req,res)=> {
-
-    const {address: domainAddress, email} = req.body();
-
-    try{
-        const createdDomain =  await dbAdapter.createDomain(domainAddress,email);
-        res.send(createdDomain);
-    }catch(err){
-        res.send(400).send(err)
-    }
-})
-
+router.post("/create", async (req, res) => {
+  try {
+    const { address: domainAddress } = req.body;
+    const {
+      user: { email },
+    } = req.session.passport;
+    console.log(domainAddress, email);
+    const createdDomain = await dbAdapter.createDomain(domainAddress, email);
+    res.send(createdDomain);
+  } catch (err) {
+    res.send(400).send(err);
+  }
+});
 
 module.exports = router;

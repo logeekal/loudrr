@@ -24,4 +24,19 @@ export default class APIService {
       withCredentials: true,
     });
   }
+
+  static async getDomains(axiosOptions){
+    return await axios.post(`http://localhost:3030/domains/`,{},{
+      withCredentials: true,
+      ...axiosOptions
+    })
+  }
+
+
+  static async createDomain(address ,axiosOptions){
+    return await axios.post(`${APIService._API_URL}/domains/create`,{address},{
+      withCredentials: true,
+      ...axiosOptions
+    })
+  }
 }
