@@ -39,4 +39,11 @@ export default class APIService {
       ...axiosOptions
     })
   }
+
+  static async getDomainPages(domainKey, axiosOptions){
+    return await axios.post('http://localhost:3030/domains/pages',{key:domainKey},{
+      withCredentials: true,
+      ...axiosOptions
+    })
+  }
 }

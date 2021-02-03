@@ -4,3 +4,10 @@ export const REQUEST_STATES = {
     SUCCESS: "SUCCESS",
     ERROR: "ERROR",
 }
+
+
+export const DOMAIN_CREATION_STATUS = {
+    NOT_STARTED: "NOT_STARTED",
+    IN_PROCESS: "IN_PROCESS",
+    COMPLETE: "COMPLETE"
+}
