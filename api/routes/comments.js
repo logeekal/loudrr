@@ -10,7 +10,7 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   //all the first level comments of a particular parent comment
 
-  const { commentId: parentCommentId } = req.body();
+  const { commentId: parentCommentId } = req.body;
   try {
     const comments = await dbAdapter.getFirstLevelChildComments(
       parentCommentId
@@ -25,10 +25,11 @@ router.post("/", async (req, res) => {
  * Authorized
  */
 router.post("/thread", async (req, res) => {
-  const { commentId: parentCommentId } = req.body();
+  const { commentId: parentCommentId } = req.body;
 
   try {
     const thread = await dbAdapter.getAllChildComments(parentCommentId);
+    res.send(thread);
   } catch (err) {
     res.status(400).send(err);
   }
@@ -39,17 +40,24 @@ router.post("/thread", async (req, res) => {
  * Add comments
  */
 
-router.post("/add", async (req, res) => {
+router.post("/add", async (req, res,next) => {
   try {
     const {
       commentId,
       mdText,
       status,
-      email,
       url,
       title,
       domainKey,
-    } = req.body();
+    } = req.body;
+
+    if(!req.session.passport || !req.session.passport.user){
+      console.log('Ending execution')
+      await res.status(401).send({});
+    }
+
+    const {user:{email}} = req.session.passport;
+
     let createdComment = {};
     if (commentId) {
       createdComment = await dbAdapter.createChildComment(
@@ -70,6 +78,7 @@ router.post("/add", async (req, res) => {
       res.send(createdComment);
     }
   } catch (err) {
+    console.error(err)
     res.status(500).send(err);
   }
 });
@@ -80,7 +89,7 @@ router.post("/add", async (req, res) => {
  */
 router.put('/update',async (req, res)=> {
 
-    const {commentId, status} = req.body();
+    const {commentId, status} = req.body;
     
     try{
         const updatedComment = await dbAdapter.updateCommentStatus(commentId, status);
