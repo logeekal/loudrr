@@ -1,0 +1,1 @@
+docker run -d --volume=test:/data --publish=7475:7474 --publish=7688:7687 neo4j[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C
