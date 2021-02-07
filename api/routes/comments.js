@@ -1,6 +1,8 @@
 const e = require("express");
 const express = require("express");
-const dbAdapter = require("../db/dbAdapter");
+const DbAdapter = require("../db/dbAdapter");
+
+const db = new DbAdapter();
 
 const router = express.Router();
 
@@ -12,7 +14,7 @@ router.post("/", async (req, res) => {
 
   const { commentId: parentCommentId } = req.body;
   try {
-    const comments = await dbAdapter.getFirstLevelChildComments(
+    const comments = await db.getFirstLevelChildComments(
       parentCommentId
     );
     res.send(comments);
@@ -28,7 +30,7 @@ router.post("/thread", async (req, res) => {
   const { commentId: parentCommentId } = req.body;
 
   try {
-    const thread = await dbAdapter.getAllChildComments(parentCommentId);
+    const thread = await db.getAllChildComments(parentCommentId);
     res.send(thread);
   } catch (err) {
     res.status(400).send(err);
@@ -50,6 +52,7 @@ router.post("/add", async (req, res,next) => {
       title,
       domainKey,
     } = req.body;
+    console.log({domainKey})
 
     if(!req.session.passport || !req.session.passport.user){
       console.log('Ending execution')
@@ -60,14 +63,14 @@ router.post("/add", async (req, res,next) => {
 
     let createdComment = {};
     if (commentId) {
-      createdComment = await dbAdapter.createChildComment(
+      createdComment = await db.createChildComment(
         commentId,
         mdText,
         email,
         status
       );
     } else {
-      createdComment = await dbAdapter.createParentComment(
+      createdComment = await db.createParentComment(
         mdText,
         email,
         url,
@@ -79,7 +82,7 @@ router.post("/add", async (req, res,next) => {
     }
   } catch (err) {
     console.error(err)
-    res.status(500).send(err);
+    res.status(500).send('Some Error Occured');
   }
 });
 
@@ -92,7 +95,7 @@ router.put('/update',async (req, res)=> {
     const {commentId, status} = req.body;
     
     try{
-        const updatedComment = await dbAdapter.updateCommentStatus(commentId, status);
+        const updatedComment = await db.updateCommentStatus(commentId, status);
         res.send(updatedComment);
     }catch(err){
         res.status(500).send(err);

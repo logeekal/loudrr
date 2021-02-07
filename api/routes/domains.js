@@ -1,6 +1,8 @@
 const express = require("express");
 const dbAdapter = require("../db/dbAdapter");
 
+const db = new dbAdapter();
+
 const router = express.Router();
 
 /**
@@ -15,7 +17,7 @@ router.post("/", async (req, res) => {
   console.log(email);
 
   try {
-    const domains = await dbAdapter.getDomainsforUser(email);
+    const domains = await db.getDomainsforUser(email);
     res.send(domains);
   } catch (err) {
     res.status(500).send(err);
@@ -26,11 +28,11 @@ router.post("/", async (req, res) => {
  * Authorized - insert email in request
  */
 router.post("/pages", async (req, res) => {
-  const { key: domainKey } = req.body;
+  const { domainKey } = req.body;
   console.log(domainKey);
 
   try {
-    const pagesWithComments = await dbAdapter.getPagesForDomain(domainKey);
+    const pagesWithComments = await db.getPagesForDomain(domainKey);
     res.send(pagesWithComments);
   } catch (err) {
     console.log(err);
@@ -50,7 +52,7 @@ router.post("/create", async (req, res) => {
       user: { email },
     } = req.session.passport;
     console.log(domainAddress, email);
-    const createdDomain = await dbAdapter.createDomain(domainAddress, email);
+    const createdDomain = await db.createDomain(domainAddress, email);
     res.send(createdDomain);
   } catch (err) {
     res.send(400).send(err);

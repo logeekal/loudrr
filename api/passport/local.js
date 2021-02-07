@@ -1,6 +1,8 @@
 const LocalStrategy = require("passport-local").Strategy;
-const dbAdapter = require("../db/dbAdapter");
+const DbAdapter = require("../db/dbAdapter");
 const bcrypt = require("bcrypt");
+
+const db = new DbAdapter();
 
 const publicEndpoints = ["/domains/pages","/comments/thread","/comments"];
 
@@ -16,7 +18,7 @@ const localStrategy = new LocalStrategy(
         console.log('Got a public endpoints');
         return (done,{});
       }
-      const existingUser = await dbAdapter.getUser(username);
+      const existingUser = await db.getUser(username);
       console.log(existingUser);
       if (!existingUser) {
         console.log("existing user does not exists");

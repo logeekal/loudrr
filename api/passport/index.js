@@ -1,17 +1,19 @@
 const passport = require('passport');
-const { getUser } = require('../db/dbAdapter');
+const DbAdapter = require('../db/dbAdapter');
 const localStrategy = require('./local');
 
+const db = new DbAdapter();
+
 passport.serializeUser((user,done)=> {
-    console.log(`Serializing : ${user}`)
+    console.log(`Serializing : `,user)
     done(null, user);
 })
 
 
 
 passport.deserializeUser(async (email,done)=> {
-    console.log(`DeSerializing : ${email}`)
-    const user = await getUser(email);
+    console.log(`DeSerializing `, email)
+    const user = await db.getUser(email);
     done(null, email)
 
 })

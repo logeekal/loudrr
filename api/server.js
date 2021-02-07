@@ -9,6 +9,12 @@ const auth = require('./routes/auth')
 const users = require('./routes/users');
 const domains = require('./routes/domains');
 const comments = require('./routes/comments');
+const cors = require('cors');
+
+ app.use(cors({
+   origin: true,
+   credentials: true
+ }))
 
 app.use(express.json());
 app.use(cookieParser());

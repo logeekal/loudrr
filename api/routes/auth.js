@@ -1,13 +1,12 @@
 const express = require("express");
 const passport = require("passport");
-const dbAdapter = require("../db/dbAdapter");
 
 const router = express.Router();
 
 
 router.post('/',  async(req, res)=> {
     
-    console.log('In auth : ', req.isAuthenticated());
+    // console.log('In auth : ', req);
     console.log(req.session, req.isAuthenticated())
 
     if(!req.isAuthenticated()){

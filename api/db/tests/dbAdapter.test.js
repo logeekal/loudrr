@@ -1,19 +1,6 @@
 const { Neo4jError } = require("neo4j-driver");
-const { db, setup } = require("../");
-const {
-  createUser,
-  createDomain,
-  createChildComment,
-  getDomainsforUser,
-  createParentComment,
-  getPagesForDomain,
-  getAllChildComments,
-  getFirstLevelChildComments,
-  loginUser,
-  updateDomainStatus,
-  updateCommentStatus,
-
-} = require("../dbAdapter");
+const { dbTest, setup } = require("../");
+const DBAdapter = require("../dbAdapter");
 const { COMMENT_STATUS, DOMAIN_STATUS } = require("../constant");
 require("jest-extended");
 const { getAvatar, getTestAvatar } = require("../utils");
@@ -38,24 +25,41 @@ const users = [
   },
 ];
 
+const db = new DBAdapter(dbTest);
+const {
+  createChildComment,
+  createDomain,
+  createUser,
+  createParentComment,
+  getAllChildComments,
+  getAllCommentsByUser,
+  getCommentById,
+  getDomain,
+  getDomainsforUser,
+  getFirstLevelChildComments,
+  updateCommentStatus,
+  updateDomainStatus,
+  loginUser,
+  getPagesForDomain,
+} = db;
+
 describe("Neo4jAdapter Testing", () => {
   beforeAll(async () => {
-    await setup(db);
+    await setup(dbTest);
   });
   beforeEach(async () => {
-    const session = db.session();
+    const session = dbTest.session();
     await session.run("MATCH (n) DETACH DELETE n");
     await session.close();
   });
   afterEach(async () => {
-    const session = db.session();
+    const session = dbTest.session();
     await session.run("MATCH (n) DETACH DELETE n");
     await session.close();
   });
 
   test("Creating a User with all the fields", async function () {
     const user = users[0];
-
     const results = await createUser(
       user.email,
       user.name,
@@ -84,7 +88,8 @@ describe("Neo4jAdapter Testing", () => {
     );
 
     expect(
-      async () => await createUser(user.email, user.name, user.password, avatar)
+      async () =>
+        await db.createUser(user.email, user.name, user.password, avatar)
     ).rejects.toThrowError(Neo4jError);
   });
 
@@ -103,40 +108,56 @@ describe("Neo4jAdapter Testing", () => {
     expect(results["email"]).toEqual(user.email);
   });
 
-  test("Creating a user and then login with correct password should be successful", async ()=> {
-    const user1 =  users[0];
+  test("Creating a user and then login with correct password should be successful", async () => {
+    const user1 = users[0];
 
-    const createdUser = await createUser(user1.email, user1.name, user1.password, avatar);
+    const createdUser = await createUser(
+      user1.email,
+      user1.name,
+      user1.password,
+      avatar
+    );
 
     const loggedInUser = await loginUser(createdUser.email, user1.password);
 
     expect(loggedInUser).toBeObject();
-    expect(loggedInUser).toContainAllKeys(['email','name', 'avatar','createDate', 'updateDate']);
-    expect(loggedInUser.createDate.toString()).toEqual(createdUser.createDate.toString())
+    expect(loggedInUser).toContainAllKeys([
+      "email",
+      "name",
+      "avatar",
+      "createDate",
+      "updateDate",
+    ]);
+    expect(loggedInUser.createDate.toString()).toEqual(
+      createdUser.createDate.toString()
+    );
+  });
 
-  })
+  test("Creating a user and then login with wrong password should throw an error", async () => {
+    const user1 = users[0];
 
-  test("Creating a user and then login with wrong password should throw an error", async ()=> {
-    const user1 =  users[0];
+    const createdUser = await createUser(
+      user1.email,
+      user1.name,
+      user1.password,
+      avatar
+    );
 
-    const createdUser = await createUser(user1.email, user1.name, user1.password, avatar);
+    await expect(
+      loginUser(createdUser.email, "wrong password")
+    ).rejects.toThrow("Credentials do not Match");
+  });
 
-    await expect(loginUser(createdUser.email, 'wrong password')).rejects.toThrow('Credentials do not Match')
-
-  })
-
-  test("login with non-existing user should throw an error", async ()=> {
-
-    await expect(loginUser('Non-existing email', 'wrong password')).rejects.toThrow('User with email Non-existing email does not exist')
-
-  })
+  test("login with non-existing user should throw an error", async () => {
+    await expect(
+      loginUser("Non-existing email", "wrong password")
+    ).rejects.toThrow("User with email Non-existing email does not exist");
+  });
 
   test("Creating a user without name/email/avatar should error out", async () => {
     const user1 = users[0];
 
-    await expect(
-      async () => await createUser(user1.email, null, null, avatar)
-    ).rejects.toThrow();
+    await expect(createUser(user1.email, null, null, avatar)).rejects.toThrow('name should have a value');
 
     //creating without email
 
@@ -186,7 +207,7 @@ describe("Neo4jAdapter Testing", () => {
     expect(bothDomains[0].address === bothDomains[1].address).not.toBeTruthy();
   });
 
- test("Creating a user and domain and updating domain status should be successfull", async ()=> {
+  test("Creating a user and domain and updating domain status should be successfull", async () => {
     const user = users[0];
 
     const domainAddress = "marriedfriends";
@@ -194,13 +215,15 @@ describe("Neo4jAdapter Testing", () => {
     const createdUser = await createUser(user.email, user.name, null, avatar);
 
     const createdDomain = await createDomain(domainAddress, user.email);
-    console.log(createdDomain);
 
-    const updatedDomain  = await updateDomainStatus(createdDomain.key, DOMAIN_STATUS.INACTIVE);
+    const updatedDomain = await updateDomainStatus(
+      createdDomain.key,
+      DOMAIN_STATUS.INACTIVE
+    );
 
     expect(updatedDomain.status).toBe(DOMAIN_STATUS.INACTIVE);
-    expect(createdDomain.status).toBe(DOMAIN_STATUS.ACTIVE)
-  })
+    expect(createdDomain.status).toBe(DOMAIN_STATUS.ACTIVE);
+  });
 
   test("Creation and retrieval of 2 Page and parent comments should be successful ", async () => {
     const user = users[0];
@@ -261,22 +284,40 @@ describe("Neo4jAdapter Testing", () => {
       COMMENT_STATUS.DRAFT
     );
 
+    const replyToParentComment1 = await createChildComment(
+      createdParentComment1.id,
+      "Testing the reply",
+      createdUser3.email,
+      COMMENT_STATUS.POSTED
+    );
+
     expect(createdParentComment1).toBeObject();
     expect(createdParentComment1.id).not.toBeNull();
-    expect(createdParentComment1.markdownText).toEqual(comment1.text);
+    expect(createdParentComment1.markdownText).toEqual(escape(comment1.text));
 
     expect(createdParentComment2).toBeObject();
     expect(createdParentComment2.id).not.toBeNull();
-    expect(createdParentComment2.markdownText).toEqual(comment2.text);
+    expect(createdParentComment2.markdownText).toEqual(escape(comment2.text));
 
     //check relationships by fetching the actual data
     const allPages = await getPagesForDomain(createdDomain1.key);
+
     expect(allPages).toBeObject();
-    expect(allPages).toContainAllKeys(["page", "comment"]);
-    expect(allPages["comment"][0].markdownText).toEqual(comment2.text);
-    expect(allPages["comment"][1].markdownText).toEqual(comment1.text);
-    expect(allPages["page"][0].pageLocation).toEqual(page2.path);
-    expect(allPages["page"][1].pageLocation).toEqual(page1.path);
+    expect(allPages).toContainAllKeys([
+      "page",
+      "comment",
+      "commentedBy",
+      "replyCount",
+    ]);
+    expect(allPages["comment"][0].markdownText).toEqual(escape(comment2.text));
+    expect(allPages["comment"][1].markdownText).toEqual(escape(comment1.text));
+    expect(allPages["commentedBy"][0].email).toEqual(createdUser3.email);
+    expect(allPages["commentedBy"][1].email).toEqual(createdUser2.email);
+    expect(allPages["commentedBy"][0]).not.toContainKeys(['password'])
+    expect(allPages["replyCount"][0]).toEqual(0);
+    expect(allPages["replyCount"][1]).toEqual(1);
+    expect(allPages["page"][0].pageLocation).toEqual(escape(page2.path));
+    expect(allPages["page"][1].pageLocation).toEqual(escape(page1.path));
   });
 
   test("Creation of parent comment from an non-existing user show throw an error", async () => {
@@ -425,16 +466,18 @@ describe("Neo4jAdapter Testing", () => {
       }
     });
 
-    const allFirstLevelcomments = await getFirstLevelChildComments(parentCommentFirstPage.id);
+    const allFirstLevelcomments = await getFirstLevelChildComments(
+      parentCommentFirstPage.id
+    );
 
     allFirstLevelcomments.forEach(async (comment, idx) => {
-        let secondLevelComments = await getFirstLevelChildComments(comment.id);
-        expect(secondLevelComments).toBeArray();
-        if(comment.id === firstReplyofParentComment.id){
-            expect(secondLevelComments.length).toBe(1)
-        }else if (comment.id === secondReplyofParentComment.id){
-            expect(secondLevelComments.length).toBe(0);
-        }
+      let secondLevelComments = await getFirstLevelChildComments(comment.id);
+      expect(secondLevelComments).toBeArray();
+      if (comment.id === firstReplyofParentComment.id) {
+        expect(secondLevelComments.length).toBe(1);
+      } else if (comment.id === secondReplyofParentComment.id) {
+        expect(secondLevelComments.length).toBe(0);
+      }
     });
   });
 });
