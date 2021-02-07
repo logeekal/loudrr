@@ -4,3 +4,9 @@ export const REQUEST_STATES = {
   ERROR: 'ERROR',
   SUCCESS: 'SUCCESS'
 }
+
+
+export const COMMENT_STATUS = {
+  DRAFT :"DRAFT",
+  POSTED: "POSTED"
+}

@@ -6,25 +6,31 @@ import {
   FormHelperText,
   FormLabel,
   Input,
-  useToast
+  useToast,
+  Tabs,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels
 } from '@chakra-ui/react'
 import API from '../services/API'
 import { REQUEST_STATES } from '../constants'
 import { FC } from 'react'
 
-export interface OnBoardingProps {
-  mode: 'signin' | 'signup';
-  onSuccess?: any;
+export interface OnBoardingFormProps {
+  mode: 'signin' | 'signup'
+  onSuccess?: any
 }
 
-const OnBoarding :FC<OnBoardingProps> = ({ mode, onSuccess }: OnBoardingProps) => {
+const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
+  mode,
+  onSuccess
+}: OnBoardingFormProps) => {
   const [requestState, setRequestState] = React.useState(REQUEST_STATES.IDLE)
   const toast = useToast()
 
-  console.log(requestState);
-  
+  console.log(requestState)
 
-  //fields
   const [email, setEmail] = React.useState('')
   const [name, setName] = React.useState('')
   const [password, setPassword] = React.useState('')
@@ -56,7 +62,7 @@ const OnBoarding :FC<OnBoardingProps> = ({ mode, onSuccess }: OnBoardingProps) =
     }
   }
 
-  const handleSignin = async (e:any) => {
+  const handleSignin = async (e: any) => {
     e.preventDefault()
     const loggedInUserRequest = await API.login(email, password)
     if (loggedInUserRequest.status === 200) {
@@ -65,7 +71,7 @@ const OnBoarding :FC<OnBoardingProps> = ({ mode, onSuccess }: OnBoardingProps) =
         status: 'success',
         isClosable: true
       })
-      onSuccess()
+      onSuccess(loggedInUserRequest.data)
     } else {
       console.log(loggedInUserRequest)
     }
@@ -81,7 +87,7 @@ const OnBoarding :FC<OnBoardingProps> = ({ mode, onSuccess }: OnBoardingProps) =
               <Input
                 type='name'
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e: any) => setName(e.target.value)}
               />
             </FormControl>
           </React.Fragment>
@@ -91,7 +97,7 @@ const OnBoarding :FC<OnBoardingProps> = ({ mode, onSuccess }: OnBoardingProps) =
           <Input
             type='email'
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e: any) => setEmail(e.target.value)}
           />
         </FormControl>
         <FormControl id='password' isRequired>
@@ -99,7 +105,7 @@ const OnBoarding :FC<OnBoardingProps> = ({ mode, onSuccess }: OnBoardingProps) =
           <Input
             type='password'
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e: any) => setPassword(e.target.value)}
           />
         </FormControl>
         {mode === 'signup' && (
@@ -109,7 +115,7 @@ const OnBoarding :FC<OnBoardingProps> = ({ mode, onSuccess }: OnBoardingProps) =
               <Input
                 type='password'
                 value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                onChange={(e: any) => setConfirmPassword(e.target.value)}
               />
               <FormHelperText>
                 {password !== confirmPassword &&
@@ -120,8 +126,7 @@ const OnBoarding :FC<OnBoardingProps> = ({ mode, onSuccess }: OnBoardingProps) =
           </React.Fragment>
         )}
         <Button width='full' type='submit' mt={5}>
-          {' '}
-          {mode}{' '}
+          {mode}
         </Button>
       </form>
       <Box mt={10} with='full'>
@@ -139,4 +144,30 @@ const OnBoarding :FC<OnBoardingProps> = ({ mode, onSuccess }: OnBoardingProps) =
   )
 }
 
-export default OnBoarding
+export interface OnBoardingProps {
+  onSuccess: any
+}
+
+const OnBoarding: FC<OnBoardingProps>  = ({ onSuccess }: OnBoardingProps) => {
+  return (
+    <Tabs>
+      <TabList>
+        <Tab>Sign In</Tab>
+        <Tab>Sign Up</Tab>
+      </TabList>
+      <TabPanels>
+        <TabPanel>
+          <OnBoardingForms mode='signin' onSuccess={onSuccess} />
+        </TabPanel>
+        <TabPanel>
+          <OnBoardingForms mode='signup' onSuccess={onSuccess} />
+        </TabPanel>
+      </TabPanels>
+    </Tabs>
+  )
+}
+
+
+
+
+export default OnBoarding;
