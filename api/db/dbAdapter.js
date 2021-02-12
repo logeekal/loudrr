@@ -34,11 +34,15 @@ class DBAdapter {
 
     const AVATAR_URL = ROBOHASH_URL + `/${bcrypt.hashSync(email, 2)}`;
     // returning cypher query.
+
+    const userId = uuid.v4().replace(/-/g, "");
+
     const cypher =
-      `CREATE (newUser:${ENTITIES.USER}{email:$email,name:$name,password:$password,avatar:$avatar,createDate:timestamp(),updateDate:timestamp()})` +
-      `RETURN newUser`;
+      `CREATE (user:${ENTITIES.USER}{id:$userId,email:$email,name:$name,password:$password,avatar:$avatar,createDate:timestamp(),updateDate:timestamp()})` +
+      `RETURN user {.id, .name, .avatar, .createDate, .updateDate} as newUser`;
 
     let results = await session.run(cypher, {
+      userId,
       email,
       name,
       password: password || localPassword,
@@ -47,11 +51,7 @@ class DBAdapter {
 
     session.close();
 
-    const {
-      password: createdPassword,
-      ...createdUserWithoutPassword
-    } = results.records[0].get("newUser").properties;
-    return createdUserWithoutPassword;
+    return results.records[0].get('newUser');
   };
 
   createDomain = async (domainAddress, domainCreatedBy) => {
@@ -201,16 +201,15 @@ class DBAdapter {
     }
 
     const query =
-      `MATCH (user:${ENTITIES.USER}{email:'${userEmail}',password:'${userPassword}'}) ` +
-      `RETURN user `;
+      `MATCH (u:${ENTITIES.USER}{email:'${userEmail}',password:'${userPassword}'}) ` +
+      `RETURN u {.id, .avatar, .name, .createDate, .updateDate} as user `;
 
     const results = await session.run(query);
 
     if (results.records.length > 0) {
-      const {
-        password,
-        ...createdUserWithoutPassword
-      } = results.records[0].get("user").properties;
+      const 
+        createdUserWithoutPassword
+       = results.records[0].get("user");
       return createdUserWithoutPassword;
     } else {
       throw new Error("Credentials do not Match");
@@ -284,7 +283,7 @@ class DBAdapter {
       `OPTIONAL MATCH (page) -[:${RELATIONSHIPS.HAS_COMMENT}]->(comment) ` +
       `OPTIONAL MATCH (comment)-[:${RELATIONSHIPS.HAS_REPLY}*]->(reply) ` +
       `MATCH (user)-[:${RELATIONSHIPS.COMMENTED}]->(comment) ` +
-      `RETURN page, comment, user as commentedBy, size(collect(reply)) as replyCount ` +
+      `RETURN page, comment, user{.id, .avatar, .name} as commentedBy, size(collect(reply)) as replyCount ` +
       `ORDER BY comment.createDate DESC`;
 
     const results = await session.run(query);
@@ -408,7 +407,8 @@ class DBAdapter {
       `MATCH (parentComment:${ENTITIES.COMMENT}{id:'${commentId}'}) ` +
       `MATCH  (parentComment)-[:${RELATIONSHIPS.HAS_REPLY}*]->(child) ` +
       `MATCH (child)-[:${RELATIONSHIPS.REPLY_OF}]->(x) ` +
-      `RETURN child as comments, x.id as parentIds`;
+      `MATCH (user)-[:${RELATIONSHIPS.COMMENTED}]->(child) ` +
+      `RETURN child as comment, x.id as parentId, user {.avatar, .id, .name } as by`;
 
     const results = await session.run(query);
 

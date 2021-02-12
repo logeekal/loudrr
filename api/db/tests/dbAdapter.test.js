@@ -2,7 +2,6 @@ const { Neo4jError } = require("neo4j-driver");
 const { dbTest, setup } = require("../");
 const DBAdapter = require("../dbAdapter");
 const { COMMENT_STATUS, DOMAIN_STATUS } = require("../constant");
-require("jest-extended");
 const { getAvatar, getTestAvatar } = require("../utils");
 
 let avatar = getTestAvatar();
@@ -66,15 +65,20 @@ describe("Neo4jAdapter Testing", () => {
       user.password,
       avatar
     );
+
     expect(results).toBeObject();
+
     expect(results).toContainKeys([
       "name",
-      "email",
+      "id",
       "createDate",
       "updateDate",
       "avatar",
     ]);
-    expect(results["email"]).toEqual(user.email);
+
+    expect("email" in results).toBeFalsy();
+    expect("password" in results).toBeFalsy();
+    expect(results["name"]).toEqual(user.name);
   });
 
   test("Creating a User with same email should fail", async () => {
@@ -100,12 +104,12 @@ describe("Neo4jAdapter Testing", () => {
     expect(results).toBeObject();
     expect(results).toContainAllKeys([
       "name",
-      "email",
+      "id",
       "createDate",
       "updateDate",
       "avatar",
     ]);
-    expect(results["email"]).toEqual(user.email);
+    expect(results["name"]).toEqual(user.name);
   });
 
   test("Creating a user and then login with correct password should be successful", async () => {
@@ -118,16 +122,20 @@ describe("Neo4jAdapter Testing", () => {
       avatar
     );
 
-    const loggedInUser = await loginUser(createdUser.email, user1.password);
+    const loggedInUser = await loginUser(user1.email, user1.password);
 
     expect(loggedInUser).toBeObject();
     expect(loggedInUser).toContainAllKeys([
-      "email",
+      "id",
       "name",
       "avatar",
       "createDate",
       "updateDate",
     ]);
+
+    expect("email" in loggedInUser).toBeFalsy();
+    expect("password" in loggedInUser).toBeFalsy();
+
     expect(loggedInUser.createDate.toString()).toEqual(
       createdUser.createDate.toString()
     );
@@ -143,9 +151,9 @@ describe("Neo4jAdapter Testing", () => {
       avatar
     );
 
-    await expect(
-      loginUser(createdUser.email, "wrong password")
-    ).rejects.toThrow("Credentials do not Match");
+    await expect(loginUser(user1.email, "wrong password")).rejects.toThrow(
+      "Credentials do not Match"
+    );
   });
 
   test("login with non-existing user should throw an error", async () => {
@@ -157,7 +165,9 @@ describe("Neo4jAdapter Testing", () => {
   test("Creating a user without name/email/avatar should error out", async () => {
     const user1 = users[0];
 
-    await expect(createUser(user1.email, null, null, avatar)).rejects.toThrow('name should have a value');
+    await expect(createUser(user1.email, null, null, avatar)).rejects.toThrow(
+      "name should have a value"
+    );
 
     //creating without email
 
@@ -269,7 +279,7 @@ describe("Neo4jAdapter Testing", () => {
 
     const createdParentComment1 = await createParentComment(
       comment1.text,
-      createdUser2.email,
+      users[1].email,
       page1.path,
       page1.title,
       createdDomain1.key,
@@ -277,7 +287,7 @@ describe("Neo4jAdapter Testing", () => {
     );
     const createdParentComment2 = await createParentComment(
       comment2.text,
-      createdUser3.email,
+      users[2].email,
       page2.path,
       page2.title,
       createdDomain1.key,
@@ -287,7 +297,7 @@ describe("Neo4jAdapter Testing", () => {
     const replyToParentComment1 = await createChildComment(
       createdParentComment1.id,
       "Testing the reply",
-      createdUser3.email,
+      users[2].email,
       COMMENT_STATUS.POSTED
     );
 
@@ -311,9 +321,9 @@ describe("Neo4jAdapter Testing", () => {
     ]);
     expect(allPages["comment"][0].markdownText).toEqual(escape(comment2.text));
     expect(allPages["comment"][1].markdownText).toEqual(escape(comment1.text));
-    expect(allPages["commentedBy"][0].email).toEqual(createdUser3.email);
-    expect(allPages["commentedBy"][1].email).toEqual(createdUser2.email);
-    expect(allPages["commentedBy"][0]).not.toContainKeys(['password'])
+    expect(allPages["commentedBy"][0].id).toEqual(createdUser3.id);
+    expect(allPages["commentedBy"][1].id).toEqual(createdUser2.id);
+    expect(allPages["commentedBy"][0]).not.toContainKeys(["password"]);
     expect(allPages["replyCount"][0]).toEqual(0);
     expect(allPages["replyCount"][1]).toEqual(1);
     expect(allPages["page"][0].pageLocation).toEqual(escape(page2.path));
@@ -332,10 +342,7 @@ describe("Neo4jAdapter Testing", () => {
       avatar
     );
 
-    const createdDomain = await createDomain(
-      domain1.address,
-      createdUser1.email
-    );
+    const createdDomain = await createDomain(domain1.address, user1.email);
 
     await expect(
       createParentComment(
@@ -418,11 +425,11 @@ describe("Neo4jAdapter Testing", () => {
       text: "2nd Reply to parent Comment",
     };
 
-    const createdDomain = await createDomain(domain1, createdUser1.email);
+    const createdDomain = await createDomain(domain1, user1.email);
 
     const parentCommentFirstPage = await createParentComment(
       parentComment.text,
-      createdUser2.email,
+      user2.email,
       page1.path,
       page1.title,
       createdDomain.key,
@@ -432,39 +439,48 @@ describe("Neo4jAdapter Testing", () => {
     const firstReplyofParentComment = await createChildComment(
       parentCommentFirstPage.id,
       childComment1.text,
-      createdUser1.email,
+      user1.email,
       COMMENT_STATUS.POSTED
     );
     const firstReplyofFirstChildComment = await createChildComment(
       firstReplyofParentComment.comment.id,
       childComment2.text,
-      createdUser2.email,
+      user2.email,
       COMMENT_STATUS.POSTED
     );
     const secondReplyofParentComment = await createChildComment(
       parentCommentFirstPage.id,
       childComment3.text,
-      createdUser3.email,
+      user3.email,
       COMMENT_STATUS.POSTED
     );
 
-    const { comments, parentIds } = await getAllChildComments(
-      parentCommentFirstPage.id
-    );
+    const {
+      comment: comments,
+      parentId: parentIds,
+      by,
+    } = await getAllChildComments(parentCommentFirstPage.id);
     expect(comments).toBeArray();
     expect(comments.length).toBe(3);
 
-    comments.forEach((comment, idx) => {
-      if (comment.id === firstReplyofParentComment.id) {
+
+    for (let idx = 0; idx < comments.length; idx++) {
+      expect('password' in by[idx] ).toBeFalsy();
+      expect('email' in by[idx] ).toBeFalsy();
+      let comment = comments[idx];
+      if (comment.id === firstReplyofParentComment.comment.id) {
         expect(parentIds[idx]).toBe(parentCommentFirstPage.id);
+        expect(by[idx].id).toEqual(createdUser1.id);
       }
-      if (comment.id === firstReplyofFirstChildComment.id) {
-        expect(parentIds[idx]).toBe(firstReplyofParentComment.id);
+      if (comment.id === firstReplyofFirstChildComment.comment.id) {
+        expect(parentIds[idx]).toBe(firstReplyofParentComment.comment.id);
+        expect(by[idx].id).toEqual(createdUser2.id);
       }
-      if (comment.id === secondReplyofParentComment.id) {
+      if (comment.id === secondReplyofParentComment.comment.id) {
         expect(parentIds[idx]).toBe(parentCommentFirstPage.id);
+        expect(by[idx].id).toEqual(createdUser3.id);
       }
-    });
+    }
 
     const allFirstLevelcomments = await getFirstLevelChildComments(
       parentCommentFirstPage.id
@@ -473,9 +489,9 @@ describe("Neo4jAdapter Testing", () => {
     allFirstLevelcomments.forEach(async (comment, idx) => {
       let secondLevelComments = await getFirstLevelChildComments(comment.id);
       expect(secondLevelComments).toBeArray();
-      if (comment.id === firstReplyofParentComment.id) {
+      if (comment.id === firstReplyofParentComment.comment.id) {
         expect(secondLevelComments.length).toBe(1);
-      } else if (comment.id === secondReplyofParentComment.id) {
+      } else if (comment.id === secondReplyofParentComment.comment.id) {
         expect(secondLevelComments.length).toBe(0);
       }
     });
