@@ -482,18 +482,25 @@ describe("Neo4jAdapter Testing", () => {
       }
     }
 
-    const allFirstLevelcomments = await getFirstLevelChildComments(
+    const {comment : allFirstLevelcomments, by: user }  = await getFirstLevelChildComments(
       parentCommentFirstPage.id
     );
 
-    allFirstLevelcomments.forEach(async (comment, idx) => {
-      let secondLevelComments = await getFirstLevelChildComments(comment.id);
+    expect(allFirstLevelcomments.length).toBe(2);
+    expect(user.length).toBe(2);
+    expect(allFirstLevelcomments[0].id).toEqual(secondReplyofParentComment.comment.id);
+    expect(user[0].id).toEqual(createdUser3.id)
+
+    for(let idx=0; idx<allFirstLevelcomments.length; idx++){
+      let currComment = allFirstLevelcomments[idx];
+      let {comment: secondLevelComments, by: byUser} = await getFirstLevelChildComments(currComment.id);
       expect(secondLevelComments).toBeArray();
-      if (comment.id === firstReplyofParentComment.comment.id) {
+      if (currComment.id === firstReplyofParentComment.comment.id) {
         expect(secondLevelComments.length).toBe(1);
-      } else if (comment.id === secondReplyofParentComment.comment.id) {
+      } else if (currComment.id === secondReplyofParentComment.comment.id) {
         expect(secondLevelComments.length).toBe(0);
       }
-    });
+    }
+
   });
 });

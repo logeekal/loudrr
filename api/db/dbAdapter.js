@@ -428,15 +428,16 @@ class DBAdapter {
     const query =
       `MATCH (parentComment:${ENTITIES.COMMENT}{id:'${commentId}'}) ` +
       `MATCH (parentComment)-[:${RELATIONSHIPS.HAS_REPLY}]->(comment) ` +
-      `RETURN comment`;
+      `MATCH (u)-[:${RELATIONSHIPS.COMMENTED}]->(comment) ` +
+      `RETURN comment, u{.name, .avatar, .id} as by`;
 
     const results = await session.run(query);
 
     session.close();
     if (results.records.length > 0) {
-      return results.records.map((record) => record.get("comment").properties);
+      return convertNeo4jResultToObject(results);
     } else {
-      return [];
+      return {comment: [], by: []};
     }
   };
 }
