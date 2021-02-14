@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import MDEditor from '@uiw/react-md-editor'
 import { FC } from 'react'
 import {
@@ -15,35 +15,21 @@ import {
 } from '@chakra-ui/react'
 import '@uiw/react-md-editor/dist/markdown-editor.css'
 import { FaMarkdown } from 'react-icons/fa'
-import APIService, { CommentType } from '../../services/API'
 import { COMMENT_STATUS } from '../../constants'
+import { DataContext, DataContextProps } from '../providers/DataProvider'
 
 interface CommentBoxProps {
-  domainKey: string,
-  onSubmit: (comment: CommentType) => void
+  replyOf? : string,
 }
 
-const CommentBox: FC<CommentBoxProps> = ({ domainKey, onSubmit }) => {
-  const toast = useToast()
+const CommentBox: FC<CommentBoxProps> = ({replyOf}) => {
   const [value, setValue] = React.useState<string | undefined>('')
 
+  const { comments :{add} } = useContext<DataContextProps>(DataContext);
+
   const submitHandler = async () => {
-    const createdComment = await APIService.createComment(
-      null,
-      value as string,
-      COMMENT_STATUS.POSTED,
-      window.location.href,
-      window.document.title,
-      domainKey
-    );
-
-    toast({
-        title: "Comment Saved as draft",
-        description: "You comment has been successfully posted",
-        status: "success"
-    })
-
-    onSubmit(createdComment.data);
+    const parentCommentId = replyOf || null;
+    await add(parentCommentId, value as string, COMMENT_STATUS.POSTED)
   }
 
   return (

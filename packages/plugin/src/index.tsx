@@ -3,9 +3,12 @@ import * as React from 'react'
 import { useState } from 'react'
 import { useEffect } from 'react'
 import OnBoarding from './components/Onboarding'
+import DataProvider from './components/providers/DataProvider'
 import Thread from './components/Thread'
 import { REQUEST_STATES } from './constants'
+import { User } from './constants/types'
 import APIService from './services/API'
+
 
 export interface CommentWidgetProps {
   domainKey: string
@@ -37,11 +40,11 @@ const CommentWidget = ({ domainKey }: CommentWidgetProps) => {
   }
   return (
     <ChakraProvider>
+    <DataProvider domainKey={domainKey} authenticatedUser={user as User}>
       <div className='commenter'>
         {!user && (
           <Box maxW='500px'>
             <OnBoarding
-              mode={'signin'}
               onSuccess={(user: User) => {
                 setUser(user)
                 console.log('success')
@@ -52,6 +55,7 @@ const CommentWidget = ({ domainKey }: CommentWidgetProps) => {
         {user && <React.Fragment></React.Fragment>}
       </div>
       <Thread domainKey={domainKey} />
+    </DataProvider>
     </ChakraProvider>
   )
 }

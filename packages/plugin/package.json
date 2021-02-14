@@ -24,7 +24,7 @@
     "deploy": "gh-pages -d example/build",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "demo": "webpack serve --mode development --open  --config webpack.demo.config.js"
+    "demo": "webpack serve --mode development --open  --config webpack.demo.config.js --port 3001"
   },
   "peerDependencies": {
     "react": "^16.0.0"

@@ -3,7 +3,7 @@ export function getTimeDifference(
 ): { num: number; off: string } {
   const currentTime = Date.now()
   const diffInSeconds = (currentTime - referenceTime) / 1000;
-  console.table({diffInSeconds, currentTime, referenceTime})
+  // console.table({diffInSeconds, currentTime, referenceTime})
   if (diffInSeconds < 60) {
     return {
       num: 0,

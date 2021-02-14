@@ -14,20 +14,27 @@ export interface CommentType {
   markdownText: string
   status: string
   url: string
-  createDate: any
-  updatedate: any
+  createdate: any
+  updateDate: any
 }
 
 
 export interface User {
-  email: string
+  id: string
   name: string
   avatar: string
 }
 
 export interface CommentWithParent extends CommentType {
   parentCommentId: string | null,
-  replyCount?: number,
+  replyCount: number,
   by:string,
-  replies?: string[]
+  replies: string[]
+}
+
+
+export interface ChildrenResponse {
+  comment: CommentType[],
+  parentId: string[],
+  by:User[]
 }

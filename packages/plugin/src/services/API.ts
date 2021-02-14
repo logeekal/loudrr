@@ -1,6 +1,10 @@
 import axios, { AxiosRequestConfig } from 'axios'
-import { PageType , CommentType, User} from '../constants/types'
-
+import {
+  PageType,
+  CommentType,
+  User,
+  ChildrenResponse
+} from '../constants/types'
 
 export default class APIService {
   static _API_URL = 'http://localhost:3030'
@@ -64,9 +68,9 @@ export default class APIService {
     axiosOptions: AxiosRequestConfig
   ): Promise<{
     data: {
-      page: Array<PageType>;
-      comment: CommentType[];
-      commentedBy: User[];
+      page: Array<PageType>
+      comment: CommentType[]
+      commentedBy: User[]
       replyCount: number[]
     }
   }> {
@@ -87,7 +91,9 @@ export default class APIService {
     url: string,
     title: string,
     domainKey: string
-  ) {
+  ):  Promise<{
+    data: CommentType
+  }> {
     return await axios.post(
       `${APIService._API_URL}/comments/add`,
       {
@@ -103,6 +109,9 @@ export default class APIService {
       }
     )
   }
+
+
+
   static async updateComment(commentId: string, status: string) {
     return await axios.post(
       `${APIService._API_URL}/comments/update`,
@@ -121,6 +130,20 @@ export default class APIService {
       `${APIService._API_URL}/pages`,
       {
         domainKey
+      },
+      {
+        withCredentials: true
+      }
+    )
+  }
+
+  static async getCompleteThread(
+    commentId: string
+  ): Promise<{ data: ChildrenResponse }> {
+    return await axios.post(
+      `${APIService._API_URL}/comments/thread`,
+      {
+        commentId
       },
       {
         withCredentials: true
