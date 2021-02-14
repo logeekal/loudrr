@@ -12,7 +12,8 @@ router.post('/',  async(req, res)=> {
     if(!req.isAuthenticated()){
         res.sendStatus(401)
     }
-    res.send(req.user);
+    const {id, name, avatar} =  req.user
+    res.send({id, name, avatar})
 })
 
 
@@ -36,7 +37,8 @@ router.post("/login", passport.authenticate('local'), async(req, res)=> {
     //     res.status(400).send(err);
     // }
 
-    res.send(`Authenticated User : ${JSON.stringify(req.user)}`)
+    const {id, name, avatar} =  req.user
+    res.send({id, name, avatar})
 })
 
 

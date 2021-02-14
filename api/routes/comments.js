@@ -78,8 +78,8 @@ router.post("/add", async (req, res,next) => {
         domainKey,
         status
       );
-      res.send(createdComment);
     }
+      res.send(createdComment);
   } catch (err) {
     console.error(err)
     res.status(500).send('Some Error Occured');

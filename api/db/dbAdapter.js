@@ -134,7 +134,7 @@ class DBAdapter {
 
     const results = await session.run(query);
     session.close();
-    return results.records[0].get("comment").properties;
+    return results.records[0].get('comment').properties;
   };
 
   createChildComment = async (
@@ -170,16 +170,13 @@ class DBAdapter {
       `WITH comment, parentComment ` +
       `MATCH (user:${ENTITIES.USER} {email:'${fromUser}'}) ` +
       `CREATE (user)-[:${RELATIONSHIPS.COMMENTED}]->(comment) ` +
-      `RETURN comment, parentComment.id as parentCommentId`;
+      `RETURN comment `;
 
     const results = await session.run(query);
 
     session.close();
 
-    return {
-      comment: results.records[0].get("comment").properties,
-      parentCommentId: results.records[0].get("parentCommentId"),
-    };
+    return results.records[0].get('comment').properties;
   };
 
   checkMandatory = (obj) => {

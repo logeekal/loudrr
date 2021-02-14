@@ -443,7 +443,7 @@ describe("Neo4jAdapter Testing", () => {
       COMMENT_STATUS.POSTED
     );
     const firstReplyofFirstChildComment = await createChildComment(
-      firstReplyofParentComment.comment.id,
+      firstReplyofParentComment.id,
       childComment2.text,
       user2.email,
       COMMENT_STATUS.POSTED
@@ -468,15 +468,15 @@ describe("Neo4jAdapter Testing", () => {
       expect('password' in by[idx] ).toBeFalsy();
       expect('email' in by[idx] ).toBeFalsy();
       let comment = comments[idx];
-      if (comment.id === firstReplyofParentComment.comment.id) {
+      if (comment.id === firstReplyofParentComment.id) {
         expect(parentIds[idx]).toBe(parentCommentFirstPage.id);
         expect(by[idx].id).toEqual(createdUser1.id);
       }
-      if (comment.id === firstReplyofFirstChildComment.comment.id) {
-        expect(parentIds[idx]).toBe(firstReplyofParentComment.comment.id);
+      if (comment.id === firstReplyofFirstChildComment.id) {
+        expect(parentIds[idx]).toBe(firstReplyofParentComment.id);
         expect(by[idx].id).toEqual(createdUser2.id);
       }
-      if (comment.id === secondReplyofParentComment.comment.id) {
+      if (comment.id === secondReplyofParentComment.id) {
         expect(parentIds[idx]).toBe(parentCommentFirstPage.id);
         expect(by[idx].id).toEqual(createdUser3.id);
       }
@@ -488,16 +488,16 @@ describe("Neo4jAdapter Testing", () => {
 
     expect(allFirstLevelcomments.length).toBe(2);
     expect(user.length).toBe(2);
-    expect(allFirstLevelcomments[0].id).toEqual(secondReplyofParentComment.comment.id);
+    expect(allFirstLevelcomments[0].id).toEqual(secondReplyofParentComment.id);
     expect(user[0].id).toEqual(createdUser3.id)
 
     for(let idx=0; idx<allFirstLevelcomments.length; idx++){
       let currComment = allFirstLevelcomments[idx];
       let {comment: secondLevelComments, by: byUser} = await getFirstLevelChildComments(currComment.id);
       expect(secondLevelComments).toBeArray();
-      if (currComment.id === firstReplyofParentComment.comment.id) {
+      if (currComment.id === firstReplyofParentComment.id) {
         expect(secondLevelComments.length).toBe(1);
-      } else if (currComment.id === secondReplyofParentComment.comment.id) {
+      } else if (currComment.id === secondReplyofParentComment.id) {
         expect(secondLevelComments.length).toBe(0);
       }
     }
