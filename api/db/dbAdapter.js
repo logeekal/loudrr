@@ -126,7 +126,7 @@ class DBAdapter {
       `WITH page ` +
       `CREATE (page)-[:${RELATIONSHIPS.HAS_COMMENT}]->(comment:${
         ENTITIES.COMMENT
-      } {id:'${uuid.v4()}',markdownText:'${safeMdText}',createdate:timestamp(),updateDate:timestamp(),status:'${commentStatus}'}) ` +
+      } {id:'${uuid.v4()}',markdownText:'${safeMdText}',createDate:timestamp(),updateDate:timestamp(),status:'${commentStatus}'}) ` +
       `WITH comment ` +
       `MATCH (u:${ENTITIES.USER}{email:'${from}'}) ` +
       `CREATE (u)-[:${RELATIONSHIPS.COMMENTED}]->(comment) ` +
@@ -164,7 +164,7 @@ class DBAdapter {
       `MATCH (parentComment:${ENTITIES.COMMENT}{id:'${parentCommentId}'}) ` +
       `CREATE (comment:${
         ENTITIES.COMMENT
-      } {id:'${uuid.v4()}',markDownText:'${mdText}',status:'${commentStatus}',createDate:timestamp(),updateDate:timestamp()}) ` +
+      } {id:'${uuid.v4()}',markdownText:'${mdText}',status:'${commentStatus}',createDate:timestamp(),updateDate:timestamp()}) ` +
       `CREATE (parentComment)-[:${RELATIONSHIPS.HAS_REPLY}]->(comment) ` +
       `CREATE (comment)-[:${RELATIONSHIPS.REPLY_OF}]->(parentComment) ` +
       `WITH comment, parentComment ` +
