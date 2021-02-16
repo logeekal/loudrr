@@ -1,6 +1,6 @@
 import { Avatar, Box, Button, Stack, Text } from '@chakra-ui/react'
 import React, { useState } from 'react'
-import { CommentType, CommentWithParent, User } from '../../constants/types'
+import { CommentWithParent, User } from '../../constants/types'
 import MDEditor from '@uiw/react-md-editor'
 import { getTimeDifference } from '../../services/date'
 import CommentBox from '../CommentBox'
@@ -8,27 +8,41 @@ import CommentBox from '../CommentBox'
 export interface CommentCardProps {
   comment: CommentWithParent
   by: User
-  childrenHandler: any
+  childrenHandler: any,
+  level:number
 }
 
 const CommentCard: React.FC<CommentCardProps> = ({
   comment,
   by,
-  childrenHandler
+  childrenHandler,
+  level
 }) => {
+  if(level > 0)
+  {
+
+  console.log({comment})
+  debugger;
+  }
   const [editingMode, setEditingMode] = useState(false)
   const handleReply = () => {
     setEditingMode(true)
   }
-  const { num, off } = getTimeDifference(comment.createdate)
+  const { num, off } = getTimeDifference(comment.createDate)
   let dateString = `${num} ${off} ago`
   if (num === 0) {
     dateString = 'Now'
   }
 
+  const commentSubmitHandler = () => {
+    if(comment.id){
+      setEditingMode(false);
+    }
+  }
+
   return (
     <Box key={comment.id} borderWidth={0} p={5} boxShadow='none'>
-      <Stack direction='column'>
+      <Stack direction='column' marginInlineStart={level*10}>
         <Stack direction='row' alignItems='center'>
           <Avatar src={by.avatar} size='sm' />
           <Box>
@@ -56,11 +70,11 @@ const CommentCard: React.FC<CommentCardProps> = ({
           <Box _hover={{ cursor: 'pointer' }} onClick={childrenHandler}>
             {comment.replyCount > 0 && `${comment.replyCount} replies`}{' '}
           </Box>
-        </Stack>
-        {editingMode && <CommentBox replyOf={comment.id} />}
+          </Stack>
+        {editingMode && <CommentBox replyOf={comment.id} onSubmit={commentSubmitHandler} />}
+          
       </Stack>
-    </Box>
-  )
+    </Box>)
 }
 
 export default CommentCard

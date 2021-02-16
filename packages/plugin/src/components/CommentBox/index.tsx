@@ -11,7 +11,6 @@ import {
   Link,
   Button,
   Stack,
-  useToast
 } from '@chakra-ui/react'
 import '@uiw/react-md-editor/dist/markdown-editor.css'
 import { FaMarkdown } from 'react-icons/fa'
@@ -20,16 +19,20 @@ import { DataContext, DataContextProps } from '../providers/DataProvider'
 
 interface CommentBoxProps {
   replyOf? : string,
+  onSubmit: any,
 }
 
-const CommentBox: FC<CommentBoxProps> = ({replyOf}) => {
+const CommentBox: FC<CommentBoxProps> = ({replyOf, onSubmit}) => {
   const [value, setValue] = React.useState<string | undefined>('')
 
   const { comments :{add} } = useContext<DataContextProps>(DataContext);
 
   const submitHandler = async () => {
     const parentCommentId = replyOf || null;
+    
     await add(parentCommentId, value as string, COMMENT_STATUS.POSTED)
+    onSubmit()
+    
   }
 
   return (

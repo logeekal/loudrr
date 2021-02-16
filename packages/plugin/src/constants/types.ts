@@ -14,7 +14,7 @@ export interface CommentType {
   markdownText: string
   status: string
   url: string
-  createdate: any
+  createDate: any
   updateDate: any
 }
 

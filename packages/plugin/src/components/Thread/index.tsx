@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, useState } from 'react'
+import React, { FC, ReactNode, useContext, useEffect, useState } from 'react'
 import { Box, Flex, Stack } from '@chakra-ui/react'
 import APIService, { CommentType } from '../../services/API'
 import CommentBox from '../CommentBox'
@@ -23,83 +23,55 @@ export interface CommentData {
 }
 
 const Thread: FC<ThreadProps> = ({ domainKey }) => {
-  // const [thread, setThread] = useState<Thread>()
-  // const [users, setUsers] = useState<UsersObjType>()
-  // const [commentData, setCommentData] = useState<CommentData>({
-  //   thread: {},
-  //   users: {}
-  // })
+  const {
+    comments: {
+      loadParents: loadAllParentComments,
+      loadChildren,
+      thread,
+      parentComments
+    },
+    user: { users }
+  } = useContext<DataContextProps>(DataContext)
 
-  const {comments :{
-    loadParents: loadAllParentComments,
-    loadChildren,
-    thread,
-    parentComments
-  }, user: {users}} = useContext<DataContextProps>(DataContext)
-
-  // const _handleNewComment = (comment: CommentType) => {
-  //   const commentObj: Thread = {
-  //     [comment.id]: {
-  //       ...comment,
-  //       parentCommentId: null,
-  //       markdownText: unescape(comment.markdownText)
-  //     }
-  //   }
-  //   console.log('Adding new comment to thread ', comment)
-
-  //   setThread({ ...thread, ...commentObj })
-
-  // }
   useEffect(() => {
     loadAllParentComments().then(() => console.log(' Initial Comments loaded'))
   }, [])
 
-  // const _loadAllParentComments = async () => {
-  //   try {
-  //     const allPagesResp = await APIService.getDomainPages(domainKey, {})
-  //     const allPages = allPagesResp.data
-  //     const { page, comment, commentedBy, replyCount } = allPages
-  //     console.log(page)
-  //     const newThread: Thread = {}
-  //     const newUsers: UsersObjType = {}
-  //     page.forEach((singlePage, index) => {
-  //       if (singlePage.pageLocation === window.location.href) {
-  //         const selectedComment = comment[index]
-  //         newThread[selectedComment.id] = {
-  //           ...selectedComment,
-  //           parentCommentId: null,
-  //           markdownText: unescape(selectedComment.markdownText),
-  //           by: commentedBy[index].email,
-  //           replyCount: replyCount[index]
-  //         }
-  //         const selectedUser = commentedBy[index]
-  //         newUsers[selectedUser.email] = selectedUser
-  //       }
-  //     })
-  //     console.log({ newUsers })
-  //     setCommentData({
-  //       thread: { ...commentData.thread, ...newThread },
-  //       users: { ...commentData.users, ...newUsers }
-  //     })
-  //   } catch (error) {
-  //     throw error
-  //   }
-  // }
-
+  const loadThread = (currentList: string[], level: number): ReactNode[] => {
+    return currentList.map((commentId) => {
+      let currentComment = thread[commentId]
+      if (level > 0) {
+        console.log(currentComment, 'for comment id ', commentId)
+      }
+      const commentedBy = currentComment && users[currentComment.by]
+      let result: ReactNode[] = []
+      result.push(
+        <CommentCard
+          comment={currentComment}
+          by={commentedBy}
+          childrenHandler={async () => await loadChildren(commentId)}
+          level={level}
+        />
+      )
+      if (currentComment.replies.length > 0) {
+        //print current comment.
+        //switch to child its child
+        result = [
+          ...result,
+          ...loadThread([...currentComment.replies], level + 1)
+        ]
+      }
+      console.log(result)
+      return result
+    })
+  }
 
   return (
     <Box className='thread'>
       <Stack m={10} direction='column'>
         <CommentBox />
         <Stack className='comments' direction='column'>
-          {
-            parentComments.map(commentId => {
-              const currentComment = thread[commentId];
-              console.log({currentComment: currentComment.markdownText})
-              const commentedBy = currentComment && users[currentComment.by]
-              return <CommentCard comment={thread[commentId]} by={commentedBy} childrenHandler={async()=> await loadChildren(commentId)}/>
-            })
-          }
+          {loadThread(parentComments, 0)}
         </Stack>
       </Stack>
     </Box>
