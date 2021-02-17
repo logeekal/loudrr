@@ -36,5 +36,6 @@ export interface CommentWithParent extends CommentType {
 export interface ChildrenResponse {
   comment: CommentType[],
   parentId: string[],
-  by:User[]
+  by:User[],
+  replyCount: number
 }

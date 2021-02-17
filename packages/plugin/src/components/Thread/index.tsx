@@ -1,10 +1,11 @@
 import React, { FC, ReactNode, useContext, useEffect, useState } from 'react'
-import { Box, Flex, Stack } from '@chakra-ui/react'
+import { Box, Flex, Spinner, Stack } from '@chakra-ui/react'
 import APIService, { CommentType } from '../../services/API'
 import CommentBox from '../CommentBox'
 import CommentCard from '../CommentCard'
 import { CommentWithParent, User } from '../../constants/types'
 import { DataContext, DataContextProps } from '../providers/DataProvider'
+import { REQUEST_STATES } from '../../constants'
 
 export interface ThreadProps {
   domainKey: string
@@ -33,35 +34,48 @@ const Thread: FC<ThreadProps> = ({ domainKey }) => {
     user: { users }
   } = useContext<DataContextProps>(DataContext)
 
+  const [threadLoadState, setThreadLoadState] = useState(REQUEST_STATES.IDLE) 
+
   useEffect(() => {
     loadAllParentComments().then(() => console.log(' Initial Comments loaded'))
   }, [])
 
-  const loadThread = (currentList: string[], level: number): ReactNode[] => {
-    return currentList.map((commentId) => {
+  const loadThread = (
+    currentList: string[],
+    level: number
+  ): ReactNode[] => {
+    return currentList.map( (commentId) => {
       let currentComment = thread[commentId]
       if (level > 0) {
         console.log(currentComment, 'for comment id ', commentId)
       }
       const commentedBy = currentComment && users[currentComment.by]
       let result: ReactNode[] = []
+
       result.push(
         <CommentCard
           comment={currentComment}
           by={commentedBy}
-          childrenHandler={async () => await loadChildren(commentId)}
+          childrenHandler={async () => {
+            setThreadLoadState(REQUEST_STATES.PENDING)
+            await loadChildren(commentId)
+            setThreadLoadState(REQUEST_STATES.IDLE)
+          }}
           level={level}
-        />
+        >
+          {  
+           currentComment.replies.length > 0 && [
+            ...loadThread([...currentComment.replies], level + 1)
+          ]}
+        </CommentCard>
       )
-      if (currentComment.replies.length > 0) {
-        //print current comment.
-        //switch to child its child
-        result = [
-          ...result,
-          ...loadThread([...currentComment.replies], level + 1)
-        ]
-      }
-      console.log(result)
+      // if (currentComment.replies.length > 0) {
+      //   result = [
+      //     ...result,
+      //     ...(await loadThread([...currentComment.replies], level + 1))
+      //   ]
+      // }
+       console.log(result)
       return result
     })
   }
@@ -69,7 +83,7 @@ const Thread: FC<ThreadProps> = ({ domainKey }) => {
   return (
     <Box className='thread'>
       <Stack m={10} direction='column'>
-        <CommentBox />
+        <CommentBox onSubmit={()=>{}}/>
         <Stack className='comments' direction='column'>
           {loadThread(parentComments, 0)}
         </Stack>

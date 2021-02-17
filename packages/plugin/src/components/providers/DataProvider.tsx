@@ -89,8 +89,12 @@ const DataProvider: FC<DataProviderProps> = ({
     commentStatus: string
   ) => {
     try {
-
-      console.log('Adding new comment with args ', parentCommentId, mdText, commentStatus);
+      console.log(
+        'Adding new comment with args ',
+        parentCommentId,
+        mdText,
+        commentStatus
+      )
       const createdCommentResponse = await APIService.createComment(
         parentCommentId,
         mdText as string,
@@ -100,7 +104,7 @@ const DataProvider: FC<DataProviderProps> = ({
         domainKey
       )
 
-      console.log('Comment created.. Now toasting');
+      console.log('Comment created.. Now toasting')
 
       toast({
         title: 'Comment Posted',
@@ -111,7 +115,7 @@ const DataProvider: FC<DataProviderProps> = ({
       console.log('toasted', createdCommentResponse)
 
       const createdComment = createdCommentResponse.data
-      console.log(JSON.stringify(createdComment));
+      console.log(JSON.stringify(createdComment))
       const newParentCommentIds = !parentCommentId
         ? [createdComment.id].concat([...commentData.parentComments])
         : [...commentData.parentComments]
@@ -119,14 +123,16 @@ const DataProvider: FC<DataProviderProps> = ({
 
       let newParentComment: Thread = {}
       if (parentCommentId) {
-        console.log({replies_orig: commentData.thread[parentCommentId].replies});
+        console.log({
+          replies_orig: commentData.thread[parentCommentId].replies
+        })
         console.log([createdComment.id])
         newParentComment[parentCommentId] = {
           ...commentData.thread[parentCommentId],
           replies: [createdComment.id].concat(
             commentData.thread[parentCommentId].replies || []
           ),
-          replyCount: commentData.thread[parentCommentId].replyCount + 1 
+          replyCount: commentData.thread[parentCommentId].replyCount + 1
         }
       }
 
@@ -197,32 +203,53 @@ const DataProvider: FC<DataProviderProps> = ({
         parentCommentId
       )
 
-      const { comment, parentId, by } = childrenResponse.data
+      const { comment, parentId, by, replyCount } = childrenResponse.data
 
       const newThread: Thread = {}
       const newUsers: UsersObjType = {}
 
-      let replyIds: string[] = comment.map((currentComment, index) => {
-        newThread[currentComment.id] = {
-          ...currentComment,
-          parentCommentId: parentId[index],
-          replyCount: 0,
-          replies: [],
-          by: by[index].id
-        }
+      let replyIds: string[] = comment
+        .filter((currcomment) => !(currcomment.id in commentData.thread))
+        .map((currentComment, index) => {
+          //insert only if not already present
+          newThread[currentComment.id] = {
+            ...currentComment,
+            parentCommentId: parentId[index],
+            replyCount: replyCount[index],
+            replies: [],
+            by: by[index].id
+          }
 
-        newUsers[by[index].id] = by[index]
-        return currentComment.id
+          //insert all parents in the newThread as well.
+          if (parentId[index] in commentData.thread) {
+            //else the parentId is newly fetched and is already in newThread
+            newThread[parentId[index]] = {
+              ...commentData.thread[parentId[index]]
+            }
+          }
+
+          newUsers[by[index].id] = by[index]
+          return currentComment.id
+        })
+
+      replyIds.forEach((replyId) => {
+        //get parent of the reply
+
+        console.log(`Finding parent id or reply Id ${replyId}`)
+
+        const parentId = newThread[replyId].parentCommentId
+        if (parentId) {
+          newThread[parentId] = {
+            ...newThread[parentId],
+            replies: [...newThread[parentId].replies, replyId],
+          }
+        }
       })
 
       setCommentData({
         thread: {
           ...commentData.thread,
-          ...newThread,
-          [parentCommentId]: {
-            ...commentData.thread[parentCommentId],
-            replies: replyIds
-          }
+          ...newThread
         },
         users: {
           ...commentData.users,
