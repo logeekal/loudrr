@@ -482,7 +482,7 @@ describe("Neo4jAdapter Testing", () => {
       }
     }
 
-    const {comment : allFirstLevelcomments, by: user }  = await getFirstLevelChildComments(
+    const {comment : allFirstLevelcomments, by: user, replyCount: firstLevelCount }  = await getFirstLevelChildComments(
       parentCommentFirstPage.id
     );
 
@@ -503,4 +503,7 @@ describe("Neo4jAdapter Testing", () => {
     }
 
   });
+  test("Todo - deep children count", async ()=> {
+    expect(1).toBe(2);
+  })
 });

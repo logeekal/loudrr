@@ -402,10 +402,11 @@ class DBAdapter {
 
     const query =
       `MATCH (parentComment:${ENTITIES.COMMENT}{id:'${commentId}'}) ` +
-      `MATCH  (parentComment)-[:${RELATIONSHIPS.HAS_REPLY}*]->(child) ` +
+      `OPTIONAL MATCH (parentComment)-[:${RELATIONSHIPS.HAS_REPLY}*]->(child) ` +
+      `OPTIONAL MATCH (child)-[:${RELATIONSHIPS.HAS_REPLY}*]->(deepChild) ` +
       `MATCH (child)-[:${RELATIONSHIPS.REPLY_OF}]->(x) ` +
       `MATCH (user)-[:${RELATIONSHIPS.COMMENTED}]->(child) ` +
-      `RETURN child as comment, x.id as parentId, user {.avatar, .id, .name } as by`;
+      `RETURN child as comment, x.id as parentId, user {.avatar, .id, .name } as by, size(collect(deepChild)) as replyCount`;
 
     const results = await session.run(query);
 
@@ -426,7 +427,8 @@ class DBAdapter {
       `MATCH (parentComment:${ENTITIES.COMMENT}{id:'${commentId}'}) ` +
       `MATCH (parentComment)-[:${RELATIONSHIPS.HAS_REPLY}]->(comment) ` +
       `MATCH (u)-[:${RELATIONSHIPS.COMMENTED}]->(comment) ` +
-      `RETURN comment, u{.name, .avatar, .id} as by`;
+      `OPTIONAL MATCH (comment)-[:${RELATIONSHIPS.HAS_REPLY}*]->(child) ` +
+      `RETURN comment, u{.name, .avatar, .id} as by, size(collect(child)) as replyCount`;
 
     const results = await session.run(query);
 
