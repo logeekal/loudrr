@@ -239,9 +239,10 @@ const DataProvider: FC<DataProviderProps> = ({
 
         const parentId = newThread[replyId].parentCommentId
         if (parentId) {
+        const newReplies = [...newThread[parentId].replies, replyId]
           newThread[parentId] = {
             ...newThread[parentId],
-            replies: [...newThread[parentId].replies, replyId],
+            replies: newReplies.sort((a,b)=> newThread[b].updateDate - newThread[a].updateDate),
           }
         }
       })

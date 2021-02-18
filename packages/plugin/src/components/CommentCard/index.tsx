@@ -6,6 +6,7 @@ import {
   Avatar,
   Box,
   Button,
+  Divider,
   Stack,
   Text
 } from '@chakra-ui/react'
@@ -34,16 +35,33 @@ const CommentCard: React.FC<CommentCardProps> = ({
     debugger
   }
   const [editingMode, setEditingMode] = useState(false)
+  const [childrenLoaded, setChildrendLoaded] =  useState(level !== 0);
+
+  const [childrenVisibleToggle, setChildrenVisibleToggle] = useState(level !==0);
+
+  const expandReplies = async () => {
+
+    if(!childrenLoaded){
+      await childrenHandler();
+      setChildrendLoaded(true)
+    }
+
+    setChildrenVisibleToggle(!childrenVisibleToggle)
+
+  }
+
   const handleReply = () => {
     setEditingMode(!editingMode)
   }
+
   const { num, off } = getTimeDifference(comment.createDate)
   let dateString = `${num} ${off} ago`
   if (num === 0) {
     dateString = 'Now'
   }
 
-  const commentSubmitHandler = () => {
+  const commentSubmitHandler = async() => {
+    await expandReplies()
     if (comment.id) {
       setEditingMode(false)
     }
@@ -51,27 +69,30 @@ const CommentCard: React.FC<CommentCardProps> = ({
 
   return (
     <Box key={comment.id}>
+        {level > 0 && <Divider marginBlockStart={2}/>}
       <Stack
         className={`level-${level}`}
         direction='column'
         marginInlineStart={`${level * 0.5}rem`}
-        borderWidth={1}
+        borderWidth={level === 0 ? 1 : 0}
+        borderRadius={10}
         p={5}
-        boxShadow='md'
+        paddingBlockEnd={childrenVisibleToggle && comment.replyCount > 0 ? 0 : 5}
+        boxShadow={level === 0 ? 'md' : 'none'}
       >
-        <Stack direction='row' alignItems='center'>
+        <Stack direction='row' alignItems='center' fontSize="smaller" fontWeight="semibold">
           <Avatar src={by.avatar} size='sm' />
           <Box>
-            <Text>{by.name}</Text>
-            <Text fontSize='sm'>{dateString}</Text>
+            <Text >{by.name}</Text>
+            <Text color="gray.500">{dateString}</Text>
           </Box>
         </Stack>
         <MDEditor.Markdown source={unescape(comment.markdownText)} />
         <Stack
           direction='row'
-          fontSize='sm'
-          fontWeight='bold'
-          color='GrayText'
+          fontSize='smaller'
+          fontWeight='semibold'
+          color='gray.500'
           textStyle='link'
         >
           <Box
@@ -83,37 +104,22 @@ const CommentCard: React.FC<CommentCardProps> = ({
           >
             Reply
           </Box>
-        </Stack>
-        {comment.replyCount > 0 && (
-          <Accordion
-            allowMultiple
-            allowToggle
-            py={0}
-            my={0}
-            onChange={(expandIdx) => {
-              if (expandIdx) {
-                childrenHandler()
-              }
+           <Box
+            variant='ghost'
+            onClick={expandReplies}
+            _hover={{
+              cursor: 'pointer'
             }}
           >
-            {editingMode && (
-              <CommentBox
-                replyOf={comment.id}
-                onSubmit={commentSubmitHandler}
-              />
-            )}
-            <AccordionItem>
-              <AccordionButton>{comment.replyCount} replies</AccordionButton>
-              <AccordionPanel>
-                {
-                  // list of commentBoxes
-                  children
-                }
-              </AccordionPanel>
-            </AccordionItem>
-            <Box _hover={{ cursor: 'pointer' }} onClick={childrenHandler}></Box>
-          </Accordion>
+           {comment.replyCount  > 0 && `${comment.replyCount} replies`}
+          </Box>
+         
+        </Stack>
+        {editingMode && (
+          <CommentBox replyOf={comment.id} onSubmit={commentSubmitHandler} />
         )}
+
+        {comment.replyCount > 0 && childrenVisibleToggle && children}
       </Stack>
     </Box>
   )

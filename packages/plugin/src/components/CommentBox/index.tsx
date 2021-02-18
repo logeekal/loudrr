@@ -11,6 +11,7 @@ import {
   Link,
   Button,
   Stack,
+  Flex
 } from '@chakra-ui/react'
 import '@uiw/react-md-editor/dist/markdown-editor.css'
 import { FaMarkdown } from 'react-icons/fa'
@@ -18,28 +19,29 @@ import { COMMENT_STATUS } from '../../constants'
 import { DataContext, DataContextProps } from '../providers/DataProvider'
 
 interface CommentBoxProps {
-  replyOf? : string,
-  onSubmit: any,
+  replyOf?: string
+  onSubmit: any
 }
 
-const CommentBox: FC<CommentBoxProps> = ({replyOf, onSubmit}) => {
+const CommentBox: FC<CommentBoxProps> = ({ replyOf, onSubmit }) => {
   const [value, setValue] = React.useState<string | undefined>('')
 
-  const { comments :{add} } = useContext<DataContextProps>(DataContext);
+  const {
+    comments: { add },
+    user: { loggedinUser }
+  } = useContext<DataContextProps>(DataContext)
 
   const submitHandler = async () => {
-    const parentCommentId = replyOf || null;
-    
+    const parentCommentId = replyOf || null
+
     await add(parentCommentId, value as string, COMMENT_STATUS.POSTED)
     onSubmit()
-    
   }
 
   return (
     <Box
-      boxShadow='lg'
+      boxShadow='sm'
       borderRadius={10}
-      m={10}
       borderWidth={1}
       borderBlockStartWidth={0}
     >
@@ -85,14 +87,12 @@ const CommentBox: FC<CommentBoxProps> = ({replyOf, onSubmit}) => {
       <Stack
         direction='row'
         spacing='5'
-        align='flex-end'
-        justify='flex-end'
+        align='center'
+        justify='space-between'
         p='1rem'
         pt={0}
       >
-        {/* <Button variant='outline' onClick={draftHandler}>
-          Save Draft
-        </Button> */}
+        <Box justifyContent="center" alignItems="center" height="100%">{loggedinUser && `Commenting as ${loggedinUser.name}`}</Box>
         <Button variant='solid' onClick={submitHandler}>
           Submit
         </Button>
