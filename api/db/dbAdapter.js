@@ -238,16 +238,16 @@ class DBAdapter {
     const query =
       `MATCH (u:${ENTITIES.USER}{email:'${userEmail}'})` +
       `MATCH (u)-[:${RELATIONSHIPS.HAS_DOMAIN}]->(domain)` +
-      `RETURN domain`;
+      `OPTIONAL MATCH (domain)-[:${RELATIONSHIPS.HAS_PAGE}]->(page) ` +
+      `OPTIONAL MATCH (page)-[:${RELATIONSHIPS.HAS_COMMENT}]->(parentComment) ` +
+      `OPTIONAL MATCH (parentComment)-[:${RELATIONSHIPS.HAS_REPLY}*]->(comment) ` +
+      `RETURN domain, size(collect(DISTINCT page)) as pageCount, size(collect(DISTINCT parentComment)) + size(collect(comment)) as commentCount`;
 
     const results = await session.run(query);
 
     session.close();
 
-    const domains = results.records.map(
-      (record) => record.get("domain").properties
-    );
-    return domains;
+    return convertNeo4jResultToObject(results);
   };
 
   getDomain = async (domainKey) => {
@@ -257,13 +257,13 @@ class DBAdapter {
 
     const query =
       `MATCH (domain:${ENTITIES.DOMAIN}{key:'${domainKey}'}) ` +
-      `RETURN domain`;
-
+      `RETURN domain`
+   
     const results = await session.run(query);
     session.close();
 
     if (results.records.length > 0) {
-      return results.records["0"].get("domain");
+      return convertNeo4jResultToObject(results);
     } else {
       throw new Error("Invalid Domain Key");
     }
