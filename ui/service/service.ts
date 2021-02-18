@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Domain } from "../utils/types";
 
 export default class APIService {
   static _API_URL = "/api";
@@ -25,7 +26,13 @@ export default class APIService {
     });
   }
 
-  static async getDomains(axiosOptions){
+  static async getDomains(axiosOptions): Promise<{
+    data: {
+      domain: Array<Domain>,
+      pageCount: Array<number>,
+      commentCount: Array<number>
+    }
+  }> {
     return await axios.post(`http://localhost:3030/domains/`,{},{
       withCredentials: true,
       ...axiosOptions

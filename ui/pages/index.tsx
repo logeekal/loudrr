@@ -23,13 +23,9 @@ import {
   Divider,
   Text,
 } from "@chakra-ui/react";
-import OnBoarding from "../components/onboarding";
-import APIService from "../service/service";
-import Menu from "../components/Menu";
-import MenuItem from "../components/MenuItem";
-import Logo from "../components/Logo";
-import MenuToggle from "../components/Menutoggle";
-import HeroBlock from "../components/HeroBlock";
+import OnBoarding from "../components/Onboarding";
+import Header from '../components/Header';
+
 
 export default function Home(props) {
   console.log(props)
@@ -41,44 +37,15 @@ export default function Home(props) {
   const onSuccessfulSignin = () => {
     Router.push('/dashboard');
   }
-  const [isHeaderMenuOpen, setIsHeaderMenuOpen] = React.useState(false);
-
-  const toggle = () => setIsHeaderMenuOpen(!isHeaderMenuOpen);
-
+ 
   return (
     <Box className={styles.container} width="100vw">
       <Head>
         <title>Talk to me</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Box as="header" w="100%">
-        <Flex
-          as="nav"
-          alignItems="center"
-          direction="row"
-          justifyContent="space-between"
-          wrap="wrap"
-          w="99%"
-          mb={0}
-          p={5}
-          bg={"transparent"}
-        >
-          <Logo />
-          <MenuToggle toggle={toggle} isOpen={isHeaderMenuOpen} />
+      <Header />
           <Box
-            display={{ base: isHeaderMenuOpen ? "block" : "none", md: "block" }}
-            flexBasis={{ base: "100%", md: "auto" }}
-            justifyContent="flex-end"
-          >
-            <Menu>
-              <MenuItem to="/plans">Plans</MenuItem>
-              <MenuItem to="/faq">FAQ</MenuItem>
-              <MenuItem to="/about">About</MenuItem>
-            </Menu>
-          </Box>
-        </Flex>
-      </Box>
-      <Box
         as="main"
         className={styles.main}
         width="full"
@@ -151,7 +118,6 @@ export default function Home(props) {
             as="section"
             className=" onboarding-form"
             height="full"
-            display="block"
             justifyContent="flex-start"
             alignItems="flex-start"
             display="flex"
@@ -165,7 +131,6 @@ export default function Home(props) {
               <Box
                 my={4}
                 borderRadius={0}
-                borderWidt
                 h={0}
                 boxShadow="0"
                 p={10}
@@ -223,7 +188,7 @@ export async function getServerSideProps(context) {
     };
   } catch (err) {
     console.log(`--------------`)
-    console.log(err)
+    // console.log(err)
     return {
       props: {
         user: "",
