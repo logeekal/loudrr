@@ -18,7 +18,8 @@ export interface DataContextProps {
   user: {
     loggedinUser: User | undefined
     setLoggedinUser: (user: User) => void
-    users: UsersObjType
+    users: UsersObjType,
+    checkAuth: () => Promise<void>
   }
 }
 
@@ -57,6 +58,10 @@ const DataProvider: FC<DataProviderProps> = ({
 
   const toast = useToast()
 
+  useEffect(()=>{
+    checkAuth().then()
+  },[])
+
   useEffect(() => {
     setLoggedinUser(authenticatedUser)
 
@@ -69,7 +74,7 @@ const DataProvider: FC<DataProviderProps> = ({
         ...commentData,
         users: {
           ...commentData.users,
-          [authenticatedUser.id]: authenticatedUser
+          [loggedinUser.id]: loggedinUser
         }
       })
     }
@@ -263,6 +268,21 @@ const DataProvider: FC<DataProviderProps> = ({
     }
   }
 
+  const checkAuth = async () => {
+    console.log('checking auth')
+    APIService.auth()
+      .then((res) => {
+        console.log(res.data)
+        console.log(`setting login data`);
+        
+        setLoggedinUser(res.data)
+      })
+      .catch((err) => {
+        console.error(err)
+      })
+
+  }
+
   return (
     <DataContext.Provider
       value={{
@@ -273,10 +293,9 @@ const DataProvider: FC<DataProviderProps> = ({
           thread: commentData.thread,
           parentComments: commentData.parentComments
         },
-        user: { loggedinUser, setLoggedinUser, users: commentData.users }
+        user: { loggedinUser, setLoggedinUser, users: commentData.users, checkAuth }
       }}
     >
-      <h1>Heyyyyy</h1>
       {children}
     </DataContext.Provider>
   )

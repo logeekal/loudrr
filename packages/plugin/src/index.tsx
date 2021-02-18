@@ -9,11 +9,9 @@ import { REQUEST_STATES } from './constants'
 import { User } from './constants/types'
 import APIService from './services/API'
 
-
 export interface CommentWidgetProps {
   domainKey: string
 }
-
 
 const CommentWidget = ({ domainKey }: CommentWidgetProps) => {
   const [user, setUser] = useState<undefined | User>(undefined)
@@ -40,22 +38,11 @@ const CommentWidget = ({ domainKey }: CommentWidgetProps) => {
   }
   return (
     <ChakraProvider>
-    <DataProvider domainKey={domainKey} authenticatedUser={user as User}>
-      <div className='commenter'>
-        {!user && (
-          <Box maxW='500px'>
-            <OnBoarding
-              onSuccess={(user: User) => {
-                setUser(user)
-                console.log('success')
-              }}
-            />
-          </Box>
-        )}
-        {user && <React.Fragment></React.Fragment>}
-      </div>
-      <Thread domainKey={domainKey} />
-    </DataProvider>
+      <DataProvider domainKey={domainKey} authenticatedUser={user as User}>
+        <div className='commenter'>
+          <Thread domainKey={domainKey} />
+        </div>
+      </DataProvider>
     </ChakraProvider>
   )
 }

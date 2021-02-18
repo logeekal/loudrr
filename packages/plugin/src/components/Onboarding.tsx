@@ -11,7 +11,8 @@ import {
   Tab,
   TabList,
   TabPanel,
-  TabPanels
+  TabPanels,
+  FormErrorMessage
 } from '@chakra-ui/react'
 import API from '../services/API'
 import { REQUEST_STATES } from '../constants'
@@ -21,6 +22,12 @@ export interface OnBoardingFormProps {
   mode: 'signin' | 'signup'
   onSuccess?: any
 }
+
+export interface ErrorFormat {
+  error: string;
+  field: "email" | "name" | "password" | "confirm-password";
+}
+
 
 const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
   mode,
@@ -35,9 +42,17 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
   const [name, setName] = React.useState('')
   const [password, setPassword] = React.useState('')
   const [confirmPassword, setConfirmPassword] = React.useState('')
+  const [error, setError] = React.useState<ErrorFormat>();
 
   const handleSignup = async (e: any) => {
     e.preventDefault()
+    let err = validate();
+    console.log({err})
+    if(err){
+      console.log({err})
+      setError(err)
+      return;
+    }
     setRequestState(REQUEST_STATES.PENDING)
     console.log(e)
     const result = await API.signup(email, password, name)
@@ -77,9 +92,26 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
     }
   }
 
+  const validate = () => {
+    debugger;
+    let err: ErrorFormat | undefined;
+    if(password.length <  8) {
+      err = {
+        field: "password",
+        error: 'Password should be at least 8 character long.'
+      }
+    }else if(password !== confirmPassword){
+      err = {
+        field: "confirm-password",
+        error: 'Password and Confirm password should match';
+      }
+    }
+    return err;
+  }
+
   return (
     <div>
-      <form onSubmit={mode === 'signin' ? handleSignin : handleSignup}>
+      <form onSubmit={mode === 'signin' ? handleSignin : handleSignup} >
         {mode === 'signup' && (
           <React.Fragment>
             <FormControl id='name' isRequired>
@@ -100,28 +132,25 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
             onChange={(e: any) => setEmail(e.target.value)}
           />
         </FormControl>
-        <FormControl id='password' isRequired>
+        <FormControl id='password' isRequired isInvalid={error && error.field === 'password'}>
           <FormLabel mt={5}>Password</FormLabel>
           <Input
             type='password'
             value={password}
             onChange={(e: any) => setPassword(e.target.value)}
           />
+          <FormErrorMessage>{error?.error}</FormErrorMessage>
         </FormControl>
         {mode === 'signup' && (
           <React.Fragment>
-            <FormControl id='confirm-password' isRequired>
+            <FormControl id='confirm-password' isRequired isInvalid={error && error.field === 'confirm-password'}>
               <FormLabel mt={5}>Confirm Password</FormLabel>
               <Input
                 type='password'
                 value={confirmPassword}
                 onChange={(e: any) => setConfirmPassword(e.target.value)}
               />
-              <FormHelperText>
-                {password !== confirmPassword &&
-                  confirmPassword.length > 0 &&
-                  'Password and Confirm Password should match'}
-              </FormHelperText>
+        <FormErrorMessage>{error?.error}</FormErrorMessage>
             </FormControl>
           </React.Fragment>
         )}

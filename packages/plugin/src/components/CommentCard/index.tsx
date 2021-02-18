@@ -41,13 +41,11 @@ const CommentCard: React.FC<CommentCardProps> = ({
 
   const expandReplies = async () => {
 
-    if(!childrenLoaded){
+    if(!childrenLoaded && comment.replyCount > 0){
       await childrenHandler();
-      setChildrendLoaded(true)
     }
-
+    setChildrendLoaded(true)
     setChildrenVisibleToggle(!childrenVisibleToggle)
-
   }
 
   const handleReply = () => {
@@ -65,6 +63,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
     if (comment.id) {
       setEditingMode(false)
     }
+    setChildrenVisibleToggle(true)
   }
 
   return (
@@ -78,7 +77,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
         borderRadius={10}
         p={5}
         paddingBlockEnd={childrenVisibleToggle && comment.replyCount > 0 ? 0 : 5}
-        boxShadow={level === 0 ? 'md' : 'none'}
+        boxShadow={level === 0 ? 'sm' : 'none'}
       >
         <Stack direction='row' alignItems='center' fontSize="smaller" fontWeight="semibold">
           <Avatar src={by.avatar} size='sm' />

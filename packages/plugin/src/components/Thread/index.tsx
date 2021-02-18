@@ -1,5 +1,5 @@
 import React, { FC, ReactNode, useContext, useEffect, useState } from 'react'
-import { Box, Flex, Spinner, Stack } from '@chakra-ui/react'
+import { Box, Divider, Flex, Spinner, Stack } from '@chakra-ui/react'
 import APIService, { CommentType } from '../../services/API'
 import CommentBox from '../CommentBox'
 import CommentCard from '../CommentCard'
@@ -80,9 +80,19 @@ const Thread: FC<ThreadProps> = ({ domainKey }) => {
     })
   }
 
+  const getTotalCount = () => {
+    return parentComments.reduce((prev, next)=>{
+      return prev + thread[next].replyCount
+    },0)
+  }
+
+
   return (
     <Box className='thread'>
+
       <Stack m={10} direction='column'>
+        <Box>{getTotalCount() + " Comments" }</Box>
+        <Divider mb={"2"}/>
         <CommentBox onSubmit={()=>{}}/>
         <Stack className='comments' direction='column'>
           {loadThread(parentComments, 0)}
