@@ -40,7 +40,7 @@ export interface ChildrenResponse {
   replyCount: number
 }
 
-export interface Domain {
+export interface IDomain {
     key: string;
     address: string;
     status: "ACTIVE" | "INACTIVE";
@@ -48,7 +48,39 @@ export interface Domain {
     updateDate: number;
 }
 
-export interface DomainExtended extends Domain {
+export interface DomainExtended extends IDomain {
     pageCount: number,
     commentCount:number
 }
+
+export interface Page {
+    pageLocation: string,
+    updateDate: number;
+    pageTitle: string;
+    createDare: number;
+}
+
+export interface PageExtended extends Page {
+    childrenComments: Array<string>
+}
+
+export interface PageResponse  {
+    page: Array<Page>;
+    comment: Array<Comment>;
+    commentedBy: Array<User>;
+    replyCount: number;
+}
+
+export interface Thread {
+  [commentId: string]: CommentWithParent
+}
+
+export interface UsersObjType {
+  [id: string]: User
+}
+
+// export interface PageExtended extends Page {
+//     parentComments: Array<string>,
+//     thread: Thread,
+//     user: UsersObjType
+// }

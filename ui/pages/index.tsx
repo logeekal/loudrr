@@ -39,12 +39,11 @@ export default function Home(props) {
   }
  
   return (
-    <Box className={styles.container} width="100vw">
+    <Box className={styles.container}>
       <Head>
         <title>Talk to me</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Header />
           <Box
         as="main"
         className={styles.main}

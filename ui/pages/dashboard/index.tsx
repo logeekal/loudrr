@@ -22,6 +22,7 @@ import {
   Badge,
   Select,
 } from "@chakra-ui/react";
+import Link from "next/link";
 import axios from "axios";
 import Head from "next/head";
 import Router from "next/router";
@@ -88,7 +89,6 @@ export default function DashBoard(props: DashboardProps) {
           {areDomainsActive ? `Dashboard - ${props.user.name}` : "Add website"}
         </title>
       </Head>
-      <Header />
       {!areDomainsActive ? (
         <div className="domain-onboarding">
           <Flex
@@ -206,7 +206,7 @@ export default function DashBoard(props: DashboardProps) {
                     console.log(domain);
                     const { onCopy, hasCopied } = useClipboard(domain.key);
                     return (
-                      <option key={domain.key} value={index} >
+                      <option key={domain.key} value={index}>
                         {domain.address}
                       </option>
                     );
@@ -229,7 +229,7 @@ export default function DashBoard(props: DashboardProps) {
                   </Badge>
                 </Stack>
               </Flex>
-              <Divider marginBlock={10}/>
+              <Divider marginBlock={10} />
               <Stack
                 direction="row"
                 className="domain-content"
@@ -238,36 +238,46 @@ export default function DashBoard(props: DashboardProps) {
                 alignItems="center"
                 my={10}
               >
-                <Stack
-                  p={10}
-                  direction="column"
-                  justifyContent="center"
-                  alignItems="center"
-                  boxShadow="sm"
-                  width="full"
-                  borderWidth={1}
-                  color="#862cb3"
-                >
-                  <ImFileEmpty size={50} color="#d7c2e8" />
-                  <Box as="h3"> 
-                  {selectedDomain.pageCount || 'No' +  ' Pages'}
-                  </Box>
-                </Stack>
-                <Stack
-                  p="10"
-                  direction="column"
-                  width="full"
-                  justifyContent="center"
-                  alignItems="center"
-                  boxShadow="sm"
-                  borderWidth={1}
-                  color="#862cb3"
-                >
-                  <AiOutlineMessage size={50} color="#d7c2e8" />
-                  <Box as="h3"> 
-                  {selectedDomain.commentCount || 'No' +  ' Comments'}
-                  </Box>
-                </Stack>
+                <Link href={`/website?key=${selectedDomain.key}`}>
+                  <Stack
+                    p={10}
+                    direction="column"
+                    justifyContent="center"
+                    alignItems="center"
+                    boxShadow="sm"
+                    width="full"
+                    borderWidth={1}
+                    color="#862cb3"
+                    _hover={{
+                      cursor: "pointer",
+                    }}
+                  >
+                    <ImFileEmpty size={50} color="#d7c2e8" />
+                    <Box as="h3">
+                      {selectedDomain.pageCount || "No" + " Pages"}
+                    </Box>
+                  </Stack>
+                </Link>
+                <Link href={`/website?key=${selectedDomain.key}`}>
+                  <Stack
+                    p="10"
+                    direction="column"
+                    width="full"
+                    justifyContent="center"
+                    alignItems="center"
+                    boxShadow="sm"
+                    borderWidth={1}
+                    color="#862cb3"
+                    _hover={{
+                      cursor: "pointer",
+                    }}
+                  >
+                    <AiOutlineMessage size={50} color="#d7c2e8" />
+                    <Box as="h3">
+                      {selectedDomain.commentCount || "No" + " Comments"}
+                    </Box>
+                  </Stack>
+                </Link>
               </Stack>
             </Stack>
           </Stack>

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Domain } from "../utils/types";
+import { ChildrenResponse, Domain, PageResponse } from "../utils/types";
 
 export default class APIService {
   static _API_URL = "/api";
@@ -47,8 +47,10 @@ export default class APIService {
     })
   }
 
-  static async getDomainPages(domainKey, axiosOptions){
-    return await axios.post('http://localhost:3030/domains/pages',{key:domainKey},{
+  static async getDomainPages(domainKey, axiosOptions) : Promise<{
+    data: PageResponse
+  }>{
+    return await axios.post('http://localhost:3030/domains/pages',{domainKey},{
       withCredentials: true,
       ...axiosOptions
     })
