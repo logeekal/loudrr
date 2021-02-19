@@ -1,14 +1,29 @@
-import { Box, Flex } from "@chakra-ui/react";
-import { useState } from "react";
+import {
+  Avatar,
+  Box,
+  Flex,
+  Menu as ChakraMenu,
+  MenuButton,
+  MenuItem as ChakraMenuItem,
+  MenuItemOption,
+  MenuList as ChakraMenuList,
+  MenuOptionGroup,
+} from "@chakra-ui/react";
+import { useContext, useState } from "react";
 import Logo from "./Logo";
 import Menu from "./Menu";
 import MenuItem from "./MenuItem";
 import MenuToggle from "./Menutoggle";
 
+import { DataContext } from "./providers/DataProvider";
+
 const Header: React.FC<{}> = (props) => {
   const [isHeaderMenuOpen, setIsHeaderMenuOpen] = useState(false);
 
   const toggle = () => setIsHeaderMenuOpen(!isHeaderMenuOpen);
+  const {
+    user: { loggedinUser, logout },
+  } = useContext(DataContext);
   return (
     <Box as="header" w="100%">
       <Flex
@@ -36,9 +51,27 @@ const Header: React.FC<{}> = (props) => {
             <MenuItem to="/faq" isLast={false}>
               FAQ
             </MenuItem>
-            <MenuItem to="/about" isLast>
+            <MenuItem to="/about" isLast={loggedinUser ? false : true}>
               About
             </MenuItem>
+            {loggedinUser && (
+              <MenuItem to="#" isLast >
+                <ChakraMenu>
+                  <MenuButton as="button">
+                    <Avatar
+                      src={loggedinUser.avatar}
+                      name={loggedinUser.name}
+                      size="sm"
+                    ></Avatar>
+                  </MenuButton>
+                  <ChakraMenuList>
+                      <MenuOptionGroup>
+                          <MenuItemOption onClick={logout}>Logout</MenuItemOption>
+                      </MenuOptionGroup>
+                  </ChakraMenuList>
+                </ChakraMenu>
+              </MenuItem>
+            )}
           </Menu>
         </Box>
       </Flex>

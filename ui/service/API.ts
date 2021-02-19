@@ -151,4 +151,10 @@ export default class APIService {
       }
     )
   }
+
+  static async logout () {
+    return await axios.get(`${APIService._API_URL}/auth/logout`,{
+      withCredentials: true
+    })
+  }
 }

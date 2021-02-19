@@ -27,6 +27,7 @@ export interface DataContextProps {
     setLoggedinUser: (user: User) => void;
     users: UsersObjType;
     checkAuth: () => Promise<void>;
+    logout: ()=>Promise<void>
   };
   domain: {
     domain: IDomain;
@@ -197,14 +198,18 @@ const DataProvider: FC<DataProviderProps> = ({ children }) => {
       const newUsers: UsersObjType = {};
       const pages: PageObj = {};
       page.forEach((singlePage, index) => {
-        console.log(`Adding ${comment[index].id} to ${singlePage.pageLocation}`);
-        if( singlePage.pageLocation  in pages){
-          pages[singlePage.pageLocation].childrenComments.push(comment[index].id)
-        }else{
+        console.log(
+          `Adding ${comment[index].id} to ${singlePage.pageLocation}`
+        );
+        if (singlePage.pageLocation in pages) {
+          pages[singlePage.pageLocation].childrenComments.push(
+            comment[index].id
+          );
+        } else {
           pages[singlePage.pageLocation] = {
             ...singlePage,
-            childrenComments: []
-          }
+            childrenComments: [],
+          };
         }
 
         // pages[singlePage.pageLocation].childrenComments.push(comment[index].id);
@@ -314,6 +319,19 @@ const DataProvider: FC<DataProviderProps> = ({ children }) => {
       });
   };
 
+  const logout = async () => {
+    try {
+      await APIService.logout();
+      window.location.href = "/";
+    } catch (err) {
+      toast({
+        title: "Some Error Occured",
+        description: "Please Contact us with your email Id.",
+        status: "error",
+      });
+    }
+  };
+
   return (
     <DataContext.Provider
       value={{
@@ -330,6 +348,7 @@ const DataProvider: FC<DataProviderProps> = ({ children }) => {
           setLoggedinUser,
           users: commentData.users,
           checkAuth,
+          logout          
         },
         domain: {
           domain,
