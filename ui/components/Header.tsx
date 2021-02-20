@@ -45,6 +45,9 @@ const Header: React.FC<{}> = (props) => {
           justifyContent="flex-end"
         >
           <Menu>
+            {loggedinUser && <MenuItem to="/dashboard" isLast={false}>
+              Dashboard
+            </MenuItem> }
             <MenuItem to="/plans" isLast="false">
               Plans
             </MenuItem>
@@ -55,7 +58,7 @@ const Header: React.FC<{}> = (props) => {
               About
             </MenuItem>
             {loggedinUser && (
-              <MenuItem to="#" isLast >
+              <MenuItem to="#" isLast>
                 <ChakraMenu>
                   <MenuButton as="button">
                     <Avatar
@@ -65,9 +68,16 @@ const Header: React.FC<{}> = (props) => {
                     ></Avatar>
                   </MenuButton>
                   <ChakraMenuList>
-                      <MenuOptionGroup>
-                          <MenuItemOption onClick={logout}>Logout</MenuItemOption>
-                      </MenuOptionGroup>
+                    <MenuOptionGroup>
+                      <ChakraMenuItem
+                        onClick={() => {
+                          window.location.href = "/dashboard/new";
+                        }}
+                      >
+                        Add new Domain
+                      </ChakraMenuItem>
+                      <ChakraMenuItem onClick={logout}>Logout</ChakraMenuItem>
+                    </MenuOptionGroup>
                   </ChakraMenuList>
                 </ChakraMenu>
               </MenuItem>

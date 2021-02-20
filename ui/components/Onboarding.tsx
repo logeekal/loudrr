@@ -154,7 +154,7 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
           </React.Fragment>
         )}
         <Button width='full' type='submit' mt={5}>
-          {mode}
+          {mode === 'signin' ? "Sign in" : "Sign Up"}
         </Button>
       </form>
       <Box mt={10} with='full'>

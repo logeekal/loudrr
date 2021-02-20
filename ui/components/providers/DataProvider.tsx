@@ -27,7 +27,7 @@ export interface DataContextProps {
     setLoggedinUser: (user: User) => void;
     users: UsersObjType;
     checkAuth: () => Promise<void>;
-    logout: ()=>Promise<void>
+    logout: () => Promise<void>;
   };
   domain: {
     domain: IDomain;
@@ -197,37 +197,39 @@ const DataProvider: FC<DataProviderProps> = ({ children }) => {
       const newThread: Thread = {};
       const newUsers: UsersObjType = {};
       const pages: PageObj = {};
-      page.forEach((singlePage, index) => {
-        console.log(
-          `Adding ${comment[index].id} to ${singlePage.pageLocation}`
-        );
-        if (singlePage.pageLocation in pages) {
-          pages[singlePage.pageLocation].childrenComments.push(
-            comment[index].id
+      if (page) {
+        page.forEach((singlePage, index) => {
+          console.log(
+            `Adding ${comment[index].id} to ${singlePage.pageLocation}`
           );
-        } else {
-          pages[singlePage.pageLocation] = {
-            ...singlePage,
-            childrenComments: [],
-          };
-        }
+          if (singlePage.pageLocation in pages) {
+            pages[singlePage.pageLocation].childrenComments.push(
+              comment[index].id
+            );
+          } else {
+            pages[singlePage.pageLocation] = {
+              ...singlePage,
+              childrenComments: [],
+            };
+          }
 
-        // pages[singlePage.pageLocation].childrenComments.push(comment[index].id);
-        const selectedComment = comment[index];
-        newThread[selectedComment.id] = {
-          ...selectedComment,
-          parentCommentId: null,
-          markdownText: unescape(selectedComment.markdownText),
-          by: commentedBy[index].id,
-          replies: [],
-          replyCount: replyCount[index],
-        };
-        const selectedUser = commentedBy[index];
-        newUsers[selectedUser.id] = selectedUser;
-      });
+          // pages[singlePage.pageLocation].childrenComments.push(comment[index].id);
+          const selectedComment = comment[index];
+          newThread[selectedComment.id] = {
+            ...selectedComment,
+            parentCommentId: null,
+            markdownText: unescape(selectedComment.markdownText),
+            by: commentedBy[index].id,
+            replies: [],
+            replyCount: replyCount[index],
+          };
+          const selectedUser = commentedBy[index];
+          newUsers[selectedUser.id] = selectedUser;
+        });
+      }
       setCommentData({
         thread: { ...commentData.thread, ...newThread },
-        parentComments: comment.map((comment) => comment.id),
+        parentComments: comment ? comment.map((comment) => comment.id) : [],
         users: { ...commentData.users, ...newUsers },
         page: { ...pages },
       });
@@ -348,7 +350,7 @@ const DataProvider: FC<DataProviderProps> = ({ children }) => {
           setLoggedinUser,
           users: commentData.users,
           checkAuth,
-          logout          
+          logout,
         },
         domain: {
           domain,

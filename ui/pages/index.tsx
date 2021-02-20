@@ -141,20 +141,7 @@ export default function Home(props) {
                   </Heading>
                 </Box>
                 <Box mt={5}>
-                  <Tabs isFitted>
-                    <TabList>
-                      <Tab>Sign in</Tab>
-                      <Tab>Sign up</Tab>
-                    </TabList>
-                    <TabPanels>
-                      <TabPanel>
-                        <OnBoarding mode="signin" OnSuccess={onSuccessfulSignin} />
-                      </TabPanel>
-                      <TabPanel>
-                        <OnBoarding mode="signup" />
-                      </TabPanel>
-                    </TabPanels>
-                  </Tabs>
+                  <OnBoarding  onSuccess={()=>{window.location.href="/dashboard"}}/>
                 </Box>
               </Box>
             </Flex>
