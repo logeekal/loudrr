@@ -4,7 +4,7 @@ import theme from '@chakra-ui/theme'
 const newTheme = extendTheme({
     ...theme,
     fonts: {
-        heading: "Open Sans",
+        heading: "Noto Sans",
         body: "Inter"
     }
 })

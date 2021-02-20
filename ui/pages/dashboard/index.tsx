@@ -136,11 +136,11 @@ export default function DashBoard(props: DashboardProps) {
                   </Button>
                   <Badge
                     className={`badge-${selectedDomain.status.toLowerCase()}`}
-                    colorScheme={
-                      selectedDomain.status === "ACTIVE" ? "green" : "red"
+                    colorScheme= {
+                      selectedDomain.status === "ACTIVE" ? "whatsapp" : "red.500"
                     }
                     variant={
-                      selectedDomain.status === "INACTIVE" ? "red" : "green"
+                      selectedDomain.status === "INACTIVE" ? "red.500" : "green.500"
                     }
                   >
                     {selectedDomain.status}

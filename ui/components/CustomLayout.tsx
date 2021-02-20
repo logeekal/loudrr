@@ -21,7 +21,7 @@ export default function CustomLayout({
         flexDir="row"
         justifyContent="center"
         alignItems="flex-start"
-        p={10}
+        p={5}
       >
         {children}
       </Box>
