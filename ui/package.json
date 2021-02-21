@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && next export",
     "start": "next start"
   },
   "dependencies": {
@@ -15,6 +15,7 @@
     "@types/react": "^17.0.2",
     "@uiw/react-md-editor": "^2.1.8",
     "@zeit/next-css": "^1.0.1",
+    "aws-amplify": "^3.3.20",
     "axios": "^0.21.1",
     "framer-motion": "^3.2.2-rc.1",
     "next": "10.0.6",

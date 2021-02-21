@@ -144,3 +144,8 @@ export async function getServerSideProps(context) {
     };
   }
 }
+
+
+import { Amplify } from "aws-amplify";
+
+Amplify.configure({ ssr: true });
