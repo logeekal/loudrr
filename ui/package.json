@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start"
   },
+  "homepage": "",
   "dependencies": {
     "@chakra-ui/react": "^1.2.1",
     "@emotion/react": "^11.1.4",
