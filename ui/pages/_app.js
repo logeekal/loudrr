@@ -18,5 +18,8 @@ function MyApp({ Component, pageProps }) {
     </ChakraProvider>
   );
 }
+import { Amplify } from "aws-amplify";
+
+Amplify.configure({ ssr: true });
 
 export default MyApp;

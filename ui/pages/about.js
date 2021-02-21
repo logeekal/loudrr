@@ -24,3 +24,6 @@ export default function DashBoard() {
   );
 }
 
+import { Amplify } from "aws-amplify";
+
+Amplify.configure({ ssr: true });

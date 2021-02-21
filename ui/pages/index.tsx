@@ -298,3 +298,7 @@ const HeroCards: ReactNode[] = [
     </VStack>
   </AnimatedHero>,
 ];
+
+import { Amplify } from "aws-amplify";
+
+Amplify.configure({ ssr: true });
