@@ -5,10 +5,11 @@
   "javascript": {
     "framework": "react",
     "config": {
-      "SourceDir": "src",
-      "DistributionDir": "build",
+      "SourceDir": ".",
+      "DistributionDir": ".next",
       "BuildCommand": "npm.cmd run-script build",
-      "StartCommand": "npm.cmd run-script start"
+      "StartCommand": "npm.cmd run-script start",
+      "ServerlessContainers": true
     }
   },
   "providers": [
