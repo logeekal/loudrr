@@ -9,7 +9,7 @@ interface TechLogoProps {
 
 const TechLogo = (props: TechLogoProps) => {
   return (
-    <VStack>
+    <VStack paddingTop={5} className={"techlogo"}>
       <Avatar src={props.src || `/assets/logo/${props.name}.png`} alt="title" w="100px" h="auto" bg={props.bg} p={5}/>
       <Text color="white" marginBlockStart={2}>{props.title}</Text>
     </VStack>

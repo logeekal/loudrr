@@ -48,38 +48,14 @@ export default function DashBoard(props: DashboardProps) {
   const toast = useToast();
   const [requestState, setRequestState] = useState(REQUEST_STATES.IDLE);
   const [domain, setDomain] = useState("");
-  const [domainData, setDomainData] = useState<IDomain>({});
   const [domainCreationStatus, setDomainCreationStatus] = useState(
     DOMAIN_CREATION_STATUS.NOT_STARTED
   );
 
   const [selectedDomainIdx, setSelectedDomainIdx] = useState(0);
 
-  const { onCopy, hasCopied } = useClipboard(domainData.key);
+  const { onCopy, hasCopied } = useClipboard(props.domains[selectedDomainIdx].key);
 
-  const handleDomainCreation = async (e) => {
-    e.preventDefault();
-    console.log(domainCreationStatus);
-    if (domainCreationStatus === DOMAIN_CREATION_STATUS.COMPLETE) {
-      Router.reload();
-      return;
-    }
-    setRequestState(REQUEST_STATES.PENDING);
-    try {
-      const createdDomain = await APIService.createDomain(domain,{});
-      console.log(`Setting the domain data as `, createdDomain.data);
-      setDomainData(createdDomain.data);
-      setRequestState(REQUEST_STATES.SUCCESS);
-      setDomainCreationStatus(DOMAIN_CREATION_STATUS.COMPLETE);
-    } catch (err) {
-      setRequestState(REQUEST_STATES.ERROR);
-      console.log(err);
-      toast({
-        title: "Some Error Occured",
-        status: "error",
-      });
-    }
-  };
 
   const redirectToNewDomain = () => {
     if(typeof window !== 'undefined'){
@@ -90,7 +66,7 @@ export default function DashBoard(props: DashboardProps) {
   }
 
 
-  const selectedDomain = props.domains[selectedDomainIdx];
+  // const selectedDomain = props.domains[selectedDomainIdx];
   return (
     <Box className="dashboard-page" w="full">
       <Head>
@@ -114,9 +90,10 @@ export default function DashBoard(props: DashboardProps) {
                 alignItems="center"
               >
                 <Select
-                  onChange={(e) =>
+                  onChange={(e) =>{
+                    console.log(e.target.value)
                     setSelectedDomainIdx(parseInt(e.target.value))
-                  }
+                  }}
                   defaultValue={selectedDomainIdx}
                   maxW={"300px"}
                 >
@@ -135,15 +112,15 @@ export default function DashBoard(props: DashboardProps) {
                     {hasCopied ? "Copied" : "Copy Key"}
                   </Button>
                   <Badge
-                    className={`badge-${selectedDomain.status.toLowerCase()}`}
+                    className={`badge-${props.domains[selectedDomainIdx].status.toLowerCase()}`}
                     colorScheme= {
-                      selectedDomain.status === "ACTIVE" ? "whatsapp" : "red.500"
+                      props.domains[selectedDomainIdx].status === "ACTIVE" ? "whatsapp" : "red.500"
                     }
                     variant={
-                      selectedDomain.status === "INACTIVE" ? "red.500" : "green.500"
+                      props.domains[selectedDomainIdx].status === "INACTIVE" ? "red.500" : "green.500"
                     }
                   >
-                    {selectedDomain.status}
+                    {props.domains[selectedDomainIdx].status}
                   </Badge>
                 </Stack>
               </Flex>
@@ -156,7 +133,7 @@ export default function DashBoard(props: DashboardProps) {
                 alignItems="center"
                 my={10}
               >
-                <Link href={selectedDomain.pageCount > 0 ? `/website?key=${selectedDomain.key}`: `#`}>
+                <Link href={props.domains[selectedDomainIdx].pageCount > 0 ? `/website?key=${props.domains[selectedDomainIdx].key}`: `#`}>
                   <Stack
                     p={10}
                     direction="column"
@@ -172,11 +149,11 @@ export default function DashBoard(props: DashboardProps) {
                   >
                     <ImFileEmpty size={50} color="#d7c2e8" />
                     <Box as="h3">
-                      {selectedDomain.pageCount || "No" + " Pages"}
+                      {props.domains[selectedDomainIdx].pageCount || "No" + " Pages"}
                     </Box>
                   </Stack>
                 </Link>
-                <Link href={selectedDomain.pageCount > 0 ? `/website?key=${selectedDomain.key}`: "#"}>
+                <Link href={props.domains[selectedDomainIdx].pageCount > 0 ? `/website?key=${props.domains[selectedDomainIdx].key}`: "#"}>
                   <Stack
                     p="10"
                     direction="column"
@@ -192,7 +169,7 @@ export default function DashBoard(props: DashboardProps) {
                   >
                     <AiOutlineMessage size={50} color="#d7c2e8" />
                     <Box as="h3">
-                      {selectedDomain.commentCount || "No" + " Comments"}
+                      {props.domains[selectedDomainIdx].commentCount || "No" + " Comments"}
                     </Box>
                   </Stack>
                 </Link>

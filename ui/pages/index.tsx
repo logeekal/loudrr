@@ -2,36 +2,19 @@ import axios from "axios";
 import Head from "next/head";
 import Router from "next/router";
 import React, { ReactNode, useEffect, useState } from "react";
-import styles from "../styles/Home.module.css";
 import {
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  FormHelperText,
   Link,
-  Input,
-  Tabs,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tab,
   Flex,
   Box,
-  Collapse,
   Heading,
-  Image,
   Divider,
   VStack,
-  Fade,
   HStack,
   Button,
   Wrap,
   WrapItem,
-  Avatar,
 } from "@chakra-ui/react";
 import OnBoarding from "../components/Onboarding";
-import Header from "../components/Header";
-import Swiper from "swiper";
 import { motion, AnimatePresence } from "framer-motion";
 import HeroHeading, { HeroText } from "../components/HeroHeading";
 import TechLogo from "../components/TechLogo";
@@ -77,7 +60,7 @@ export default function Home(props) {
       <Box
         className="hero-container"
         width="full"
-        px={"2rem"}
+        px={{ base: "0rem", md: "0rem", xl: "2rem" }}
         py={0}
         justifyContent="flex-start"
         maxW="1200px"
@@ -85,7 +68,7 @@ export default function Home(props) {
         <Flex
           width="full"
           direction="row"
-          justifyContent="space-between"
+          justifyContent="center"
           wrap={{ base: "wrap", md: "wrap", xl: "nowrap" }}
         >
           <VStack className="hero" maxW={"550px"} m={5} mr={10}>
@@ -121,32 +104,25 @@ export default function Home(props) {
             </HStack>
             <Wrap spacing={10} width="full">
               <WrapItem justifyContent="center" alignItems="center">
-                <Button
-                  variant="solid"
-                  bgGradient="linear(to-r, rgba(172,54,201,0.7), rgba(51,101,229,1))"
-                  color="white"
-                  _hover={{
-                    bgGradient:
-                      "linear(to-r, rgba(172,54,201,0.7), rgba(51,101,229,1))",
-                    color: "white",
-                  }}
-                  _active={{
-                    bgGradient:
-                      "linear(to-r, rgba(172,54,201,0.7), rgba(51,101,229,1))",
-                    color: "white",
-                    transform: "scale(0.98)",
-                  }}
-                >
-                  Get Started
-                </Button>
-              </WrapItem>
-              <WrapItem
-                justifyContent="center"
-                alignItems="center"
-                display="flex"
-              >
-                <Link color="#AC36C9" fontWeight="bold">
-                  Documentation
+                <Link href="/docs">
+                  <Button
+                    variant="solid"
+                    bgGradient="linear(to-r, rgba(172,54,201,0.7), rgba(51,101,229,1))"
+                    color="white"
+                    _hover={{
+                      bgGradient:
+                        "linear(to-r, rgba(172,54,201,0.7), rgba(51,101,229,1))",
+                      color: "white",
+                    }}
+                    _active={{
+                      bgGradient:
+                        "linear(to-r, rgba(172,54,201,0.7), rgba(51,101,229,1))",
+                      color: "white",
+                      transform: "scale(0.98)",
+                    }}
+                  >
+                    Get Started with Docs
+                  </Button>
                 </Link>
               </WrapItem>
             </Wrap>
@@ -155,13 +131,31 @@ export default function Home(props) {
             <OnBoarding onSuccess={onSuccessfulSignin} />
           </Box>
         </Flex>
+        <Box
+          className="about"
+          fontSize={"1.3rem"}
+          color="gray.400"
+          maxW="full"
+          p={5}
+          textAlign="center"
+          fontWeight="medium"
+          mt={5}
+        >
+          TalkToMe makes it very easy to add and manage comments to your blogs
+          or product reviews to your e-Commerce website with a minimal setup.
+          Start with our{" "}
+          <Link href="/docs" color="#AC36C9">
+            documentation
+          </Link>{" "}
+          today.
+        </Box>
       </Box>
       <Box
         className="availability"
         w="full"
         position="relative"
         sx={{
-          marginBlockStart: "5rem !important",
+          marginBlockStart: "2rem !important",
         }}
       >
         <VStack
@@ -176,17 +170,37 @@ export default function Home(props) {
           p={5}
           spacing={10}
         >
-          <Heading color="white" fontWeight="bold">Plugins Coming soon for</Heading>
-          <HStack wrap="wrap" w="80%"
-          justifyContent="space-around"
-          paddingBlockStart={10}
-          paddingBlockEnd={25}
+          <Heading color="white" fontWeight="bold" textAlign="center" w="full">
+            Plugins Coming soon.
+          </Heading>
+          <HStack
+            wrap="wrap"
+            w="80%"
+            justifyContent="space-around"
+            paddingBlockStart={5}
+            paddingBlockEnd={25}
           >
-          <TechLogo src="/assets/logo/squarespace.png"  title="Squarespace" bg="black"/>
-          <TechLogo src="/assets/logo/shopify.png" title="Shopify" bg="#7ab55c"/>
-          <TechLogo src="/assets/logo/gatsby.png" title="Gatsby" bg="#663399"/>
-          <TechLogo src="/assets/logo/wordpress.png" title="Wordpress" bg="#15a4cc"/>
-          <TechLogo src="/assets/logo/react.png" title="React" bg="black" />
+            <TechLogo
+              src="/assets/logo/squarespace.png"
+              title="Squarespace"
+              bg="black"
+            />
+            <TechLogo
+              src="/assets/logo/shopify.png"
+              title="Shopify"
+              bg="#7ab55c"
+            />
+            <TechLogo
+              src="/assets/logo/gatsby.png"
+              title="Gatsby"
+              bg="#663399"
+            />
+            <TechLogo
+              src="/assets/logo/wordpress.png"
+              title="Wordpress"
+              bg="#15a4cc"
+            />
+            <TechLogo src="/assets/logo/react.png" title="React" bg="black" />
           </HStack>
         </VStack>
       </Box>
@@ -243,7 +257,7 @@ const AnimatedHero = ({ children }) => {
 const HeroCards: ReactNode[] = [
   <AnimatedHero>
     <VStack>
-      <HeroHeading text="Full Featured Markdown Editor" indices={[2]} />
+      <HeroHeading text="Full Featured Markdown Editor." indices={[2]} />
       <HeroText>
         Let your users express themselves with Rich Text and without any
         limitations
@@ -258,7 +272,7 @@ const HeroCards: ReactNode[] = [
       />
       <HeroText>
         Give your users a zen experience with no tracking and no ads or any kind
-        of personal data collection.
+        of personal data collection
       </HeroText>
     </VStack>
   </AnimatedHero>,
@@ -274,12 +288,12 @@ const HeroCards: ReactNode[] = [
   <AnimatedHero>
     <VStack>
       <HeroHeading
-        text="Lifetime &nbsp; Free Tier &nbsp; Plan"
+        text="Lifetime &nbsp; Free Tier &nbsp; Plan."
         indices={[2, 3]}
       />
       <HeroText>
         Lifetime Free as long as you have 2 domains and less than 100 comments
-        daily combined.
+        daily combined
       </HeroText>
     </VStack>
   </AnimatedHero>,

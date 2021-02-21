@@ -35,7 +35,7 @@ export default function NewDomain(props: NewDomainProps) {
     DOMAIN_CREATION_STATUS.NOT_STARTED
   );
 
-  const [domainData, setDomainData] = useState<IDomain>({});
+  const [domainData, setDomainData] = useState<IDomain>();
   const { onCopy, hasCopied } = useClipboard(domainData.key);
 
   const handleDomainCreation = async (e) => {
@@ -90,7 +90,7 @@ export default function NewDomain(props: NewDomainProps) {
   >
             <Heading mb={5}>Add a new Website</Heading>
             <Divider />
-            <form mt={5} onSubmit={handleDomainCreation}>
+            <form onSubmit={handleDomainCreation}>
               <FormControl id="name" mt={5}>
                 <HStack>
                   <FormLabel htmlFor="avatar" width={65}>

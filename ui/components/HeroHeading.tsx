@@ -12,7 +12,7 @@ const HeroHeading: React.FC<HeroHeadingProps> = ({ text, indices }) => {
       {text.split(" ").map((word, index) => {
           let newWord = index !== 0 ? " " + word : word
         return (
-          <Heading as="span" color={indices.includes(index) ? "#AC36C9" : "black"} fontSize="80px" >
+          <Heading as="span" color={indices.includes(index) ? "#AC36C9" : "black"} fontSize={{base:"45px", md:"80px"}} >
             {newWord}
           </Heading>
         );

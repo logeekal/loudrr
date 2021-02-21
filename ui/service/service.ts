@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ChildrenResponse, Domain, PageResponse } from "../utils/types";
+import { ChildrenResponse, IDomain, PageResponse } from "../utils/types";
 
 export default class APIService {
   static _API_URL = "/api";
@@ -28,7 +28,7 @@ export default class APIService {
 
   static async getDomains(axiosOptions): Promise<{
     data: {
-      domain: Array<Domain>,
+      domain: Array<IDomain>,
       pageCount: Array<number>,
       commentCount: Array<number>
     }
