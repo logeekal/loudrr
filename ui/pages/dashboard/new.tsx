@@ -198,5 +198,6 @@ export async function getServerSideProps(context) {
 }
 
 import { Amplify } from "aws-amplify";
+import awsConfig from '../../aws-exports'
 
-Amplify.configure({ ssr: true });
+Amplify.configure({...awsConfig, ssr: true });

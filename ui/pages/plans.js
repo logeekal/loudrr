@@ -25,5 +25,5 @@ export default function Plans() {
 }
 
 import { Amplify } from "aws-amplify";
-
-Amplify.configure({ ssr: true });
+import awsExports from '../aws-exports'
+Amplify.configure({...awsExports, ssr: true });
