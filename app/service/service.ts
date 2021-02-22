@@ -2,7 +2,7 @@ import axios from "axios";
 import { ChildrenResponse, IDomain, PageResponse } from "../utils/types";
 
 export default class APIService {
-  static _API_URL = "/api";
+  static _API_URL = "";
   constructor() {}
 
   static async signup(email, password, name) {
@@ -33,7 +33,7 @@ export default class APIService {
       commentCount: Array<number>
     }
   }> {
-    return await axios.post(`http://localhost:3030/domains/`,{},{
+    return await axios.post(`${APIService._API_URL}/domains/`,{},{
       withCredentials: true,
       ...axiosOptions
     })
@@ -50,7 +50,7 @@ export default class APIService {
   static async getDomainPages(domainKey, axiosOptions) : Promise<{
     data: PageResponse
   }>{
-    return await axios.post('http://localhost:3030/domains/pages',{domainKey},{
+    return await axios.post(`${APIService._API_URL}/domains/pages`,{domainKey},{
       withCredentials: true,
       ...axiosOptions
     })
