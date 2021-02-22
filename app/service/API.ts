@@ -8,7 +8,7 @@ import {
 } from '../utils/types'
 
 export default class APIService {
-  static _API_URL = 'http://localhost:3030'
+  static _API_URL = '';
   constructor() {}
 
   static async signup(email: string, password: string, name: string) {
@@ -44,7 +44,7 @@ export default class APIService {
 
   static async getDomains(axiosOptions: AxiosRequestConfig) {
     return await axios.post(
-      `http://localhost:3030/domains/`,
+      `${APIService._API_URL}/domains/`,
       {},
       {
         withCredentials: true,
@@ -76,7 +76,7 @@ export default class APIService {
     }
   }> {
     return await axios.post(
-      'http://localhost:3030/domains/pages',
+      `${APIService._API_URL}/domains/pages`,
       { domainKey },
       {
         withCredentials: true,
