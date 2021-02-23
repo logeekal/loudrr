@@ -2,20 +2,8 @@ import {
   Avatar,
   Box,
   Flex,
-  FormControl,
-  FormLabel,
-  Heading,
-  HStack,
-  Table,
-  Tbody,
-  Text,
-  Th,
-  Tr,
-  Input,
   Divider,
   Button,
-  FormHelperText,
-  Spinner,
   useToast,
   useClipboard,
   Stack,
@@ -31,9 +19,7 @@ import APIService from "../../service/API";
 import { DOMAIN_CREATION_STATUS, REQUEST_STATES } from "../../utils/constants";
 import { IDomain, DomainExtended, User } from "../../utils/types";
 import { ImFileEmpty } from "react-icons/im";
-import { MdHourglassEmpty } from "react-icons/md";
 import { AiOutlineMessage } from "react-icons/ai";
-import Header from "../../components/Header";
 
 export interface DashboardProps {
   domains: Array<DomainExtended>;
@@ -187,7 +173,7 @@ export async function getServerSideProps(context) {
 
   try {
     const authenticatedUser = await axios.post(
-      `http://localhost:3030/auth`,
+      `/auth`,
       {},
       {
         headers: context.req
