@@ -14,9 +14,7 @@ router.post("/", async (req, res) => {
 
   const { commentId: parentCommentId } = req.body;
   try {
-    const comments = await db.getFirstLevelChildComments(
-      parentCommentId
-    );
+    const comments = await db.getFirstLevelChildComments(parentCommentId);
     res.send(comments);
   } catch (err) {
     res.status(500).send(err);
@@ -42,24 +40,20 @@ router.post("/thread", async (req, res) => {
  * Add comments
  */
 
-router.post("/add", async (req, res,next) => {
+router.post("/add", async (req, res, next) => {
   try {
-    const {
-      commentId,
-      mdText,
-      status,
-      url,
-      title,
-      domainKey,
-    } = req.body;
-    console.log({domainKey})
+    const { commentId, mdText, status, url, title, domainKey } = req.body;
+    console.log({ domainKey });
 
-    if(!req.session.passport || !req.session.passport.user){
-      console.log('Ending execution')
-      await res.status(401).send({});
+    if (!req.session.passport || !req.session.passport.user) {
+      console.log("Ending execution");
+      res.status(401);
+      next();
     }
 
-    const {user:{email}} = req.session.passport;
+    const {
+      user: { email },
+    } = req.session.passport;
 
     let createdComment = {};
     if (commentId) {
@@ -79,29 +73,25 @@ router.post("/add", async (req, res,next) => {
         status
       );
     }
-      res.send(createdComment);
+    res.send(createdComment);
   } catch (err) {
-    console.error(err)
-    res.status(500).send('Some Error Occured');
+    console.error(err);
+    res.status(500).send("Some Error Occured");
   }
 });
-
 
 /**
  * Only commentId needed.
  */
-router.put('/update',async (req, res)=> {
+router.put("/update", async (req, res) => {
+  const { commentId, status } = req.body;
 
-    const {commentId, status} = req.body;
-    
-    try{
-        const updatedComment = await db.updateCommentStatus(commentId, status);
-        res.send(updatedComment);
-    }catch(err){
-        res.status(500).send(err);
-    }
-
-
-})
+  try {
+    const updatedComment = await db.updateCommentStatus(commentId, status);
+    res.send(updatedComment);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
 
 module.exports = router;
