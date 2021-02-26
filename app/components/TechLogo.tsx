@@ -1,4 +1,4 @@
-import { VStack, Image, Text, Avatar, AvatarProps } from "@chakra-ui/react";
+import { VStack, Image, Text, Avatar, AvatarProps, ThemingProps } from "@chakra-ui/react";
 import { SizeType } from "antd/lib/config-provider/SizeContext";
 
 interface TechLogoProps {
@@ -6,7 +6,8 @@ interface TechLogoProps {
   src?: string;
   title: string;
   bg: string;
-  size?: SizeType;
+  size?: ThemingProps<"Avatar">["size"];
+  textColor?: string;
 }
 
 const TechLogo = (props: TechLogoProps) => {
@@ -15,13 +16,11 @@ const TechLogo = (props: TechLogoProps) => {
       <Avatar
         src={props.src || `/assets/logo/${props.name}.png`}
         alt="title"
-        w="100px"
-        h="auto"
         bg={props.bg}
-        p={5}
-        size={props.size || 'md'}
+        p={2}
+        size={props.size || "lg"}
       />
-      <Text color="white" marginBlockStart={2}>
+      <Text color={props.textColor || "white"} marginBlockStart={2}>
         {props.title}
       </Text>
     </VStack>

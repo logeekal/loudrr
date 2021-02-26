@@ -19,7 +19,7 @@ import {
   Td,
   Th,
 } from "@chakra-ui/react";
-import { Layout, Menu } from "antd";
+import { Layout } from "antd";
 import Head from "next/head";
 import Router from "next/router";
 import { MdCheckCircle, MdLink } from "react-icons/md";
@@ -137,63 +137,70 @@ export default function Docs() {
                     Currently, Loudrr is ONLY supported as React Component which
                     can be used in your own website which is being developed in
                     React. However, other plugins are coming soon. See the
-                    status of all the plugins below : 🚧
-                    <Table variant="simple">
+                    status of all the plugins below :
+                    <Table
+                      variant="simple"
+                      size="sm"
+                      textAlign="center"
+                      marginBlockStart={5}
+                    >
                       <TableCaption> Status of {BRAND} widgets</TableCaption>
                       <Thead>
                         <Tr>
-                          <Th>Widget</Th>
-                          <Th>Status</Th>
+                          <Th textAlign="center">Widget</Th>
+                          <Th textAlign="center">Status</Th>
                         </Tr>
                       </Thead>
                       <Tbody>
                         <Tr>
                           <Td>
-                            <VStack>
+                            <Box marginBlockStart={-5}>
                               <TechLogo
                                 src="/assets/logo/react.png"
                                 title="React"
                                 bg="black"
                                 size="sm"
+                                textColor="black"
                               />
-                              <Text>React</Text>
-                            </VStack>
+                            </Box>
                           </Td>
                           <Td>
                             <VStack>
-                              <Text>😀</Text> <Text>Available</Text>
+                              <Text fontSize="large">😀</Text>
+                              <Text marginBlockStart={2}>Available</Text>
                             </VStack>
                           </Td>
                         </Tr>
                         <Tr>
                           <Td>
-                            <VStack>
+                            <Box marginBlockStart={-5}>
                               <TechLogo
                                 src="/assets/logo/gatsby.png"
                                 title="Gatsby"
                                 bg="#663399"
+                                size="sm"
+                                textColor="black"
                               />
-
-                              <Text>Gatsby</Text>
-                            </VStack>
+                            </Box>
                           </Td>
                           <Td>
                             <VStack>
-                              <Text>🚧</Text>
+                              <Text fontSize="larger">🚧</Text>
                               <Text>In Progress</Text>
                             </VStack>
                           </Td>
                         </Tr>
                         <Tr>
                           <Td>
-                            <VStack>
+                            <Box marginBlockStart={-5}>
                               <TechLogo
                                 src="/assets/logo/squarespace.png"
                                 title="Squarespace"
                                 bg="black"
+                                size="sm"
+                                textColor="black"
                               />
-                              <Text>Squarespace</Text>
-                            </VStack>
+                            </Box>
                           </Td>
                           <Td>
                             <VStack>
@@ -204,14 +211,15 @@ export default function Docs() {
                         </Tr>
                         <Tr>
                           <Td>
-                            <VStack>
+                            <Box marginBlockStart={-5}>
                               <TechLogo
                                 src="/assets/logo/wordpress.png"
                                 title="Wordpress"
                                 bg="#15a4cc"
+                                size="sm"
+                                textColor="black"
                               />
-                              <Text>WordPress</Text>
-                            </VStack>
+                            </Box>
                           </Td>
                           <Td>
                             <VStack>
@@ -222,14 +230,15 @@ export default function Docs() {
                         </Tr>
                         <Tr>
                           <Td>
-                            <VStack>
+                            <Box marginBlockStart={-5}>
                               <TechLogo
                                 src="/assets/logo/shopify.png"
                                 title="Shopify"
                                 bg="#7ab55c"
+                                size="sm"
+                                textColor="black"
                               />
-                              <Text>Shopify</Text>
-                            </VStack>
+                            </Box>
                           </Td>
                           <Td>
                             <VStack>
