@@ -4,6 +4,8 @@ import theme from "../theme";
 import { Fonts } from "../theme/fonts";
 import DataProvider from "../components/providers/DataProvider";
 import CustomLayout from "../components/CustomLayout";
+import "antd/dist/antd.css"
+
 
 function MyApp({ Component, pageProps }) {
   return (
