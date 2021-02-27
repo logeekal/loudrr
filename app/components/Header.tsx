@@ -51,7 +51,7 @@ const Header: React.FC<{}> = (props) => {
             <MenuItem to="/plans" isLast="false">
               Plans
             </MenuItem>
-            <MenuItem to="/faq" isLast={false}>
+            <MenuItem to="/docs#faq" isLast={false}>
               FAQ
             </MenuItem>
             <MenuItem to="/about" isLast={loggedinUser ? false : true}>

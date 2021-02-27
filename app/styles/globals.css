@@ -16,6 +16,10 @@ a {
   box-sizing: border-box;
 }
 
+html{
+  scroll-behavior: smooth;
+}
+
 .text-gradient-primary {
   background: linear-gradient(to right, #842eb4, #528bd3);
   background-clip: text;

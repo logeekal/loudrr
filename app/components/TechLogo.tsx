@@ -20,7 +20,7 @@ const TechLogo = (props: TechLogoProps) => {
         p={2}
         size={props.size || "lg"}
       />
-      <Text color={props.textColor || "white"} marginBlockStart={2}>
+      <Text color={props.textColor || "white"} marginBlockStart={2} >
         {props.title}
       </Text>
     </VStack>
