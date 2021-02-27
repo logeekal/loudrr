@@ -1,5 +1,6 @@
 import { Link, Text } from '@chakra-ui/react';
 import React from 'react';
+import NextLink from 'next/link';
 
 const MenuItem = ({children, isLast, to="/", ...rest}) => {
     return <Link href={to}>

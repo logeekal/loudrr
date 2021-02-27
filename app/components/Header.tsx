@@ -8,6 +8,7 @@ import {
   MenuItemOption,
   MenuList as ChakraMenuList,
   MenuOptionGroup,
+  Link
 } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 import Logo from "./Logo";
@@ -32,12 +33,12 @@ const Header: React.FC<{}> = (props) => {
         direction="row"
         justifyContent="space-between"
         wrap="wrap"
-        w="99%"
+        w="full"
         mb={0}
         p={5}
         bg={"transparent"}
       >
-        <Logo />
+        <Link href='/'> <Logo /></Link>
         <MenuToggle toggle={toggle} isOpen={isHeaderMenuOpen} />
         <Box
           display={{ base: isHeaderMenuOpen ? "block" : "none", md: "block" }}
@@ -48,14 +49,11 @@ const Header: React.FC<{}> = (props) => {
             {loggedinUser && <MenuItem to="/dashboard" isLast={false}>
               Dashboard
             </MenuItem> }
-            <MenuItem to="/plans" isLast="false">
-              Plans
+            <MenuItem to="/docs" isLast="false">
+              Docs
             </MenuItem>
             <MenuItem to="/docs#faq" isLast={false}>
               FAQ
-            </MenuItem>
-            <MenuItem to="/about" isLast={loggedinUser ? false : true}>
-              About
             </MenuItem>
             {loggedinUser && (
               <MenuItem to="#" isLast>

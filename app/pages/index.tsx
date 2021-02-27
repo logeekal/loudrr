@@ -18,6 +18,7 @@ import OnBoarding from "../components/Onboarding";
 import { motion, AnimatePresence } from "framer-motion";
 import HeroHeading, { HeroText } from "../components/HeroHeading";
 import TechLogo from "../components/TechLogo";
+import { hasUncaughtExceptionCaptureCallback } from "process";
 
 export default function Home(props) {
   const [visibleHeroIdx, setVisibleHeroIdx] = useState<number>(0);
@@ -36,7 +37,10 @@ export default function Home(props) {
       }
     }, 5100);
 
-    // clearTimeout(interval);
+    /**
+     * Uncomment below line to stop Hero Animation.
+     */
+    clearTimeout(interval);
 
     return () => {
       clearTimeout(interval);
@@ -255,20 +259,20 @@ const AnimatedHero = ({ children }) => {
 };
 
 const HeroCards: ReactNode[] = [
-  <AnimatedHero>
+  <AnimatedHero key={0}>
     <VStack>
-      <HeroHeading text="Full Featured Markdown Editor." indices={[2]} />
+      <HeroHeading text={"Full Featured \nMarkdown \nEditor."} indices={[2]} />
       <HeroText>
         Let your users express themselves with Rich Text and without any
         limitations
       </HeroText>
     </VStack>
   </AnimatedHero>,
-  <AnimatedHero>
+  <AnimatedHero key={1}>
     <VStack>
       <HeroHeading
-        text="No Tracking. No Spam. &nbsp; No Ads."
-        indices={[1, 3, 6]}
+        text={"No Tracking. \nNo Spam. \nNo Ads."}
+        indices={[1, 3, 5]}
       />
       <HeroText>
         Give your users a zen experience with no tracking and no ads or any kind
@@ -276,21 +280,21 @@ const HeroCards: ReactNode[] = [
       </HeroText>
     </VStack>
   </AnimatedHero>,
-  <AnimatedHero>
+  <AnimatedHero key={2}>
     <VStack>
-      <HeroHeading text="Reply to a Reply to a Reply." indices={[0, 3, 6]} />
+      <HeroHeading
+        text={"Reply to a \nReply to a \nReply."}
+        indices={[0, 3, 6]}
+      />
       <HeroText>
         Engage in real conversations with deeply nested replies and threads
         managed in your dashboard
       </HeroText>
     </VStack>
   </AnimatedHero>,
-  <AnimatedHero>
+  <AnimatedHero key={3}>
     <VStack>
-      <HeroHeading
-        text="Lifetime &nbsp; Free Tier &nbsp; Plan."
-        indices={[2, 3]}
-      />
+      <HeroHeading text={"Lifetime \nFree Tier \n Plan."} indices={[1, 2]} />
       <HeroText>
         Lifetime Free as long as you have 2 domains and less than 100 comments
         daily combined

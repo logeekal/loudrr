@@ -34,7 +34,7 @@ export default function CustomLayout({
   }, [windowAvailable]);
 
   useEffect(() => {
-    console.log(`Current scroll is ${currentScroll} `);
+    // console.log(`Current scroll is ${currentScroll} `);
     setGotoTopVisible(currentScroll > 200);
   }, [currentScroll]);
 
