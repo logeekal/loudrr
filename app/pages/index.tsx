@@ -23,6 +23,11 @@ import TechLogo from "../components/TechLogo";
 export default function Home(props) {
   const [visibleHeroIdx, setVisibleHeroIdx] = useState<number>(0);
   const [isVisible, setIsVisible] = useState(true);
+  const [hasWindow, setHasWindow] = useState(false);
+
+  useEffect(()=>{
+    setHasWindow(typeof window !== 'undefined')
+  },[])
 
   useEffect(() => {
     const interval = setTimeout(() => {
@@ -171,9 +176,10 @@ export default function Home(props) {
           left={0}
           right={0}
           width={
-            typeof window !== 'undefined' &&
+            hasWindow &&
             window.innerWidth - document.documentElement.clientWidth > 0
-              ? "calc(100vw - 17.5px)": "100vw"
+              ? "calc(100vw - 17.5px)"
+              : "100vw"
           }
           marginInlineStart={-5}
           height="auto"
