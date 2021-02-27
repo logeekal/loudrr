@@ -15,10 +15,12 @@ import {
   WrapItem,
 } from "@chakra-ui/react";
 import OnBoarding from "../components/Onboarding";
+import NextLink from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import HeroHeading, { HeroText } from "../components/HeroHeading";
 import TechLogo from "../components/TechLogo";
 import { hasUncaughtExceptionCaptureCallback } from "process";
+import { callbackify } from "util";
 
 export default function Home(props) {
   const [visibleHeroIdx, setVisibleHeroIdx] = useState<number>(0);
@@ -108,26 +110,28 @@ export default function Home(props) {
             </HStack>
             <Wrap spacing={10} width="full">
               <WrapItem justifyContent="center" alignItems="center">
-                <Link href="/docs">
-                  <Button
-                    variant="solid"
-                    bgGradient="linear(to-r, rgba(172,54,201,0.7), rgba(51,101,229,1))"
-                    color="white"
-                    _hover={{
-                      bgGradient:
-                        "linear(to-r, rgba(172,54,201,0.7), rgba(51,101,229,1))",
-                      color: "white",
-                    }}
-                    _active={{
-                      bgGradient:
-                        "linear(to-r, rgba(172,54,201,0.7), rgba(51,101,229,1))",
-                      color: "white",
-                      transform: "scale(0.98)",
-                    }}
-                  >
-                    Get Started with Docs
-                  </Button>
-                </Link>
+                <NextLink href="/docs">
+                  <Link>
+                    <Button
+                      variant="solid"
+                      bgGradient="linear(to-r, rgba(172,54,201,0.7), rgba(51,101,229,1))"
+                      color="white"
+                      _hover={{
+                        bgGradient:
+                          "linear(to-r, rgba(172,54,201,0.7), rgba(51,101,229,1))",
+                        color: "white",
+                      }}
+                      _active={{
+                        bgGradient:
+                          "linear(to-r, rgba(172,54,201,0.7), rgba(51,101,229,1))",
+                        color: "white",
+                        transform: "scale(0.98)",
+                      }}
+                    >
+                      Get Started with Docs
+                    </Button>
+                  </Link>
+                </NextLink>
               </WrapItem>
             </Wrap>
           </VStack>
@@ -148,10 +152,10 @@ export default function Home(props) {
           TalkToMe makes it very easy to add and manage comments to your blogs
           or product reviews to your e-Commerce website with a minimal setup.
           Start with our{" "}
-          <Link href="/docs" color="#AC36C9">
-            documentation
-          </Link>{" "}
-          today.
+          <NextLink href="/docs">
+            <Link color="#AC36C9">documentation</Link>
+          </NextLink>
+          &nbsp;today.
         </Box>
       </Box>
       <Box
@@ -168,7 +172,11 @@ export default function Home(props) {
           position="absolute"
           left={0}
           right={0}
-          width="100vw"
+          width={
+            window &&
+            window.innerWidth - document.documentElement.clientWidth > 0
+              ? "calc(100vw - 17.5px)": "100vw"
+          }
           marginInlineStart={-5}
           height="auto"
           p={5}

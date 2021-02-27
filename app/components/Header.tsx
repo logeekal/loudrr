@@ -8,13 +8,14 @@ import {
   MenuItemOption,
   MenuList as ChakraMenuList,
   MenuOptionGroup,
-  Link
+  Link,
 } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 import Logo from "./Logo";
 import Menu from "./Menu";
 import MenuItem from "./MenuItem";
 import MenuToggle from "./Menutoggle";
+import NextLink from "next/link";
 
 import { DataContext } from "./providers/DataProvider";
 
@@ -38,7 +39,11 @@ const Header: React.FC<{}> = (props) => {
         p={5}
         bg={"transparent"}
       >
-        <Link href='/'> <Logo /></Link>
+        <NextLink href="/">
+          <Link>
+            <Logo />
+          </Link>
+        </NextLink>
         <MenuToggle toggle={toggle} isOpen={isHeaderMenuOpen} />
         <Box
           display={{ base: isHeaderMenuOpen ? "block" : "none", md: "block" }}
@@ -46,9 +51,11 @@ const Header: React.FC<{}> = (props) => {
           justifyContent="flex-end"
         >
           <Menu>
-            {loggedinUser && <MenuItem to="/dashboard" isLast={false}>
-              Dashboard
-            </MenuItem> }
+            {loggedinUser && (
+              <MenuItem to="/dashboard" isLast={false}>
+                Dashboard
+              </MenuItem>
+            )}
             <MenuItem to="/docs" isLast="false">
               Docs
             </MenuItem>
@@ -56,7 +63,7 @@ const Header: React.FC<{}> = (props) => {
               FAQ
             </MenuItem>
             {loggedinUser && (
-              <MenuItem to="#" isLast>
+              <MenuItem isLast>
                 <ChakraMenu>
                   <MenuButton as="button">
                     <Avatar
@@ -67,12 +74,10 @@ const Header: React.FC<{}> = (props) => {
                   </MenuButton>
                   <ChakraMenuList>
                     <MenuOptionGroup>
-                      <ChakraMenuItem
-                        onClick={() => {
-                          window.location.href = "/dashboard/new";
-                        }}
-                      >
-                        Add new Domain
+                      <ChakraMenuItem>
+                        <NextLink href="/dashboard/new">
+                          <a>Add new Domain</a>
+                        </NextLink>
                       </ChakraMenuItem>
                       <ChakraMenuItem onClick={logout}>Logout</ChakraMenuItem>
                     </MenuOptionGroup>

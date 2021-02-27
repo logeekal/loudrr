@@ -10,17 +10,15 @@ router.post("/", async (req, res, next) => {
 
   if (!req.isAuthenticated()) {
     res.sendStatus(401);
-    next();
+    return;
   }
   if (req.user) {
     const { id, name, avatar } = req.user;
-
     res.send({ id, name, avatar });
-    next();
   } else {
-    res.send(401);
-    next();
+    res.sendStatus(401);
   }
+  return;
 });
 
 //add password hashing middleware

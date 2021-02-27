@@ -36,7 +36,7 @@ export default function NewDomain(props: NewDomainProps) {
   );
 
   const [domainData, setDomainData] = useState<IDomain>();
-  const { onCopy, hasCopied } = useClipboard(domainData.key);
+  const { onCopy, hasCopied } = useClipboard(domainData ? domainData.key || "" : "");
 
   const handleDomainCreation = async (e) => {
     e.preventDefault();
@@ -116,11 +116,11 @@ export default function NewDomain(props: NewDomainProps) {
                     value={domain}
                     onChange={(e) => setDomain(e.target.value)}
                     isRequired
-                    isReadOnly={"key" in domainData ? true : false}
+                    isReadOnly={domainData && "key" in domainData ? true : false}
                   ></Input>
                 </HStack>
               </FormControl>
-              {"key" in domainData && (
+              {domainData && "key" in domainData && (
                 <FormControl mt={5}>
                   <HStack>
                     <FormLabel width={75}>Key</FormLabel>

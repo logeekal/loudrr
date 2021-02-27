@@ -77,7 +77,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
         boxShadow={level === 0 ? 'sm' : 'none'}
       >
         <Stack direction='row' alignItems='center' fontSize="smaller" fontWeight="semibold">
-          <Avatar src={by.avatar} size='sm' />
+          <Avatar src={by.avatar} size='sm' name={by.name}/>
           <Box>
             <Text >{by.name}</Text>
             <Text color="gray.500">{dateString}</Text>

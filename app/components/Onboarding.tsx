@@ -12,6 +12,7 @@ import {
   TabPanel,
   TabPanels,
   FormErrorMessage,
+  Tooltip,
 } from "@chakra-ui/react";
 import API from "../service/service";
 import { FC } from "react";
@@ -39,7 +40,6 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [error, setError] = React.useState<ErrorFormat>();
-  const [genericFormError, setGenericFormError] = useState("");
 
   const handleSignup = async (e: any) => {
     e.preventDefault();
@@ -91,8 +91,8 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
     } catch (err) {
       setError({
         field: "password",
-        error: "Invalid Credentials. Please try again"
-      })
+        error: "Invalid Credentials. Please try again",
+      });
     }
   };
 
@@ -172,15 +172,21 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
         </Button>
       </form>
       <Box mt={10} with="full">
-        <Button width="full" bg="red.300">
-          Sign in with Google
-        </Button>
-        <Button mt={4} width="full" bg="blue.500" color="white">
-          Sign in with Facebook
-        </Button>
-        <Button mt={4} width="full" bg="grey" color="white">
-          Sign in with Github
-        </Button>
+        <Tooltip hasArrow placement="left" label="Coming Soon!">
+          <Button width="full" bg="red.300">
+            Sign in with Google
+          </Button>
+        </Tooltip>
+        <Tooltip hasArrow placement="left" label="Coming Soon!">
+          <Button mt={4} width="full" bg="blue.500" color="white">
+            Sign in with Facebook
+          </Button>
+        </Tooltip>
+        <Tooltip hasArrow placement="left" label="Coming Soon!">
+          <Button mt={4} width="full" bg="grey" color="white">
+            Sign in with Github
+          </Button>
+        </Tooltip>
       </Box>
     </div>
   );

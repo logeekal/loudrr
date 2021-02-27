@@ -9,6 +9,7 @@ import {
   Stack,
   Badge,
   Select,
+  HStack,
 } from "@chakra-ui/react";
 import Link from "next/link";
 import axios from "axios";
@@ -19,7 +20,7 @@ import APIService from "../../service/API";
 import { DOMAIN_CREATION_STATUS, REQUEST_STATES } from "../../utils/constants";
 import { IDomain, DomainExtended, User } from "../../utils/types";
 import { ImFileEmpty } from "react-icons/im";
-import { AiOutlineMessage } from "react-icons/ai";
+import { AiFillAmazonSquare, AiOutlineMessage } from "react-icons/ai";
 
 export interface DashboardProps {
   domains: Array<DomainExtended>;
@@ -40,27 +41,27 @@ export default function DashBoard(props: DashboardProps) {
 
   const [selectedDomainIdx, setSelectedDomainIdx] = useState(0);
 
-  const { onCopy, hasCopied } = useClipboard(props.domains[selectedDomainIdx].key);
-
+  const { onCopy, hasCopied } = useClipboard(
+    props.domains[selectedDomainIdx].key
+  );
 
   const redirectToNewDomain = () => {
-    if(typeof window !== 'undefined'){
-      window.location.href='/dashboard/new'
-    }else{
-      Router.push('/dashboard/new')
+    if (typeof window !== "undefined") {
+      window.location.href = "/dashboard/new";
+    } else {
+      Router.push("/dashboard/new");
     }
-  }
-
+  };
 
   // const selectedDomain = props.domains[selectedDomainIdx];
   return (
     <Box className="dashboard-page" w="full">
       <Head>
-        <title>
-          { `Dashboard - ${props.user.name}`}
-        </title>
+        <title>{`Dashboard - ${props.user.name}`}</title>
       </Head>
-      {!areDomainsActive ? redirectToNewDomain() : (
+      {!areDomainsActive ? (
+        redirectToNewDomain()
+      ) : (
         <Box
           className="dashboard-content"
           maxW="full"
@@ -76,11 +77,12 @@ export default function DashBoard(props: DashboardProps) {
                 alignItems="center"
               >
                 <Select
-                  onChange={(e) =>{
-                    console.log(e.target.value)
-                    setSelectedDomainIdx(parseInt(e.target.value))
+                  onChange={(e) => {
+                    console.log(e.target.value);
+                    setSelectedDomainIdx(parseInt(e.target.value));
                   }}
                   defaultValue={selectedDomainIdx}
+                  value={selectedDomainIdx}
                   maxW={"300px"}
                 >
                   {props.domains.map((domain, index) => {
@@ -98,12 +100,18 @@ export default function DashBoard(props: DashboardProps) {
                     {hasCopied ? "Copied" : "Copy Key"}
                   </Button>
                   <Badge
-                    className={`badge-${props.domains[selectedDomainIdx].status.toLowerCase()}`}
-                    colorScheme= {
-                      props.domains[selectedDomainIdx].status === "ACTIVE" ? "whatsapp" : "red.500"
+                    className={`badge-${props.domains[
+                      selectedDomainIdx
+                    ].status.toLowerCase()}`}
+                    colorScheme={
+                      props.domains[selectedDomainIdx].status === "ACTIVE"
+                        ? "whatsapp"
+                        : "red.500"
                     }
                     variant={
-                      props.domains[selectedDomainIdx].status === "INACTIVE" ? "red.500" : "green.500"
+                      props.domains[selectedDomainIdx].status === "INACTIVE"
+                        ? "red.500"
+                        : "green.500"
                     }
                   >
                     {props.domains[selectedDomainIdx].status}
@@ -111,55 +119,77 @@ export default function DashBoard(props: DashboardProps) {
                 </Stack>
               </Flex>
               <Divider marginBlock={10} />
-              <Stack
-                direction="row"
+              <HStack
                 className="domain-content"
                 spacing={10}
                 justifyContent="center"
                 alignItems="center"
                 my={10}
               >
-                <Link href={props.domains[selectedDomainIdx].pageCount > 0 ? `/website?key=${props.domains[selectedDomainIdx].key}`: `#`}>
-                  <Stack
-                    p={10}
-                    direction="column"
-                    justifyContent="center"
-                    alignItems="center"
-                    boxShadow="sm"
-                    width="full"
-                    borderWidth={1}
-                    color="#862cb3"
-                    _hover={{
-                      cursor: "pointer",
-                    }}
+                <Box w="full">
+                  <Link
+                    href={
+                      props.domains[selectedDomainIdx].pageCount > 0
+                        ? `/website?key=${props.domains[selectedDomainIdx].key}`
+                        : `#`
+                    }
+                    data-href={props.domains[selectedDomainIdx].pageCount}
                   >
-                    <ImFileEmpty size={50} color="#d7c2e8" />
-                    <Box as="h3">
-                      {props.domains[selectedDomainIdx].pageCount || "No" + " Pages"}
-                    </Box>
-                  </Stack>
-                </Link>
-                <Link href={props.domains[selectedDomainIdx].pageCount > 0 ? `/website?key=${props.domains[selectedDomainIdx].key}`: "#"}>
-                  <Stack
-                    p="10"
-                    direction="column"
-                    width="full"
-                    justifyContent="center"
-                    alignItems="center"
-                    boxShadow="sm"
-                    borderWidth={1}
-                    color="#862cb3"
-                    _hover={{
-                      cursor: "pointer",
-                    }}
+                    <a>
+                      <Stack
+                        p={10}
+                        direction="column"
+                        justifyContent="center"
+                        alignItems="center"
+                        boxShadow="sm"
+                        width="full"
+                        borderWidth={1}
+                        color="#862cb3"
+                        _hover={{
+                          cursor: "pointer",
+                        }}
+                      >
+                        <ImFileEmpty size={50} color="#d7c2e8" />
+                        <Box as="h3">
+                          {props.domains[selectedDomainIdx].pageCount ||
+                            "No" + " Pages"}
+                        </Box>
+                      </Stack>
+                    </a>
+                  </Link>
+                </Box>
+                <Box w="full">
+                  <Link
+                    href={
+                      props.domains[selectedDomainIdx].pageCount > 0
+                        ? `/website?key=${props.domains[selectedDomainIdx].key}`
+                        : "#"
+                    }
                   >
-                    <AiOutlineMessage size={50} color="#d7c2e8" />
-                    <Box as="h3">
-                      {props.domains[selectedDomainIdx].commentCount || "No" + " Comments"}
-                    </Box>
-                  </Stack>
-                </Link>
-              </Stack>
+                    <a>
+                      <Stack
+                        p="10"
+                        direction="column"
+                        width="full"
+                        justifyContent="center"
+                        alignItems="center"
+                        boxShadow="sm"
+                        borderWidth={1}
+                        color="#862cb3"
+                        _hover={{
+                          cursor: "pointer",
+                        }}
+                      >
+                        <AiOutlineMessage size={50} color="#d7c2e8" />
+                        <Box as="h3">
+                          {props.domains[selectedDomainIdx].commentCount ||
+                            "No" + " Comments"}
+                        </Box>
+                      </Stack>
+                    </a>
+                  </Link>
+                </Box>
+              </HStack>
             </Stack>
           </Stack>
         </Box>
@@ -173,7 +203,7 @@ export async function getServerSideProps(context) {
 
   try {
     const authenticatedUser = await axios.post(
-      `/auth`,
+      `http://localhost:3030/auth`,
       {},
       {
         headers: context.req
@@ -183,30 +213,34 @@ export async function getServerSideProps(context) {
     );
 
     result["user"] = authenticatedUser.data;
-    const userDomains = await APIService.getDomains({
-      headers: context.req ? { cookie: context.req.headers.cookie } : undefined,
-    });
+    const userDomains = await axios.post(
+      `http://localhost:3030/domains`,
+      {},
+      {
+        headers: context.req
+          ? { cookie: context.req.headers.cookie }
+          : undefined,
+      }
+    );
 
     const { domain, pageCount, commentCount } = userDomains.data;
 
     let domainExtended: Array<DomainExtended>;
 
-    if(domain && domain.length > 0){
-    domainExtended = domain.map((dom, index) => {
-      return {
-        ...dom,
-        pageCount: pageCount[index],
-        commentCount: commentCount[index],
-      };
-    });
+    if (domain && domain.length > 0) {
+      domainExtended = domain.map((dom, index) => {
+        return {
+          ...dom,
+          pageCount: pageCount[index],
+          commentCount: commentCount[index],
+        };
+      });
 
-    domainExtended.sort((a, b) => b.commentCount - a.commentCount);
+      domainExtended.sort((a, b) => b.commentCount - a.commentCount);
 
-    console.log({ sortedDomain: domainExtended });
-
-
+      console.log({ sortedDomain: domainExtended });
     }
-    
+
     result["domains"] = domainExtended || [];
     return {
       props: { ...result },

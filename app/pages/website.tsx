@@ -102,6 +102,14 @@ export async function getServerSideProps(context) {
    */
   console.log(context.req.__NEXT_INIT_QUERY);
   const { key } = context.req.__NEXT_INIT_QUERY;
+  if(!key){
+    return {
+      redirect: {
+        destination: "/",
+        permanent:false
+      }
+    }
+  }
   const result = {};
 
   try {
@@ -117,9 +125,15 @@ export async function getServerSideProps(context) {
 
     result["user"] = authenticatedUser.data;
 
-    const userDomains = await APIService.getDomains({
-      headers: context.req ? { cookie: context.req.headers.cookie } : undefined,
-    });
+    const userDomains = await axios.post(
+      `http://localhost:3030/domains`,
+      {},
+      {
+        headers: context.req
+          ? { cookie: context.req.headers.cookie }
+          : undefined,
+      }
+    );
 
     const { domain, pageCount, commentCount } = userDomains.data;
 
@@ -127,7 +141,7 @@ export async function getServerSideProps(context) {
       (currentDomain) => currentDomain.key === key
     );
 
-    console.log(`Opening Dashboard for : `, currentDomain);
+    console.log(`Opening Details for : `, currentDomain);
 
     return {
       props: {
