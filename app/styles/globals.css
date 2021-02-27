@@ -11,8 +11,13 @@ a {
   text-decoration: none;
 } */
 
+
 * {
   box-sizing: border-box;
+}
+
+html{
+  scroll-behavior: smooth;
 }
 
 .text-gradient-primary {
@@ -20,6 +25,7 @@ a {
   background-clip: text;
   color: transparent;
 }
+
 
 
 
