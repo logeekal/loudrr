@@ -64,8 +64,6 @@ const DataProvider: FC<DataProviderProps> = ({
 
   useEffect(() => {
     setLoggedinUser(authenticatedUser)
-
-    //add logged in user to the user dictionary for reference
   }, [authenticatedUser])
 
   useEffect(() => {
@@ -84,7 +82,7 @@ const DataProvider: FC<DataProviderProps> = ({
     // Load Parent comments.
     // Load Authenticated User.
     loadAllParentComments().then(() =>
-      console.log('All Parent Commits loaded.')
+      // console.log('All Parent Commits loaded.')
     )
   }, [domainKey])
 
@@ -94,12 +92,12 @@ const DataProvider: FC<DataProviderProps> = ({
     commentStatus: string
   ) => {
     try {
-      console.log(
-        'Adding new comment with args ',
-        parentCommentId,
-        mdText,
-        commentStatus
-      )
+      // console.log(
+      //   'Adding new comment with args ',
+      //   parentCommentId,
+      //   mdText,
+      //   commentStatus
+      // )
       const createdCommentResponse = await APIService.createComment(
         parentCommentId,
         mdText as string,
@@ -109,7 +107,7 @@ const DataProvider: FC<DataProviderProps> = ({
         domainKey
       )
 
-      console.log('Comment created.. Now toasting')
+      // console.log('Comment created.. Now toasting')
 
       toast({
         title: 'Comment Posted',
@@ -117,10 +115,10 @@ const DataProvider: FC<DataProviderProps> = ({
         status: 'success'
       })
 
-      console.log('toasted', createdCommentResponse)
+      // console.log('toasted', createdCommentResponse)
 
       const createdComment = createdCommentResponse.data
-      console.log(JSON.stringify(createdComment))
+      // console.log(JSON.stringify(createdComment))
       const newParentCommentIds = !parentCommentId
         ? [createdComment.id].concat([...commentData.parentComments])
         : [...commentData.parentComments]
@@ -128,10 +126,10 @@ const DataProvider: FC<DataProviderProps> = ({
 
       let newParentComment: Thread = {}
       if (parentCommentId) {
-        console.log({
-          replies_orig: commentData.thread[parentCommentId].replies
-        })
-        console.log([createdComment.id])
+        // console.log({
+        //   replies_orig: commentData.thread[parentCommentId].replies
+        // })
+        // console.log([createdComment.id])
         newParentComment[parentCommentId] = {
           ...commentData.thread[parentCommentId],
           replies: [createdComment.id].concat(
@@ -141,7 +139,7 @@ const DataProvider: FC<DataProviderProps> = ({
         }
       }
 
-      console.log('setting state', newParentComment)
+      // console.log('setting state', newParentComment)
       setCommentData({
         thread: {
           ...commentData.thread,
@@ -159,7 +157,7 @@ const DataProvider: FC<DataProviderProps> = ({
         parentComments: [...newParentCommentIds]
       })
     } catch (err) {
-      console.log(err)
+      // console.log(err)
       toast({
         title: 'Some Error Occured',
         description: 'Check console for details',
@@ -173,7 +171,7 @@ const DataProvider: FC<DataProviderProps> = ({
       const allPagesResp = await APIService.getDomainPages(domainKey, {})
       const allPages = allPagesResp.data
       const { page, comment, commentedBy, replyCount } = allPages
-      console.log(page)
+      // console.log(page)
       const newThread: Thread = {}
       const newUsers: UsersObjType = {}
       page.forEach((singlePage, index) => {
@@ -191,7 +189,7 @@ const DataProvider: FC<DataProviderProps> = ({
           newUsers[selectedUser.id] = selectedUser
         }
       })
-      console.log({ newUsers })
+      // console.log({ newUsers })
       setCommentData({
         thread: { ...commentData.thread, ...newThread },
         parentComments: comment.map((comment) => comment.id),
@@ -240,7 +238,7 @@ const DataProvider: FC<DataProviderProps> = ({
       replyIds.forEach((replyId) => {
         //get parent of the reply
 
-        console.log(`Finding parent id or reply Id ${replyId}`)
+        // console.log(`Finding parent id or reply Id ${replyId}`)
 
         const parentId = newThread[replyId].parentCommentId
         if (parentId) {
@@ -269,16 +267,16 @@ const DataProvider: FC<DataProviderProps> = ({
   }
 
   const checkAuth = async () => {
-    console.log('checking auth')
+    // console.log('checking auth')
     APIService.auth()
       .then((res) => {
-        console.log(res.data)
-        console.log(`setting login data`);
+        // console.log(res.data)
+        // console.log(`setting login data`);
         
         setLoggedinUser(res.data)
       })
       .catch((err) => {
-        console.error(err)
+         console.error(err)
       })
 
   }

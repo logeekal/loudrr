@@ -31,8 +31,8 @@ const CommentCard: React.FC<CommentCardProps> = ({
   level
 }) => {
   if (level > 0) {
-    console.log({ comment })
-    debugger
+    // console.log({ comment })
+    // debugger
   }
   const [editingMode, setEditingMode] = useState(false)
   const [childrenLoaded, setChildrendLoaded] =  useState(level !== 0);

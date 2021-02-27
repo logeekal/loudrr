@@ -43,7 +43,7 @@ export default class APIService {
 
   static async getDomains(axiosOptions: AxiosRequestConfig) {
     return await axios.post(
-      `http://localhost:3030/domains/`,
+      `${APIService._API_URL}/domains/`,
       {},
       {
         withCredentials: true,
@@ -75,7 +75,7 @@ export default class APIService {
     }
   }> {
     return await axios.post(
-      'http://localhost:3030/domains/pages',
+      `${APIService._API_URL}/domains/pages`,
       { domainKey },
       {
         withCredentials: true,

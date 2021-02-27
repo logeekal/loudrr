@@ -17,13 +17,13 @@ const CommentWidget = ({ domainKey }: CommentWidgetProps) => {
   const [user, setUser] = useState<undefined | User>(undefined)
   const [requestStatus, setRequestStatus] = useState(REQUEST_STATES.IDLE)
 
-  console.log(domainKey)
+  // console.log(domainKey)
 
   useEffect(() => {
     setRequestStatus(REQUEST_STATES.PENDING)
     APIService.auth()
       .then((res) => {
-        console.log(res.data)
+        // console.log(res.data)
         setUser(res.data)
         setRequestStatus(REQUEST_STATES.SUCCESS)
       })

@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   FormControl,
-  FormHelperText,
   FormLabel,
   Input,
   useToast,
@@ -12,7 +11,8 @@ import {
   TabList,
   TabPanel,
   TabPanels,
-  FormErrorMessage
+  FormErrorMessage,
+  Tooltip
 } from '@chakra-ui/react'
 import API from '../services/API'
 import { REQUEST_STATES } from '../constants'
@@ -36,7 +36,7 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
   const [requestState, setRequestState] = React.useState(REQUEST_STATES.IDLE)
   const toast = useToast()
 
-  console.log(requestState)
+  // console.log(requestState)
 
   const [email, setEmail] = React.useState('')
   const [name, setName] = React.useState('')
@@ -47,38 +47,48 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
   const handleSignup = async (e: any) => {
     e.preventDefault()
     let err = validate();
-    console.log({err})
+    // console.log({err})
     if(err){
-      console.log({err})
+      // console.log({err})
       setError(err)
       return;
     }
     setRequestState(REQUEST_STATES.PENDING)
-    console.log(e)
-    const result = await API.signup(email, password, name)
-    if (result.status === 200) {
-      console.log(result.data)
-      toast({
+    // console.log(e)
+    try{
+
+    await API.signup(email, password, name)
+toast({
         title: 'Account Succesfully Created.',
         description: 'Please sign in to proceed',
         status: 'success',
         duration: 5000,
         isClosable: true
       })
-      setRequestState(REQUEST_STATES.SUCCESS)
-    } else {
-      toast({
+
+            setRequestState(REQUEST_STATES.SUCCESS)
+            onSuccess()
+    }catch(err){
+      setError({
+        field:"email",
+        error: "Email Id Already exists "
+      })
+
+  toast({
         title: 'Error',
-        description: result.data,
+        description: "",
         status: 'error',
         isClosable: true
       })
       setRequestState(REQUEST_STATES.ERROR)
+
     }
   }
 
   const handleSignin = async (e: any) => {
-    e.preventDefault()
+    try{
+
+  e.preventDefault()
     const loggedInUserRequest = await API.login(email, password)
     if (loggedInUserRequest.status === 200) {
       toast({
@@ -90,7 +100,15 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
     } else {
       console.log(loggedInUserRequest)
     }
-  }
+
+    }catch(e){
+      setError({
+        field: "password",
+        error: "Invalid Credentials. Please try again",
+      });
+     
+    }
+    }
 
   const validate = () => {
     debugger;
@@ -124,7 +142,7 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
             </FormControl>
           </React.Fragment>
         )}
-        <FormControl id='email' isRequired>
+        <FormControl id='email' isRequired isInvalid={error && error.field=== 'email'}>
           <FormLabel mt={mode === 'signup' ? 5 : 0}>Email Address</FormLabel>
           <Input
             type='email'
@@ -155,20 +173,26 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
           </React.Fragment>
         )}
         <Button width='full' type='submit' mt={5}>
-          {mode}
+          {mode === "signin" ? "Sign in" : "Sign Up"}
         </Button>
       </form>
       <Box mt={10} with='full'>
-        <Button width='full' bg='red.300'>
-          Sign in with Google
-        </Button>
-        <Button mt={4} width='full' bg='blue.500' color='white'>
-          Sign in with Facebook
-        </Button>
-        <Button mt={4} width='full' bg='grey' color='white'>
-          Sign in with Github
-        </Button>
-      </Box>
+           <Tooltip hasArrow placement="auto" label="Coming Soon!">
+          <Button width="full" bg="red.300">
+            Sign in with Google
+          </Button>
+        </Tooltip>
+        <Tooltip hasArrow placement="auto" label="Coming Soon!">
+          <Button mt={4} width="full" bg="blue.500" color="white">
+            Sign in with Facebook
+          </Button>
+        </Tooltip>
+        <Tooltip hasArrow placement="auto" label="Coming Soon!">
+          <Button mt={4} width="full" bg="grey" color="white">
+            Sign in with Github
+          </Button>
+        </Tooltip>
+     </Box>
     </div>
   )
 }
@@ -178,10 +202,17 @@ export interface OnBoardingProps {
 }
 
 const OnBoarding: FC<OnBoardingProps>  = ({ onSuccess }: OnBoardingProps) => {
+  const [activeTabIndex, setActiveTabIndex] = React.useState(1);
+
+const handleTabsChange = (index) => {
+  setActiveTabIndex(index)
+}
+
   return (
-    <Tabs>
+    <Box w="full" justifyContent="flex-end" display="flex" flexDirection="row" >
+    <Tabs maxW="600px" index={activeTabIndex} onChange={handleTabsChange}>
       <TabList>
-        <Tab>Sign In</Tab>
+        <Tab >Sign In</Tab>
         <Tab>Sign Up</Tab>
       </TabList>
       <TabPanels>
@@ -189,11 +220,13 @@ const OnBoarding: FC<OnBoardingProps>  = ({ onSuccess }: OnBoardingProps) => {
           <OnBoardingForms mode='signin' onSuccess={onSuccess} />
         </TabPanel>
         <TabPanel>
-          <OnBoardingForms mode='signup' onSuccess={onSuccess} />
+          <OnBoardingForms mode='signup' onSuccess={() => {
+            setActiveTabIndex(0)
+            }} />
         </TabPanel>
       </TabPanels>
     </Tabs>
-  )
+ </Box> )
 }
 
 

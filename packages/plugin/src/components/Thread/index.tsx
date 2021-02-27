@@ -46,9 +46,9 @@ const Thread: FC<ThreadProps> = ({ domainKey }) => {
   ): ReactNode[] => {
     return currentList.map( (commentId) => {
       let currentComment = thread[commentId]
-      if (level > 0) {
-        console.log(currentComment, 'for comment id ', commentId)
-      }
+      // if (level > 0) {
+      //   // console.log(currentComment, 'for comment id ', commentId)
+      // }
       const commentedBy = currentComment && users[currentComment.by]
       let result: ReactNode[] = []
 
@@ -75,7 +75,7 @@ const Thread: FC<ThreadProps> = ({ domainKey }) => {
       //     ...(await loadThread([...currentComment.replies], level + 1))
       //   ]
       // }
-       console.log(result)
+      //  console.log(result)
       return result
     })
   }
