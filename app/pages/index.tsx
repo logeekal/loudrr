@@ -19,8 +19,6 @@ import NextLink from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import HeroHeading, { HeroText } from "../components/HeroHeading";
 import TechLogo from "../components/TechLogo";
-import { hasUncaughtExceptionCaptureCallback } from "process";
-import { callbackify } from "util";
 
 export default function Home(props) {
   const [visibleHeroIdx, setVisibleHeroIdx] = useState<number>(0);
@@ -60,7 +58,7 @@ export default function Home(props) {
   return (
     <VStack w="full">
       <Head>
-        <title>Talk to me</title>
+        <title>Welcome to {process.env.NEXT_PUBLIC_BRAND_NAME}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Box
@@ -173,7 +171,7 @@ export default function Home(props) {
           left={0}
           right={0}
           width={
-            window &&
+            typeof window !== 'undefined' &&
             window.innerWidth - document.documentElement.clientWidth > 0
               ? "calc(100vw - 17.5px)": "100vw"
           }

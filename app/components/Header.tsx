@@ -9,6 +9,7 @@ import {
   MenuList as ChakraMenuList,
   MenuOptionGroup,
   Link,
+  Text,
 } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 import Logo from "./Logo";
@@ -16,6 +17,7 @@ import Menu from "./Menu";
 import MenuItem from "./MenuItem";
 import MenuToggle from "./Menutoggle";
 import NextLink from "next/link";
+import { FiExternalLink } from "react-icons/fi";
 
 import { DataContext } from "./providers/DataProvider";
 
@@ -62,6 +64,16 @@ const Header: React.FC<{}> = (props) => {
             <MenuItem to="/docs#faq" isLast={false}>
               FAQ
             </MenuItem>
+            {!loggedinUser && (
+              <MenuItem
+                to="https://github.com/logeekal/loudrr"
+                isLast
+                isExternal={true}
+                isNext={false}
+              >
+                <Text>Github</Text>
+              </MenuItem>
+            )}
             {loggedinUser && (
               <MenuItem isLast>
                 <ChakraMenu>
