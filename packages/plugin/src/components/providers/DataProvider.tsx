@@ -177,7 +177,7 @@ const DataProvider: FC<DataProviderProps> = ({
       const newThread: Thread = {}
       const newUsers: UsersObjType = {}
       const newParentComments: string[] = []
-      page.forEach((singlePage, index) => {
+      page && page.forEach((singlePage, index) => {
         if (singlePage.pageLocation === window.location.href) {
           const selectedComment = comment[index]
           newThread[selectedComment.id] = {
