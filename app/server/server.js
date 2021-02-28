@@ -33,7 +33,9 @@ nextApp.prepare().then(() => {
       resave: false,
       saveUninitialized: true,
       cookie: {
-        secure: false,
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        sameSite: "none"
       },
     })
   );

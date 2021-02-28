@@ -241,7 +241,16 @@ export async function getServerSideProps(context) {
       console.log({ sortedDomain: domainExtended });
     }
 
-    result["domains"] = domainExtended || [];
+    if(!domainExtended || domainExtended.length === 0){
+      return {
+        redirect: {
+          destination: "/dashboard/new",
+          permanent: false
+        }
+      }
+    }
+
+    result["domains"] = domainExtended;
     return {
       props: { ...result },
     };
