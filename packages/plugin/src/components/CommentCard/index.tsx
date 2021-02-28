@@ -1,11 +1,6 @@
 import {
-  Accordion,
-  AccordionButton,
-  AccordionItem,
-  AccordionPanel,
   Avatar,
   Box,
-  Button,
   Divider,
   Stack,
   Text

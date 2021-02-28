@@ -1,8 +1,7 @@
-import { Box, Spinner, ChakraProvider } from '@chakra-ui/react'
+import { Spinner, ChakraProvider, Flex } from '@chakra-ui/react'
 import * as React from 'react'
 import { useState } from 'react'
 import { useEffect } from 'react'
-import OnBoarding from './components/Onboarding'
 import DataProvider from './components/providers/DataProvider'
 import Thread from './components/Thread'
 import { REQUEST_STATES } from './constants'
@@ -34,7 +33,13 @@ const CommentWidget = ({ domainKey }: CommentWidgetProps) => {
   }, [])
 
   if (requestStatus === REQUEST_STATES.PENDING) {
-    return <Spinner />
+    return (
+      <Flex h='100vh' justifyContent='center' alignItems='center'>
+        <ChakraProvider>
+          <Spinner size='xl' />
+        </ChakraProvider>
+      </Flex>
+    )
   }
   return (
     <ChakraProvider>

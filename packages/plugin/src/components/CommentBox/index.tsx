@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import MDEditor from '@uiw/react-md-editor'
 import { FC } from 'react'
 import {
@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react'
 import '@uiw/react-md-editor/dist/markdown-editor.css'
 import { FaMarkdown } from 'react-icons/fa'
-import { COMMENT_STATUS, REQUEST_STATES } from '../../constants'
+import { COMMENT_STATUS } from '../../constants'
 import { DataContext, DataContextProps } from '../providers/DataProvider'
 import './index.css'
 import OnBoarding from '../Onboarding'
@@ -28,22 +28,21 @@ interface CommentBoxProps {
 
 const CommentBox: FC<CommentBoxProps> = ({ replyOf, onSubmit }) => {
   const [value, setValue] = React.useState<string | undefined>('')
-  const {isOpen: isLoginOpen, onToggle: toggleLoginBox } = useDisclosure();
-  
-  
+  const { isOpen: isLoginOpen, onToggle: toggleLoginBox } = useDisclosure()
+
   const {
     comments: { add },
     user: { loggedinUser, checkAuth }
   } = useContext<DataContextProps>(DataContext)
 
   const submitHandler = async () => {
-    if(!value){
-      return;
+    if (!value) {
+      return
     }
     const parentCommentId = replyOf || null
 
     await add(parentCommentId, value as string, COMMENT_STATUS.POSTED)
-    setValue("");
+    setValue('')
     onSubmit()
   }
 
@@ -111,7 +110,12 @@ const CommentBox: FC<CommentBoxProps> = ({ replyOf, onSubmit }) => {
         </Button>
       </Stack>
       <Collapse in={isLoginOpen}>
-        <OnBoarding onSuccess={async () => {toggleLoginBox(); await checkAuth()}} />
+        <OnBoarding
+          onSuccess={async () => {
+            toggleLoginBox()
+            await checkAuth()
+          }}
+        />
       </Collapse>
     </Box>
   )

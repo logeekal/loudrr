@@ -36,7 +36,7 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
   const [requestState, setRequestState] = React.useState(REQUEST_STATES.IDLE)
   const toast = useToast()
 
-  // console.log(requestState)
+  console.log(requestState)
 
   const [email, setEmail] = React.useState('')
   const [name, setName] = React.useState('')
@@ -111,7 +111,7 @@ toast({
     }
 
   const validate = () => {
-    debugger;
+    // debugger;
     let err: ErrorFormat | undefined;
     if(password.length <  8) {
       err = {
@@ -121,7 +121,7 @@ toast({
     }else if(password !== confirmPassword){
       err = {
         field: "confirm-password",
-        error: 'Password and Confirm password should match';
+        error: 'Password and Confirm password should match'
       }
     }
     return err;
@@ -204,7 +204,7 @@ export interface OnBoardingProps {
 const OnBoarding: FC<OnBoardingProps>  = ({ onSuccess }: OnBoardingProps) => {
   const [activeTabIndex, setActiveTabIndex] = React.useState(1);
 
-const handleTabsChange = (index) => {
+const handleTabsChange = (index : number) => {
   setActiveTabIndex(index)
 }
 

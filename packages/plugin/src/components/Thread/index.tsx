@@ -1,6 +1,5 @@
 import React, { FC, ReactNode, useContext, useEffect, useState } from 'react'
-import { Box, Divider, Flex, Spinner, Stack } from '@chakra-ui/react'
-import APIService, { CommentType } from '../../services/API'
+import { Box, Divider, Stack } from '@chakra-ui/react'
 import CommentBox from '../CommentBox'
 import CommentCard from '../CommentCard'
 import { CommentWithParent, User } from '../../constants/types'
@@ -23,7 +22,7 @@ export interface CommentData {
   users: UsersObjType
 }
 
-const Thread: FC<ThreadProps> = ({ domainKey }) => {
+const Thread: FC<ThreadProps> = () => {
   const {
     comments: {
       loadParents: loadAllParentComments,
@@ -34,17 +33,21 @@ const Thread: FC<ThreadProps> = ({ domainKey }) => {
     user: { users }
   } = useContext<DataContextProps>(DataContext)
 
-  const [threadLoadState, setThreadLoadState] = useState(REQUEST_STATES.IDLE) 
+  const [threadLoadState, setThreadLoadState] = useState(REQUEST_STATES.IDLE)
+  console.log({thread})
 
   useEffect(() => {
-    loadAllParentComments().then(() => console.log(' Initial Comments loaded'))
+    setThreadLoadState(REQUEST_STATES.PENDING)
+    loadAllParentComments().then(() => {
+      console.log(' Initial Comments loaded ' + threadLoadState)
+      setThreadLoadState(REQUEST_STATES.SUCCESS)
+    })
   }, [])
 
-  const loadThread = (
-    currentList: string[],
-    level: number
-  ): ReactNode[] => {
-    return currentList.map( (commentId) => {
+  const loadThread = (currentList: string[], level: number): ReactNode[] => {
+    // console.log(currentList)
+    return currentList.map((commentId) => {
+      // console.log(`Looking for ${commentId} in `, thread)
       let currentComment = thread[commentId]
       // if (level > 0) {
       //   // console.log(currentComment, 'for comment id ', commentId)
@@ -63,8 +66,7 @@ const Thread: FC<ThreadProps> = ({ domainKey }) => {
           }}
           level={level}
         >
-          {  
-           currentComment.replies.length > 0 && [
+          {currentComment.replies.length > 0 && [
             ...loadThread([...currentComment.replies], level + 1)
           ]}
         </CommentCard>
@@ -81,19 +83,20 @@ const Thread: FC<ThreadProps> = ({ domainKey }) => {
   }
 
   const getTotalCount = () => {
-    return parentComments.reduce((prev, next)=>{
+    if(Object.keys(thread).length === 0){
+      return 0;
+    }
+    return parentComments.reduce((prev, next) => {
       return prev + thread[next].replyCount
-    },0)
+    }, 0)
   }
-
 
   return (
     <Box className='thread'>
-
       <Stack m={10} direction='column'>
-        <Box>{getTotalCount() + " Comments" }</Box>
-        <Divider mb={"2"}/>
-        <CommentBox onSubmit={()=>{}}/>
+        <Box>{getTotalCount() + ' Comments'}</Box>
+        <Divider mb={'2'} />
+        <CommentBox onSubmit={() => {}} />
         <Stack className='comments' direction='column'>
           {loadThread(parentComments, 0)}
         </Stack>

@@ -18,7 +18,7 @@ export interface DataContextProps {
   user: {
     loggedinUser: User | undefined
     setLoggedinUser: (user: User) => void
-    users: UsersObjType,
+    users: UsersObjType
     checkAuth: () => Promise<void>
   }
 }
@@ -28,7 +28,9 @@ export interface DataProviderProps {
   authenticatedUser: User
 }
 
-export const DataContext = React.createContext<DataContextProps | null>(null)
+export const DataContext = React.createContext<DataContextProps>(
+  {} as DataContextProps
+)
 
 interface Thread {
   [commentId: string]: CommentWithParent
@@ -58,9 +60,9 @@ const DataProvider: FC<DataProviderProps> = ({
 
   const toast = useToast()
 
-  useEffect(()=>{
+  useEffect(() => {
     checkAuth().then()
-  },[])
+  }, [])
 
   useEffect(() => {
     setLoggedinUser(authenticatedUser)
@@ -82,7 +84,7 @@ const DataProvider: FC<DataProviderProps> = ({
     // Load Parent comments.
     // Load Authenticated User.
     loadAllParentComments().then(() =>
-      // console.log('All Parent Commits loaded.')
+      console.log('All Parent Commits loaded.')
     )
   }, [domainKey])
 
@@ -174,6 +176,7 @@ const DataProvider: FC<DataProviderProps> = ({
       // console.log(page)
       const newThread: Thread = {}
       const newUsers: UsersObjType = {}
+      const newParentComments: string[] = []
       page.forEach((singlePage, index) => {
         if (singlePage.pageLocation === window.location.href) {
           const selectedComment = comment[index]
@@ -187,12 +190,15 @@ const DataProvider: FC<DataProviderProps> = ({
           }
           const selectedUser = commentedBy[index]
           newUsers[selectedUser.id] = selectedUser
+          console.log(
+            `Adding to newParentComments for page: ${singlePage.pageLocation} currentPath: ${window.location.href}`
+          )
+          newParentComments.push(comment[index].id)
         }
       })
-      // console.log({ newUsers })
       setCommentData({
         thread: { ...commentData.thread, ...newThread },
-        parentComments: comment.map((comment) => comment.id),
+        parentComments: [...newParentComments],
         users: { ...commentData.users, ...newUsers }
       })
     } catch (error) {
@@ -242,10 +248,12 @@ const DataProvider: FC<DataProviderProps> = ({
 
         const parentId = newThread[replyId].parentCommentId
         if (parentId) {
-        const newReplies = [...newThread[parentId].replies, replyId]
+          const newReplies = [...newThread[parentId].replies, replyId]
           newThread[parentId] = {
             ...newThread[parentId],
-            replies: newReplies.sort((a,b)=> newThread[b].updateDate - newThread[a].updateDate),
+            replies: newReplies.sort(
+              (a, b) => newThread[b].updateDate - newThread[a].updateDate
+            )
           }
         }
       })
@@ -272,13 +280,12 @@ const DataProvider: FC<DataProviderProps> = ({
       .then((res) => {
         // console.log(res.data)
         // console.log(`setting login data`);
-        
+
         setLoggedinUser(res.data)
       })
       .catch((err) => {
-         console.error(err)
+        console.error(err)
       })
-
   }
 
   return (
@@ -291,7 +298,12 @@ const DataProvider: FC<DataProviderProps> = ({
           thread: commentData.thread,
           parentComments: commentData.parentComments
         },
-        user: { loggedinUser, setLoggedinUser, users: commentData.users, checkAuth }
+        user: {
+          loggedinUser,
+          setLoggedinUser,
+          users: commentData.users,
+          checkAuth
+        }
       }}
     >
       {children}
