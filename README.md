@@ -1,5 +1,5 @@
-1. [About Louder](#about-loudrr)
-2. [Installng Louder](#installing-loudrr)
+1. [About Loudrr](#about-loudrr)
+2. [Installng Loudrr](#installing-loudrr)
 3. [FAQs](#faqs)
 4. [Contributing to Loudrr](#contributing-to-loudrr)
 
