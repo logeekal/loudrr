@@ -71,4 +71,4 @@ Getting Started with Loudrr is pretty simple. All you need a domain key for a we
 - Yes, for a limited period of time Loudrr is absolutely free. After this free period ends. You will be limited to maximum of 2 domains per account with maximum of 100 comments per day combined for all the domains/websites. In case you did add more than 2 domains in your account during this free period, you will have those domains lifetime free even after this free period ends.
 
 ## Contributing to Loudrr
-Contribution guide is in progress. You can vew the progress [here](CONTRIBUTION.md)
+Contribution guide is in progress. You can vew the progress [here](app/CONTRIBUTION.md)
