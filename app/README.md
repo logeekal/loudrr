@@ -1,34 +1,74 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+1. [About Louder](#about-loudrr)
+2. [Installng Louder](#installing-loudrr)
+3. [FAQs](#faqs)
+4. [Contributing to Loudrr](#contributing-to-loudrr)
 
-## Getting Started
 
-First, run the development server:
+## About Loudrr
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+Congratulations on reaching the documentation page of Loudrr. Since, you are here, we assume you know what Loudrr is and we will explain how you can use Loudrr in your own app. Honestly, there is not much to explain. IT IS PRETTY EASY.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Loudrr is currenly in alpha stage and hence, you will be one of the first users to use Loudrr and give direction to the product. Loudrr is a completely opensource application, which means three things :
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+1. You can raise issues your facing directly here.
+2. You have a say in features this product will have.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+3. You get a completely hosted solution and a very fast widget.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Currently, Loudrr is ONLY supported as React Component which can be used in your own website which is being developed in React. However, other plugins are coming soon. See the status of all the plugins below :
 
-## Learn More
+Status of Loudrr widgets availability: 
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Application       | Status     | 
+|:------------- | :----------: | 
+|  React |  Available  |
+| Gatsby | In Progress |
+| SquareSpace |  In Progress|
+| Wordpress | In Progress |
+| Shopify | In Progress |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+----
 
-## Deploy on Vercel
+## Installing Loudrr
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Getting Started with Loudrr is pretty simple. All you need a domain key for a website in which you want to include Loudrr.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+1.    Signup here to register your website and get a new domain key.
+    Once you have the domain key. Simply install our React component using below command.
+    With npm :
+
+        ```bash
+        npm i @loudrr-app/widget 
+        ## OR
+        yarn add @loudrr-app/widget
+        ```
+
+
+2. Now that you have all the required ingredients to embed Loudrr in your website. Include below commands to finally embed Loudrr in your code.
+    ```javascript
+        import Loudrr from '@loudrr/widget';
+
+        const domainKey="123gads123-213sada" //a valid domainKey
+
+        const Comments: FC<{}> = () => {
+            return <Loudrr domainKey={domainKey}/>
+        }
+
+        export default Comments;
+    ```
+3.  Now this Comments component can be included anywhere in your app.
+    That is it. We are done. Wasn't it simple. In case you face any issue. Don't forget us to Contact here. We will get back to you within a day. You can also find us on Twitter as @loudrr
+
+## FAQs
+
+- **When will Loudrr be available for other platform or as simple js bundle.**
+
+- Our main emphasis is on quality and speed of the commenting widget so we will not rush the components for just the sake of it. But we do understand you needs and expect other platforms to be available in next 2 months. We will soon add a tracker were you will be able to see progress
+----------------
+- **Is Loudrr Free?**
+
+- Yes, for a limited period of time Loudrr is absolutely free. After this free period ends. You will be limited to maximum of 2 domains per account with maximum of 100 comments per day combined for all the domains/websites. In case you did add more than 2 domains in your account during this free period, you will have those domains lifetime free even after this free period ends.
+
+## Contributing to Loudrr
+Contribution guide is in progress. You can vew the progress [here](CONTRIBUTION.md)
