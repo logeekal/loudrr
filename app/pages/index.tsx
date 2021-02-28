@@ -152,7 +152,7 @@ export default function Home(props) {
           fontWeight="medium"
           mt={5}
         >
-          TalkToMe makes it very easy to add and manage comments to your blogs
+          {process.env.NEXT_PUBLIC_BRAND_NAME} makes it very easy to add and manage comments to your blogs
           or product reviews to your e-Commerce website with a minimal setup.
           Start with our{" "}
           <NextLink href="/docs">
