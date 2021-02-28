@@ -281,9 +281,9 @@ export default function Docs() {
                         With npm :
                         <br />
                         <CustomCode className="language-bash">
-                          {`npm i @loudrr/widget 
+                          {`npm i @loudrr-app/widget 
 ## OR
-yarn add @loudrr/widget
+yarn add @loudrr-app/widget
 `}
                         </CustomCode>
                         <br />
@@ -295,7 +295,7 @@ yarn add @loudrr/widget
                           to finally embed {BRAND} in your code.
                         </Text>
                         <CustomCode className="language-jsx">
-                          {`import Loudrr from '@loudrr/widget;
+                          {`import Loudrr from '@loudrr-app/widget;
 
 const domainKey="123gads123-213sada" //a valid domainKey
 
