@@ -45,7 +45,7 @@ export default function Home(props) {
     /**
      * Uncomment below line to stop Hero Animation.
      */
-    clearTimeout(interval);
+    // clearTimeout(interval);
 
     return () => {
       clearTimeout(interval);
