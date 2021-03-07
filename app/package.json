@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "test": "jest --watch",
     "dev": "node server/server.js",
     "build": "next build",
     "start": "cross-env NODE_ENV=production node server/server.js"
@@ -30,6 +31,7 @@
     "express-session": "^1.17.1",
     "framer-motion": "^3.2.2-rc.1",
     "jest": "^26.6.3",
+    "jest-extended": "^0.11.5",
     "neo4j": "^2.0.0-RC2",
     "neo4j-driver": "^4.2.2",
     "next": "10.0.6",

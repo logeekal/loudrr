@@ -188,7 +188,7 @@ describe("Neo4jAdapter Testing", () => {
 
     const result = await createUser(user.email, user.name, null, avatar);
 
-    let domain = await createDomain(domainAddress1, user.email);
+    const domain = await createDomain(domainAddress1, user.email);
 
     expect(domain).toBeObject();
     expect(domain).toContainAllKeys([
@@ -199,22 +199,25 @@ describe("Neo4jAdapter Testing", () => {
       "updateDate",
     ]);
 
-    domain = await getDomainsforUser(user.email);
+    const createdDomain = await getDomainsforUser(user.email);
 
-    expect(domain).toBeArray();
-    expect(domain[0]).toContainKeys(["address", "key"]);
-    expect(domain[0].address).toBeOneOf([domainAddress1, domainAddress2]);
+    expect(createdDomain.domain).toBeArray();
+    expect(createdDomain.domain[0]).toContainKeys(["address", "key"]);
+    expect(createdDomain.domain[0].address).toBeOneOf([
+      domainAddress1,
+      domainAddress2,
+    ]);
 
     //create second domain belonging to the user and then get both the domains.
     const domain2 = await createDomain(domainAddress2, user.email);
 
     const bothDomains = await getDomainsforUser(user.email);
 
-    expect(bothDomains).toBeArray();
-    expect(bothDomains).toHaveLength(2);
-    expect(bothDomains[0].address).toBeOneOf([domainAddress1, domainAddress2]);
-    expect(bothDomains[1].address).toBeOneOf([domainAddress1, domainAddress2]);
-    expect(bothDomains[0].address === bothDomains[1].address).not.toBeTruthy();
+    expect(bothDomains.domain).toBeArray();
+    expect(bothDomains.domain).toHaveLength(2);
+    expect(bothDomains.domain[0].address).toBeOneOf([domainAddress1, domainAddress2]);
+    expect(bothDomains.domain[1].address).toBeOneOf([domainAddress1, domainAddress2]);
+    expect(bothDomains.domain[0].address === bothDomains.domain[1].address).not.toBeTruthy();
   });
 
   test("Creating a user and domain and updating domain status should be successfull", async () => {
@@ -463,10 +466,9 @@ describe("Neo4jAdapter Testing", () => {
     expect(comments).toBeArray();
     expect(comments.length).toBe(3);
 
-
     for (let idx = 0; idx < comments.length; idx++) {
-      expect('password' in by[idx] ).toBeFalsy();
-      expect('email' in by[idx] ).toBeFalsy();
+      expect("password" in by[idx]).toBeFalsy();
+      expect("email" in by[idx]).toBeFalsy();
       let comment = comments[idx];
       if (comment.id === firstReplyofParentComment.id) {
         expect(parentIds[idx]).toBe(parentCommentFirstPage.id);
@@ -482,18 +484,23 @@ describe("Neo4jAdapter Testing", () => {
       }
     }
 
-    const {comment : allFirstLevelcomments, by: user, replyCount: firstLevelCount }  = await getFirstLevelChildComments(
-      parentCommentFirstPage.id
-    );
+    const {
+      comment: allFirstLevelcomments,
+      by: user,
+      replyCount: firstLevelCount,
+    } = await getFirstLevelChildComments(parentCommentFirstPage.id);
 
     expect(allFirstLevelcomments.length).toBe(2);
     expect(user.length).toBe(2);
     expect(allFirstLevelcomments[0].id).toEqual(secondReplyofParentComment.id);
-    expect(user[0].id).toEqual(createdUser3.id)
+    expect(user[0].id).toEqual(createdUser3.id);
 
-    for(let idx=0; idx<allFirstLevelcomments.length; idx++){
+    for (let idx = 0; idx < allFirstLevelcomments.length; idx++) {
       let currComment = allFirstLevelcomments[idx];
-      let {comment: secondLevelComments, by: byUser} = await getFirstLevelChildComments(currComment.id);
+      let {
+        comment: secondLevelComments,
+        by: byUser,
+      } = await getFirstLevelChildComments(currComment.id);
       expect(secondLevelComments).toBeArray();
       if (currComment.id === firstReplyofParentComment.id) {
         expect(secondLevelComments.length).toBe(1);
@@ -501,9 +508,8 @@ describe("Neo4jAdapter Testing", () => {
         expect(secondLevelComments.length).toBe(0);
       }
     }
-
   });
-  test("Todo - deep children count", async ()=> {
+  test("Todo - deep children count", async () => {
     expect(1).toBe(2);
-  })
+  });
 });

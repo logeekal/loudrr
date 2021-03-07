@@ -202,16 +202,15 @@ const DataProvider: FC<DataProviderProps> = ({ children }) => {
           console.log(
             `Adding ${comment[index].id} to ${singlePage.pageLocation}`
           );
-          if (singlePage.pageLocation in pages) {
-            pages[singlePage.pageLocation].childrenComments.push(
-              comment[index].id
-            );
-          } else {
+          if (!(singlePage.pageLocation in pages)) {
             pages[singlePage.pageLocation] = {
               ...singlePage,
               childrenComments: [],
             };
           }
+          pages[singlePage.pageLocation].childrenComments.push(
+            comment[index].id
+          );
 
           // pages[singlePage.pageLocation].childrenComments.push(comment[index].id);
           const selectedComment = comment[index];

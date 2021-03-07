@@ -2,11 +2,14 @@ const neo4j = require("neo4j-driver");
 const { ENTITIES } = require("./constant");
 const path = require("path");
 
-console.log('Running in ', __dirname)
+console.log("Running in ", __dirname);
 
-const envConfig = process.env.NODE_ENV === 'production' ? {path : path.join(__dirname,'../../.env.production')} : {}
+const envConfig =
+  process.env.NODE_ENV === "production"
+    ? { path: path.join(__dirname, "../../.env.production") }
+    : {};
 
-console.log('running with env config', envConfig);
+console.log("running with env config", envConfig);
 
 require("dotenv").config(envConfig);
 

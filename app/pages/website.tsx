@@ -14,8 +14,8 @@ import router from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { DataContext } from "../components/providers/DataProvider";
 import APIService from "../service/service";
-import Thread from "../components/Thread";
-import { IDomain, PageExtended, UsersObjType } from "../utils/types";
+import Thread, { CommentData } from "../components/Thread";
+import { CommentWithParent, IDomain, PageExtended, UsersObjType } from "../utils/types";
 import Header from "../components/Header";
 
 export interface DomainProps {
@@ -49,6 +49,14 @@ export default function DomainPage(props: DomainProps) {
     };
   }, [thread]);
 
+  const totalPageComments= (pageKey: string) => {
+    const pageParentcomments = page[pageKey].childrenComments.length;
+    const totalPageReplyCount = page[pageKey].childrenComments.reduce((prev, next)=>{
+      return prev + thread[next].replyCount
+    },0)
+    return pageParentcomments+totalPageReplyCount;
+  }
+
   return (
     <Box className="domain-page" w="full">
       <Head>
@@ -73,7 +81,7 @@ export default function DomainPage(props: DomainProps) {
                     px={2}
                   >
                     <Box>{`${currentPage.pageTitle}(${currentPage.pageLocation})`}</Box>
-                    <Box>{`${currentPage.childrenComments.length} Comments`}</Box>
+                    <Box>{`${totalPageComments(currentPageKey)} Comments`}</Box>
                   </Stack>
 
                   <AccordionIcon />
@@ -137,6 +145,8 @@ export async function getServerSideProps(context) {
 
     const { domain, pageCount, commentCount } = userDomains.data;
 
+    console.log(domain, pageCount, commentCount);
+    
     const currentDomain = domain.find(
       (currentDomain) => currentDomain.key === key
     );

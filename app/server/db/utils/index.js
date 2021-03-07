@@ -30,7 +30,7 @@ function convertNeo4jResultToObject(results) {
 }
 
 function getTestAvatar() {
-  const file = `${process.cwd()}/assets/test_avatar.png`;
+  const file = `${process.cwd()}/server/assets/test_avatar.png`;
   const image = fs.readFileSync(file);
   const imageExt = path.extname(file);
   const raw = Buffer.from(image).toString("base64");
