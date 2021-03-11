@@ -10,6 +10,8 @@ const domains = require("./routes/domains");
 const comments = require("./routes/comments");
 const cors = require("cors");
 const next = require("next");
+const { pass } = require("./passport/local");
+const { githubStrategy, googleStrategy, fbStrategy } = require("./passport/social");
 
 const dev = process.env.NODE_ENV !== "production";
 
@@ -43,6 +45,9 @@ nextApp.prepare().then(() => {
   app.use(passport.session());
 
   passport.use(localStrategy);
+  passport.use(githubStrategy);
+  passport.use(googleStrategy);
+  passport.use(fbStrategy);
 
   // app.use((req,res,next)=>{
   //   console.log(req);

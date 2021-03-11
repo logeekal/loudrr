@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -17,6 +17,7 @@ import {
 import API from "../service/service";
 import { FC } from "react";
 import { REQUEST_STATES } from "../utils/constants";
+import { openAuthPopUp } from "../utils/";
 
 export interface OnBoardingFormProps {
   mode: "signin" | "signup";
@@ -40,6 +41,7 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [error, setError] = React.useState<ErrorFormat>();
+  const [popupId, setPopupId] = React.useState<undefined | Window>();
 
   const handleSignup = async (e: any) => {
     e.preventDefault();
@@ -112,6 +114,61 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
     return err;
   };
 
+  useEffect(() => {
+    if (popupId) {
+      let popupInterval = setInterval(() => {
+        try {
+          let url = new URL(popupId.location.href);
+          console.log({ url, search: url.searchParams.toString() });
+          if (
+            url.searchParams.get("result") &&
+            popupId.location.origin === window.location.origin
+          ) {
+            let result = url.searchParams.get("result");
+            console.log("got the url", result);
+            popupId.close();
+            if (result === "success") {
+              window.location.reload();
+            } else {
+              setPopupId(undefined);
+              setError({
+                error:
+                  "Some Error occured while Logging in. Please use some other method for logging in.",
+                field: "email",
+              });
+            }
+          }
+        } catch (err) {
+          return;
+        }
+      }, 200);
+
+      return () => {
+        try {
+          popupId.onunload = function () {
+            clearInterval(popupInterval);
+            setPopupId(undefined);
+          };
+        } catch (err) {
+          //err can be because of cross origin object
+          console.log("In exception of unload");
+          // clearInterval(popupInterval);
+          // setPopupId(undefined);
+        }
+      };
+    }
+  }, [popupId]);
+
+  const handleMessage = () => {};
+
+  const handleOAuth = (platform: string) => {
+    if (popupId) {
+      popupId.close();
+    }
+    let authPopup = openAuthPopUp(platform, `auth/${platform}`);
+    setPopupId(authPopup);
+  };
+
   const handleComingSoon = (e) => {};
 
   return (
@@ -173,17 +230,33 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
       </form>
       <Box mt={10} with="full">
         <Tooltip hasArrow placement="left" label="Coming Soon!">
-          <Button width="full" bg="red.300">
+          <Button
+            width="full"
+            bg="red.300"
+            onClick={() => handleOAuth("google")}
+          >
             Sign in with Google
           </Button>
         </Tooltip>
-        <Tooltip hasArrow placement="left" label="Coming Soon!">
-          <Button mt={4} width="full" bg="blue.500" color="white">
+        <Tooltip hasArrow placement="left">
+          <Button
+            mt={4}
+            width="full"
+            bg="blue.500"
+            color="white"
+            onClick={() => handleOAuth("facebook")}
+          >
             Sign in with Facebook
           </Button>
         </Tooltip>
-        <Tooltip hasArrow placement="left" label="Coming Soon!">
-          <Button mt={4} width="full" bg="grey" color="white">
+        <Tooltip hasArrow placement="left">
+          <Button
+            mt={4}
+            width="full"
+            bg="grey"
+            color="white"
+            onClick={() => handleOAuth("github")}
+          >
             Sign in with Github
           </Button>
         </Tooltip>

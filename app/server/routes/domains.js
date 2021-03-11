@@ -20,6 +20,8 @@ router.post("/", async (req, res) => {
     const domains = await db.getDomainsforUser(email);
     res.send(domains);
   } catch (err) {
+    
+    console.log('Error occured in getting domains : ', err);
     res.status(500).send(err);
   }
 });
@@ -35,7 +37,7 @@ router.post("/pages", async (req, res) => {
     const pagesWithComments = await db.getPagesForDomain(domainKey);
     res.send(pagesWithComments);
   } catch (err) {
-    console.log(err);
+    console.log('Error occured in getting pages : ', err);
     res.status(500).send(err);
   }
 });

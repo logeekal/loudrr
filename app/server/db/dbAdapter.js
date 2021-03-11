@@ -46,7 +46,7 @@ class DBAdapter {
       email,
       name,
       password: password || localPassword,
-      avatar: AVATAR_URL,
+      avatar: avatar || AVATAR_URL,
     });
 
     session.close();
