@@ -229,7 +229,7 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
         </Button>
       </form>
       <Box mt={10} with="full">
-        <Tooltip hasArrow placement="left" label="Coming Soon!">
+        <Tooltip hasArrow placement="left" >
           <Button
             width="full"
             bg="red.300"
