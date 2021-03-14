@@ -17,7 +17,7 @@ const githubStrategy = new GithubStrategy(
   {
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: "http://localhost:3030/auth/callback/github",
+    callbackURL: `${process.env.HOST}/auth/callback/github`,
   },
   function (accessToken, refreshToken, profile, cb) {
     // console.log({ profile: profile._json });
@@ -71,7 +71,7 @@ const googleStrategy = new GoogleStrategy(
   {
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:3030/auth/callback/google",
+    callbackURL: `${process.env.HOST}/auth/callback/google`,
   },
   function (accessToken, refreshToken, profile, cb) {
     const profileJson = profile._json;
@@ -85,7 +85,7 @@ const fbStrategy = new FBStrategy(
   {
     clientID: process.env.FB_CLIENT_ID,
     clientSecret: process.env.FB_CLIENT_SECRET,
-    callbackURL: "http://localhost:3030/auth/callback/facebook",
+    callbackURL: `${process.env.HOST}/auth/callback/facebook`,
     profileFields: ["id", "displayName", "photos", "email"],
   },
   function (accessToken, refreshToken, profile, cb) {

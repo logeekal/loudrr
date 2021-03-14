@@ -42,6 +42,17 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [error, setError] = React.useState<ErrorFormat>();
   const [popupId, setPopupId] = React.useState<undefined | Window>();
+  const [serviceComingSoon, setServiceComingSoon] = useState({
+    service: "google",
+    alternateString: false
+  })
+
+  const getSignInText = (service:string, alternateString: boolean) => {
+      if(alternateString){
+        return "Coming Soon"
+      }
+      return `Sign in with ${service}`
+  }
 
   const handleSignup = async (e: any) => {
     e.preventDefault();
@@ -229,27 +240,38 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
         </Button>
       </form>
       <Box mt={10} with="full">
-        <Tooltip hasArrow placement="left" >
           <Button
             width="full"
             bg="red.300"
-            onClick={() => handleOAuth("google")}
+            onClick={() => {
+              setServiceComingSoon({
+                service: "google",
+                alternateString: true
+              })
+              return;
+
+              handleOAuth("google");
+            }}
           >
-            Sign in with Google
+            {serviceComingSoon.service == 'google' ? getSignInText(serviceComingSoon.service, serviceComingSoon.alternateString) :  getSignInText('google', false)}
           </Button>
-        </Tooltip>
-        <Tooltip hasArrow placement="left">
           <Button
             mt={4}
             width="full"
             bg="blue.500"
             color="white"
-            onClick={() => handleOAuth("facebook")}
+            onClick={() => {
+              setServiceComingSoon({
+                service: "facebook",
+                alternateString: true
+              })
+              return;
+              handleOAuth("facebook");
+            }}
           >
-            Sign in with Facebook
+            {serviceComingSoon.service == 'facebook' ? getSignInText(serviceComingSoon.service, serviceComingSoon.alternateString) :  getSignInText('facebook', false)}
           </Button>
-        </Tooltip>
-        <Tooltip hasArrow placement="left">
+        <Tooltip hasArrow placement="left" label="Coming Soon" isDisabled>
           <Button
             mt={4}
             width="full"
