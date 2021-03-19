@@ -50,19 +50,19 @@ jobs:
           sudo apt-get -y install zip unzip
        
       # Runs a set of commands using the runners shell
-      - name: build the project
-        run: |
+      - name: build the and upload the artifact.
+      - run: |
           cd app
           echo $env
           yarn && yarn build
           zip -r build.zip .next
           ls
           
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v2.2.2
+      - uses: actions/upload-artifact@v2.2.2
         with:
           name: build-output
           path: ./**/build.zip
+          if-no-files-found: error
           
           
           
