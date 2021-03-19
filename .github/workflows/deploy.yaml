@@ -38,10 +38,9 @@ jobs:
           sudo apt-get -y install zip unzip
        
       - name:  Download the Artifact
-        uses: actions/upload-artifact@v2.2.2
+        uses: actions/download-artifact@v2.2.2
         with:
           name: build-output
-          path: app/build.zip
           if-no-files-found: error
           
       - name: Display structure of downloaded files
