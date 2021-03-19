@@ -46,6 +46,5 @@ jobs:
         run: |
           cd app
           yarn && yarn build
-          cd .next
-          sshpass -p ${PASS} scp -rp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null . $USER@$SERVER:/home/$USER/expriments/loudrr-staging/.next 
+          sshpass -p ${PASS} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ./.next $USER@$SERVER:/home/$USER/expriments/loudrr-staging/
           sshpass -p ${PASS} ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER@$SERVER "cd /home/$USER/experiments/loudrr-staging/.next; pm2 start yarn --name loudrr-staging2 -- start;"
