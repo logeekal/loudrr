@@ -2,8 +2,11 @@ name: Deploy Loudrr
 
 # Controls when the action will run. 
 on:
-  repository_dispatch:
-    types: [ trigger-deploy ]
+  workflow_run:
+    workflows:
+      - Build Loudrr
+    types:
+      - completed
   # Triggers the workflow on push or pull request events but only for the master branch
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
