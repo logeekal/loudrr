@@ -62,6 +62,7 @@ jobs:
       - name: Deploy artifact
         run: |
           cd app
+          sshpass -p ${PASS} ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER@$SERVER -p $PORT "rm -rf /home/$USER/experiments/loudrr-staging/.next"
           sshpass -p ${PASS} scp -P $PORT -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ./.next $USER@$SERVER:/home/$USER/experiments/loudrr-staging/
           sshpass -p ${PASS} ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER@$SERVER -p $PORT 
           cd /home/$USER/experiments/loudrr-staging/.next
