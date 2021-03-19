@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PASS: ${{ secrets.SSH_PASS }}
-      USER: ${{ secrets.SSH_PASS }}
+      USER: ${{ secrets.SSH_USER }}
       SERVER: ${{ secrets.STAGING_SERVER }}
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
