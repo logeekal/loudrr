@@ -64,16 +64,6 @@ jobs:
           name: build-output
           path: ./**/build.zip
           if-no-files-found: error
-          
-      - name: Trigger Deployment
-        if: success()
-        uses: peter-evans/repository-dispatch@v1
-        with:
-          token: ${{ secrets.GIT_PAT }}
-          repository: ${{ github.repository }}
-          event-type: trigger-deploy
-          client-payload: '{ "ref": "${{ github.ref }}", "sha": "{{ github.sha }}"  }'
-          
-          
+
           
  
