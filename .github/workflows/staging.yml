@@ -46,5 +46,5 @@ jobs:
           cd app
           yarn && yarn build
           cd .next
-          sshpass -p ${PASS} scp -R $USER@$STAGIN_SERVER:/home/$USER/expriments/loudrr-staging/.next .
+          sshpass -p ${PASS} scp -rp . $USER@$STAGING_SERVER:/home/$USER/expriments/loudrr-staging/.next 
           sshpass -p ${PASS} ssh $USER@$STAGING_SERVER "cd /home/$USER/experiments/loudrr-staging/.next; pm2 start yarn --name loudrr-staging2 -- start;"
