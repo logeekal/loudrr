@@ -62,9 +62,9 @@ jobs:
       - name: Deploy artifact
         run: |
           cd app
-          ls app
-          sshpass -p ${PASS} ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER@$SERVER -p $PORT "rm -rf /home/$USER/experiments/loudrr-staging/.next"
-          sshpass -p ${PASS} scp -P $PORT -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ./.next $USER@$SERVER:/home/$USER/experiments/loudrr-staging/
+          ls
+          sshpass -p ${PASS} ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER@$SERVER -p $PORT "rm -rf experiments/loudrr-staging/.next"
+          sshpass -p ${PASS} scp -P $PORT -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ./.next $USER@$SERVER:experiments/loudrr-staging/
           sshpass -p ${PASS} ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER@$SERVER -p $PORT "cd experiments/loudrr-staging/.next; pm2 start yarn --name loudrr-staging2 -- start;"
           
  
