@@ -53,9 +53,10 @@ jobs:
       - name: build the project
         run: |
           cd app
-          echo env
+          echo $env
           yarn && yarn build
-          zip -r buid.zip .next
+          zip -r ./build.zip .next
+          ls
           
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v2.2.2
