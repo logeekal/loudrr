@@ -13,11 +13,12 @@ const envConfig =
 
 require("dotenv").config(envConfig);
 
+console.log(`Host : ${process.env.HOST} , ${process.env.GITHUB_CLIENT_ID} , ${process.env.GITHUB_CLIENT_SECRET}`)
+
 const githubStrategy = new GithubStrategy(
   {
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: `${process.env.HOST}/auth/callback/github`,
   },
   function (accessToken, refreshToken, profile, cb) {
     // console.log({ profile: profile._json });
