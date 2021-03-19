@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Deploy Staging
+name: Build Loudrr
 
 # Controls when the action will run. 
 on:
@@ -24,6 +24,12 @@ jobs:
       PASS: ${{ secrets.SSH_PASS }}
       USER: ${{ secrets.SSH_PASS }}
       SERVER: ${{ secrets.STAGING_SERVER }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_NAME: ${{ secrets.DN_NAME }}
+      NEXT_PUBLIC_BRAND_NAME: ${{ secrets.NEXT_PUBLIC_BRAND_NAME }}
+      HOST: ${{ secrets.HOST }}
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Setup Node
@@ -39,12 +45,24 @@ jobs:
         run: npm install -g yarn
 
       - name: Install sshpass
-        run: sudo apt-get -y install sshpass
+        run: |
+          sudo apt-get -y install sshpass
+          sudo apt-get -y install zip unzip
        
       # Runs a set of commands using the runners shell
       - name: build the project
         run: |
           cd app
+          echo env
           yarn && yarn build
-          sudo sshpass -p ${PASS} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ./.next $USER@$SERVER:/home/$USER/experiments/loudrr-staging/
-          sudo sshpass -p ${PASS} ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER@$SERVER "cd /home/$USER/experiments/loudrr-staging/.next; pm2 start yarn --name loudrr-staging2 -- start;"
+          zip -r buid.zip .next
+          
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v2.2.2
+        with:
+          path: ./build.zip
+          
+          
+          
+          
+ 
