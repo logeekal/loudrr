@@ -55,13 +55,13 @@ jobs:
           cd app
           echo $env
           yarn && yarn build
-          zip -r ./build.zip .next
+          zip -r build.zip .next
           ls
           
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v2.2.2
         with:
-          path: ./build.zip
+          path: build.zip
           
           
           
