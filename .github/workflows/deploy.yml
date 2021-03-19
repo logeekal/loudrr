@@ -3,8 +3,8 @@ name: Deploy Loudrr
 # Controls when the action will run. 
 on:
   workflow_run:
-    workflows:
-      - Build Loudrr
+    workflows: ["Build Loudrr"]
+    branches: ["*","*/*","**"]
     types:
       - completed
   # Triggers the workflow on push or pull request events but only for the master branch
