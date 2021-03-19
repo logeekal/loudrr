@@ -23,6 +23,7 @@ jobs:
     env:
       PASS: ${{ secrets.SSH_PASS }}
       USER: ${{ secrets.SSH_PASS }}
+      SERVER: ${{ secrets.STAGING_SERVER }}
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Setup Node
@@ -46,5 +47,5 @@ jobs:
           cd app
           yarn && yarn build
           cd .next
-          sshpass -p ${PASS} scp -rp . $USER@$STAGING_SERVER:/home/$USER/expriments/loudrr-staging/.next 
-          sshpass -p ${PASS} ssh $USER@$STAGING_SERVER "cd /home/$USER/experiments/loudrr-staging/.next; pm2 start yarn --name loudrr-staging2 -- start;"
+          sshpass -p ${PASS} scp -rp . $USER@$SERVER:/home/$USER/expriments/loudrr-staging/.next 
+          sshpass -p ${PASS} ssh $USER@$SERVER "cd /home/$USER/experiments/loudrr-staging/.next; pm2 start yarn --name loudrr-staging2 -- start;"
