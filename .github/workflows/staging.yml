@@ -61,10 +61,10 @@ jobs:
       - name: Deploy artifact
         run: |
           cd app
-          echo "sudo sshpass -p ${PASS} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null build.zip $USER@$SERVER:/home/$USER/experiments/loudrr-staging/"
-          echo "sudo sshpass -p ${PASS} ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER@$SERVER \"cd /home/$USER/experiments/loudrr-staging/.next; pm2 start yarn --name loudrr-staging2 -- start;\""
-          sudo sshpass -p ${PASS} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null build.zip $USER@$SERVER:/home/$USER/experiments/loudrr-staging/
-          sudo sshpass -p ${PASS} ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER@$SERVER "cd /home/$USER/experiments/loudrr-staging/.next; pm2 start yarn --name loudrr-staging2 -- start;"
+          echo "sudo sshpass -p \"${PASS}\" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null build.zip $USER@$SERVER:/home/$USER/experiments/loudrr-staging/"
+          echo "sudo sshpass -p \"${PASS}\" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER@$SERVER \"cd /home/$USER/experiments/loudrr-staging/.next; pm2 start yarn --name loudrr-staging2 -- start;\""
+          sudo sshpass -p \"${PASS}\" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null build.zip $USER@$SERVER:/home/$USER/experiments/loudrr-staging/
+          sudo sshpass -p \"${PASS}\" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER@$SERVER "cd /home/$USER/experiments/loudrr-staging/.next; pm2 start yarn --name loudrr-staging2 -- start;"
 
         
       - name:  Upload the Artifact
