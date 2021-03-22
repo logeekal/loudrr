@@ -27,7 +27,7 @@ jobs:
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_HOST: ${{ secrets.DB_HOST }}
-      DB_NAME: ${{ secrets.DN_NAME }}
+      DB_NAME: ${{ secrets.DB_NAME }}
       NEXT_PUBLIC_BRAND_NAME: ${{ secrets.NEXT_PUBLIC_BRAND_NAME }}
       HOST: ${{ secrets.HOST }}
       PORT: ${{ secrets.STAGING_PORT }}
@@ -66,7 +66,7 @@ jobs:
           cp package.json deploy
           cp -r public deploy
           echo "sshpass -p ${PASS} ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER@$SERVER -p $PORT \"cd experiments/loudrr-staging && rm -rf ./**\""
-          sshpass -p ${PASS} rsync -avz -e 'ssh -p $PORT -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' ./deploy/** $USER@$SERVER:experiments/loudrr-staging/
+          sshpass -p ${PASS} rsync --progress -avz -e \"ssh -p $PORT -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \" ./deploy/** $USER@$SERVER:experiments/loudrr-staging/
           sshpass -p ${PASS} ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER@$SERVER -p $PORT "cd experiments/loudrr-staging/app; pm2  restart loudrr-staging;"
           
  
