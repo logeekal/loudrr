@@ -47,8 +47,7 @@ jobs:
 
       - name: Install sshpass
         run: |
-          sudo apt-get -y install sshpass
-          sudo apt-get -y install zip unzip
+          sudo apt-get -y install sshpass zip unzip rsync
        
       # Runs a set of commands using the runners shell
       - name: build the artifact.
@@ -57,10 +56,17 @@ jobs:
           echo $env
           yarn && yarn build
           
+          
       - name: Deploy artifact
         run: |
+          cd app
+          mkdir deploy
+          cp -r node_modules deploy
+          cp -r .next deploy
+          cp package.json deploy
+          cp -r public deploy
           sshpass -p ${PASS} ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER@$SERVER -p $PORT "cd experiments/loudrr-staging && rm -rf ./**"
-          sshpass -p ${PASS} scp -P $PORT -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ./app $USER@$SERVER:experiments/loudrr-staging/
-          sshpass -p ${PASS} ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER@$SERVER -p $PORT "cd experiments/loudrr-staging/app; pm2 start yarn --name loudrr-staging2 -- start;"
+          sshpass -p ${PASS} scp -P $PORT -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -C -r ./deploy $USER@$SERVER:experiments/loudrr-staging/
+          sshpass -p ${PASS} ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER@$SERVER -p $PORT "cd experiments/loudrr-staging/app; pm2  restart loudrr-staging;"
           
  
