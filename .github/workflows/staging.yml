@@ -48,15 +48,21 @@ jobs:
       - name: Install sshpass
         run: |
           sudo apt-get -y install sshpass zip unzip rsync
+          
+      - name: Create .env file
+        uses: ozaytsev86/create-env-file-action@v1
+        with:
+          file-name: .env.production
        
       # Runs a set of commands using the runners shell
       - name: build the artifact.
         run: |
+          cat .env.production
+          cp .env.production app
           cd app
-          echo $env
           yarn && yarn build
           
-          
+             
       - name: Deploy artifact
         run: |
           echo "sshpass -p ${PASS} ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER@$SERVER -p $PORT \"cd experiments/loudrr-staging && rm -rf ./**\""
