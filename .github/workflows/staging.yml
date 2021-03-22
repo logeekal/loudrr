@@ -59,15 +59,8 @@ jobs:
           
       - name: Deploy artifact
         run: |
-          cd app
-          mkdir deploy
-          cp -r node_modules deploy
-          cp -r .next deploy
-          cp package.json deploy
-          cp -r public deploy
-          ls deploy
           echo "sshpass -p ${PASS} ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER@$SERVER -p $PORT \"cd experiments/loudrr-staging && rm -rf ./**\""
-          sshpass -p ${PASS} rsync --progress -avz -e "ssh -p ${PORT} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" ./deploy/** $USER@$SERVER:experiments/loudrr-staging/
+          sshpass -p ${PASS} rsync --progress -avz -e "ssh -p ${PORT} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" . $USER@$SERVER:experiments/loudrr-staging/
           sshpass -p ${PASS} ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER@$SERVER -p $PORT "cd experiments/loudrr-staging/app; pm2  restart loudrr-staging;"
           
  
