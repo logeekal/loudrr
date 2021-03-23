@@ -64,8 +64,9 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: build the artifact.
         run: |
+          ls
           cd app
-          ls .env.production
+          ls 
           yarn && yarn build
           
              
