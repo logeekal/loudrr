@@ -50,9 +50,11 @@ jobs:
           sudo apt-get -y install sshpass zip unzip rsync
           
       - name: Create env file
-        uses: ozaytsev86/create-env-file-action@v1
+        uses: javajawa/create-envfile@v1
         with:
-          file-name: /home/runner/work/loudrr/loudrr/.env.production        
+          file_name: app/.env.production
+          envkey_PORT: ${{ secrets.STAGING_PORT }}
+        
        
       # Runs a set of commands using the runners shell
       - name: build the artifact.
