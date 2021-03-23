@@ -49,26 +49,15 @@ jobs:
         run: |
           sudo apt-get -y install sshpass zip unzip rsync
           
-      - name: Create .env file
-        uses: SpicyPizza/create-envfile@v1.0
+      - name: Create env file
+        uses: ozaytsev86/create-env-file-action@v1
         with:
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          NEXT_PUBLIC_BRAND_NAME: ${{ secrets.NEXT_PUBLIC_BRAND_NAME }}
-          HOST: ${{ secrets.HOST }}
-          directory: app
-          file_name: .env.production
-          
+          file-name: .env.production        
        
       # Runs a set of commands using the runners shell
       - name: build the artifact.
         run: |
-          sudo env > .env.production
-          cat .env.production
           ls
-          cp .env.production app
           cd app
           ls 
           yarn && yarn build
