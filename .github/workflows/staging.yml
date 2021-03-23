@@ -57,7 +57,9 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: build the artifact.
         run: |
-          ls
+          pwd
+          echo ${{ github.workspace }}
+          env > .env.production
           cd app
           ls 
           yarn && yarn build
