@@ -65,7 +65,7 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: build the artifact.
         run: |
-          env > .env.production
+          sudo env > .env.production
           cat .env.production
           ls
           cp .env.production app
