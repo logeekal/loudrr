@@ -60,6 +60,8 @@ jobs:
           pwd
           echo ${{ github.workspace }}
           ls -la
+          cat .env.production
+          cp .env.production app
           cd app
           echo "==============="
           ls -la
