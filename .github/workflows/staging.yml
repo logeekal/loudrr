@@ -60,6 +60,12 @@ jobs:
           envkey_DB_NAME: ${{ secrets.DB_NAME }}
           envkey_NEXT_PUBLIC_BRAND_NAME: ${{ secrets.NEXT_PUBLIC_BRAND_NAME }}
           envkey_HOST: ${{ secrets.HOST }}
+          envKey.GITHUB_CLIENT_ID: ${{ secrets.GIT_CLIENT_ID }}
+          envKey.GITHUB_CLIENT_SECRET: ${{ secrets.GIT_CLIENT_SECRET }}
+          envKey.GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          envKey.GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          envKey.FB_CLIENT_ID: ${{ secrets.FB_CLIENT_ID }}
+          envKey.FB_CLIENT_SECRET: ${{ secrets.FB_CLIENT_SECRET }}
         
        
       # Runs a set of commands using the runners shell
