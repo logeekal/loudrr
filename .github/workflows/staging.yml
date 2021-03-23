@@ -59,9 +59,10 @@ jobs:
         run: |
           pwd
           echo ${{ github.workspace }}
-          ls
+          ls -la
           cd app
-          ls 
+          echo "==============="
+          ls -la
           yarn && yarn build
           
       - uses: actions/cache@v2
