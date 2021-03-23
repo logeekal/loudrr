@@ -59,7 +59,7 @@ jobs:
         run: |
           pwd
           echo ${{ github.workspace }}
-          env > .env.production
+          ls
           cd app
           ls 
           yarn && yarn build
