@@ -54,14 +54,20 @@ jobs:
         with:
           file_name: app/.env.production
           envkey_PORT: ${{ secrets.STAGING_PORT }}
+          envkey_DB_USER: ${{ secrets.DB_USER }}
+          envkey_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          envkey_DB_HOST: ${{ secrets.DB_HOST }}
+          envkey_DB_NAME: ${{ secrets.DB_NAME }}
+          envkey_NEXT_PUBLIC_BRAND_NAME: ${{ secrets.NEXT_PUBLIC_BRAND_NAME }}
+          envkey_HOST: ${{ secrets.HOST }}
         
        
       # Runs a set of commands using the runners shell
       - name: build the artifact.
         run: |
           ls -la
+          echo "==============="
           cat app/.env.production
-          
           cd app
           echo "==============="
           ls -la
