@@ -60,8 +60,8 @@ jobs:
       - name: build the artifact.
         run: |
           ls -la
-          cat .env.production
-          cp .env.production app
+          cat app/.env.production
+          
           cd app
           echo "==============="
           ls -la
