@@ -34,6 +34,7 @@ nextApp.prepare().then(() => {
       secret: "$$$$ SAMPLE_SECRET_OF_COMMENTER_APP $$$$$$",
       resave: false,
       saveUninitialized: true,
+      proxy: process.env.NODE_ENV === 'production',
       cookie: {
         secure: process.env.NODE_ENV === 'production',
         httpOnly: process.env.NODE_ENV === 'production',
