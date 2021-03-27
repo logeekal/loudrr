@@ -132,10 +132,9 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
         try {
           API.auth().then((res) => {
             console.log('Auth Successfull : ', res.data)
-            // popupId.close();
-            // setPopupId(undefined)
+            popupId.close();
             clearInterval(interval)
-            // onSuccess(res.data);
+            onSuccess(res.data);
           });
         } catch (err) {
           console.log(err);
