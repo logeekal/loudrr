@@ -44,15 +44,15 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
   const [popupId, setPopupId] = React.useState<undefined | Window>();
   const [serviceComingSoon, setServiceComingSoon] = useState({
     service: "google",
-    alternateString: false
-  })
+    alternateString: false,
+  });
 
-  const getSignInText = (service:string, alternateString: boolean) => {
-      if(alternateString){
-        return "Coming Soon"
-      }
-      return `Sign in with ${service}`
-  }
+  const getSignInText = (service: string, alternateString: boolean) => {
+    if (alternateString) {
+      return "Coming Soon";
+    }
+    return `Sign in with ${service}`;
+  };
 
   const handleSignup = async (e: any) => {
     e.preventDefault();
@@ -126,48 +126,24 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
   };
 
   useEffect(() => {
+    console.log(`Popup id changed .. `);
     if (popupId) {
-      let popupInterval = setInterval(() => {
+      const interval = setInterval(() => {
         try {
-          let url = new URL(popupId.location.href);
-          console.log({ url, search: url.searchParams.toString() });
-          if (
-            url.searchParams.get("result") &&
-            popupId.location.origin === window.location.origin
-          ) {
-            let result = url.searchParams.get("result");
-            console.log("got the url", result);
-            popupId.close();
-            if (result === "success") {
-              window.location.reload();
-            } else {
-              setPopupId(undefined);
-              setError({
-                error:
-                  "Some Error occured while Logging in. Please use some other method for logging in.",
-                field: "email",
-              });
-            }
-          }
+          API.auth().then((res) => {
+            console.log('Auth Successfull : ', res.data)
+            // popupId.close();
+            // setPopupId(undefined)
+            clearInterval(interval)
+            // onSuccess(res.data);
+          });
         } catch (err) {
-          return;
+          console.log(err);
         }
-      }, 200);
-
-      return () => {
-        try {
-          popupId.onunload = function () {
-            clearInterval(popupInterval);
-            setPopupId(undefined);
-          };
-        } catch (err) {
-          //err can be because of cross origin object
-          console.log("In exception of unload");
-          // clearInterval(popupInterval);
-          // setPopupId(undefined);
-        }
-      };
+      },500);
     }
+
+
   }, [popupId]);
 
   const handleMessage = () => {};
@@ -240,37 +216,47 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
         </Button>
       </form>
       <Box mt={10} with="full">
-          <Button
-            width="full"
-            bg="red.300"
-            onClick={() => {
-              setServiceComingSoon({
-                service: "google",
-                alternateString: true
-              })
-              return;
+        <Button
+          width="full"
+          bg="red.300"
+          onClick={() => {
+            setServiceComingSoon({
+              service: "google",
+              alternateString: true,
+            });
+            return;
 
-              handleOAuth("google");
-            }}
-          >
-            {serviceComingSoon.service == 'google' ? getSignInText(serviceComingSoon.service, serviceComingSoon.alternateString) :  getSignInText('google', false)}
-          </Button>
-          <Button
-            mt={4}
-            width="full"
-            bg="blue.500"
-            color="white"
-            onClick={() => {
-              setServiceComingSoon({
-                service: "facebook",
-                alternateString: true
-              })
-              return;
-              handleOAuth("facebook");
-            }}
-          >
-            {serviceComingSoon.service == 'facebook' ? getSignInText(serviceComingSoon.service, serviceComingSoon.alternateString) :  getSignInText('facebook', false)}
-          </Button>
+            handleOAuth("google");
+          }}
+        >
+          {serviceComingSoon.service == "google"
+            ? getSignInText(
+                serviceComingSoon.service,
+                serviceComingSoon.alternateString
+              )
+            : getSignInText("google", false)}
+        </Button>
+        <Button
+          mt={4}
+          width="full"
+          bg="blue.500"
+          color="white"
+          onClick={() => {
+            setServiceComingSoon({
+              service: "facebook",
+              alternateString: true,
+            });
+            return;
+            handleOAuth("facebook");
+          }}
+        >
+          {serviceComingSoon.service == "facebook"
+            ? getSignInText(
+                serviceComingSoon.service,
+                serviceComingSoon.alternateString
+              )
+            : getSignInText("facebook", false)}
+        </Button>
         <Tooltip hasArrow placement="left" label="Coming Soon" isDisabled>
           <Button
             mt={4}
