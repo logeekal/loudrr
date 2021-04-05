@@ -26,7 +26,7 @@ export default function Login() {
 
   if (authState === "pending") {
     return <Box w="full" h="full" ><Spinner size="3xl" /> </Box>;
-  }
+ }
 
   if (authState == "success") {
 

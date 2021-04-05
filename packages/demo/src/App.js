@@ -12,7 +12,7 @@ function App() {
         margin: "auto",
       }}
     >
-      <CommentWidget domainKey={"667c5db7-178b-40a6-93fd-9e38077edda4"} />
+      <CommentWidget domainKey={"b83283b8-03de-43d6-8712-d13997289fdd"} />
     </div>
   );
 }

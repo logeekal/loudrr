@@ -112,6 +112,7 @@ const CommentBox: FC<CommentBoxProps> = ({ replyOf, onSubmit }) => {
       <Collapse in={isLoginOpen}>
         <OnBoarding
           onSuccess={async () => {
+            console.log('firing on success')
             toggleLoginBox()
             await checkAuth()
           }}
