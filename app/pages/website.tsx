@@ -17,6 +17,7 @@ import APIService from "../service/service";
 import Thread, { CommentData } from "../components/Thread";
 import { CommentWithParent, IDomain, PageExtended, UsersObjType } from "../utils/types";
 import Header from "../components/Header";
+import {NextPageContext} from "next";
 
 export interface DomainProps {
   domain: IDomain;
@@ -101,15 +102,15 @@ export default function DomainPage(props: DomainProps) {
   );
 }
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(context : NextPageContext) {
   /**
    * Every Page needs
    *
    * 1. Complete Provider Data
    * 2.
    */
-  console.log(context.req.__NEXT_INIT_QUERY);
-  const { key } = context.req.__NEXT_INIT_QUERY;
+  //console.log(context.req.__NEXT_INIT_QUERY );
+  const { key } = (context.req as any).__NEXT_INIT_QUERY;
   if(!key){
     return {
       redirect: {
@@ -119,10 +120,11 @@ export async function getServerSideProps(context) {
     }
   }
   const result = {};
+  const protocol =  process.env.NODE_ENV === 'production' ? 'https' : 'http';
 
   try {
     const authenticatedUser = await axios.post(
-      `http://localhost:3030/auth`,
+      `${protocol}://${context.req.headers.host}/auth`,
       {},
       {
         headers: context.req
@@ -134,7 +136,7 @@ export async function getServerSideProps(context) {
     result["user"] = authenticatedUser.data;
 
     const userDomains = await axios.post(
-      `http://localhost:3030/domains`,
+      `${protocol}://${context.req.headers.host}/domains`,
       {},
       {
         headers: context.req
@@ -148,7 +150,7 @@ export async function getServerSideProps(context) {
     console.log(domain, pageCount, commentCount);
     
     const currentDomain = domain.find(
-      (currentDomain) => currentDomain.key === key
+       (currentDomain : any) => currentDomain.key === key
     );
 
     console.log(`Opening Details for : `, currentDomain);
