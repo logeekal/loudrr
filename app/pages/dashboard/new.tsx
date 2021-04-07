@@ -17,6 +17,7 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import axios from "axios";
+import {NextPageContext} from "next";
 import Head from "next/head";
 import { useState } from "react";
 import APIService from "../../service/API";
@@ -168,12 +169,13 @@ export default function NewDomain(props: NewDomainProps) {
   );
 }
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(context: NextPageContext) {
   let result = {};
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
 
   try {
     const authenticatedUser = await axios.post(
-      `http://localhost:3030/auth`,
+      `${protocol}://${context.req.headers.host}/auth`,
       {},
       {
         headers: context.req

@@ -19,6 +19,7 @@ import NextLink from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import HeroHeading, { HeroText } from "../components/HeroHeading";
 import TechLogo from "../components/TechLogo";
+import {NextPageContext} from "next";
 
 export default function Home(props) {
   const [visibleHeroIdx, setVisibleHeroIdx] = useState<number>(0);
@@ -228,10 +229,11 @@ export default function Home(props) {
   );
 }
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(context: NextPageContext) {
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
   try {
     const authenticatedUser = await axios.post(
-      `http://localhost:3030/auth`,
+      `${protocol}://${context.req.headers.host}/auth`,
       {},
       {
         headers: context.req

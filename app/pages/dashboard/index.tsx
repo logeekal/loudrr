@@ -21,6 +21,7 @@ import { DOMAIN_CREATION_STATUS, REQUEST_STATES } from "../../utils/constants";
 import { IDomain, DomainExtended, User } from "../../utils/types";
 import { ImFileEmpty } from "react-icons/im";
 import { AiFillAmazonSquare, AiOutlineMessage } from "react-icons/ai";
+import {NextPageContext} from "next";
 
 export interface DashboardProps {
   domains: Array<DomainExtended>;
@@ -198,12 +199,14 @@ export default function DashBoard(props: DashboardProps) {
   );
 }
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(context : NextPageContext) {
   let result = {};
+
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
 
   try {
     const authenticatedUser = await axios.post(
-      `http://localhost:3030/auth`,
+      `${protocol}://${context.req.headers.host}/auth`,
       {},
       {
         headers: context.req
@@ -214,7 +217,7 @@ export async function getServerSideProps(context) {
 
     result["user"] = authenticatedUser.data;
     const userDomains = await axios.post(
-      `http://localhost:3030/domains`,
+      `${protocol}://${context.req.headers.host}/domains`,
       {},
       {
         headers: context.req
