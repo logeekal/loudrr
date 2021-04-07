@@ -61,7 +61,8 @@ nextApp.prepare().then(() => {
   app.use("/domains", domains);
   app.use("/comments", comments);
 
-  const PORT = 3030;
+  const PORT = process.env.PORT || 3030;
+  console.log(`Starting on PORT: ${process.env.PORT}`)
 
   app.get("/health", (req, res) => {
     res.send("Don't worry. I am still UP");
