@@ -18,6 +18,7 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
+    environment: production
     runs-on: ubuntu-latest
     env:
       PASS: ${{ secrets.SSH_PASS }}
@@ -85,5 +86,5 @@ jobs:
       - name: Deploy artifact
         run: |
           echo "sshpass -p ${PASS} ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER@$SERVER -p $PORT \"cd experiments/loudrr-prod && rm -rf ./**\""
-          sshpass -p ${PASS} rsync --progress -avz -e "ssh -p ${PORT} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" . $USER@$SERVER:experiments/loudrr-prod/
+          sshpass -p ${PASS} rsync -avz -e "ssh -p ${PORT} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" . $USER@$SERVER:experiments/loudrr-prod/
           sshpass -p ${PASS} ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER@$SERVER -p $PORT "cd experiments/loudrr-staging/app; pm2 restart loudrr-prod;"
