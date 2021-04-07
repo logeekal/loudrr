@@ -1,6 +1,0 @@
-DB_USER=neo4j
-DB_PASSWORD=neo4j1
-DB_HOST=localhost:7687
-DB_NAME=neo4j
-DB_HOST_TEST=localhost:7688
-NEXT_PUBLIC_BRAND_NAME=Loudrr

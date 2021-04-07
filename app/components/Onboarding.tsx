@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -17,6 +17,7 @@ import {
 import API from "../service/service";
 import { FC } from "react";
 import { REQUEST_STATES } from "../utils/constants";
+import { openAuthPopUp } from "../utils/";
 
 export interface OnBoardingFormProps {
   mode: "signin" | "signup";
@@ -40,6 +41,18 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [error, setError] = React.useState<ErrorFormat>();
+  const [popupId, setPopupId] = React.useState<undefined | Window>();
+  const [serviceComingSoon, setServiceComingSoon] = useState({
+    service: "google",
+    alternateString: false,
+  });
+
+  const getSignInText = (service: string, alternateString: boolean) => {
+    if (alternateString) {
+      return "Coming Soon";
+    }
+    return `Sign in with ${service}`;
+  };
 
   const handleSignup = async (e: any) => {
     e.preventDefault();
@@ -112,6 +125,36 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
     return err;
   };
 
+  useEffect(() => {
+    console.log(`Popup id changed .. `);
+    if (popupId) {
+      const interval = setInterval(() => {
+        try {
+          API.auth().then((res) => {
+            console.log('Auth Successfull : ', res.data)
+            popupId.close();
+            clearInterval(interval)
+            onSuccess(res.data);
+          });
+        } catch (err) {
+          console.log(err);
+        }
+      },500);
+    }
+
+
+  }, [popupId]);
+
+  const handleMessage = () => {};
+
+  const handleOAuth = (platform: string) => {
+    if (popupId) {
+      popupId.close();
+    }
+    let authPopup = openAuthPopUp(platform, `auth/${platform}`);
+    setPopupId(authPopup);
+  };
+
   const handleComingSoon = (e) => {};
 
   return (
@@ -172,18 +215,55 @@ const OnBoardingForms: React.FC<OnBoardingFormProps> = ({
         </Button>
       </form>
       <Box mt={10} with="full">
-        <Tooltip hasArrow placement="left" label="Coming Soon!">
-          <Button width="full" bg="red.300">
-            Sign in with Google
-          </Button>
-        </Tooltip>
-        <Tooltip hasArrow placement="left" label="Coming Soon!">
-          <Button mt={4} width="full" bg="blue.500" color="white">
-            Sign in with Facebook
-          </Button>
-        </Tooltip>
-        <Tooltip hasArrow placement="left" label="Coming Soon!">
-          <Button mt={4} width="full" bg="grey" color="white">
+        <Button
+          width="full"
+          bg="red.300"
+          onClick={() => {
+            setServiceComingSoon({
+              service: "google",
+              alternateString: true,
+            });
+            return;
+
+            handleOAuth("google");
+          }}
+        >
+          {serviceComingSoon.service == "google"
+            ? getSignInText(
+                serviceComingSoon.service,
+                serviceComingSoon.alternateString
+              )
+            : getSignInText("google", false)}
+        </Button>
+        <Button
+          mt={4}
+          width="full"
+          bg="blue.500"
+          color="white"
+          onClick={() => {
+            setServiceComingSoon({
+              service: "facebook",
+              alternateString: true,
+            });
+            return;
+            handleOAuth("facebook");
+          }}
+        >
+          {serviceComingSoon.service == "facebook"
+            ? getSignInText(
+                serviceComingSoon.service,
+                serviceComingSoon.alternateString
+              )
+            : getSignInText("facebook", false)}
+        </Button>
+        <Tooltip hasArrow placement="left" label="Coming Soon" isDisabled>
+          <Button
+            mt={4}
+            width="full"
+            bg="grey"
+            color="white"
+            onClick={() => handleOAuth("github")}
+          >
             Sign in with Github
           </Button>
         </Tooltip>

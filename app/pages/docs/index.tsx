@@ -105,7 +105,7 @@ export default function Docs() {
                   </Text>
                   <br />
                   <Box>
-                    {BRAND} is currenly in{" "}
+                    {BRAND} is currenly in
                     <Link
                       href="https://www.webopedia.com/definitions/alpha-version"
                       isExternal

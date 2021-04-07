@@ -25,9 +25,9 @@ export default function Home(props) {
   const [isVisible, setIsVisible] = useState(true);
   const [hasWindow, setHasWindow] = useState(false);
 
-  useEffect(()=>{
-    setHasWindow(typeof window !== 'undefined')
-  },[])
+  useEffect(() => {
+    setHasWindow(typeof window !== "undefined");
+  }, []);
 
   useEffect(() => {
     const interval = setTimeout(() => {
@@ -37,7 +37,7 @@ export default function Home(props) {
         console.log("Chaning hero index to ", 0);
         setVisibleHeroIdx(0);
       } else {
-        console.log("Chaning hero index to ", visibleHeroIdx + 1);
+        // console.log("Chaning hero index to ", visibleHeroIdx + 1);
         setVisibleHeroIdx(visibleHeroIdx + 1);
       }
     }, 5100);
@@ -63,6 +63,10 @@ export default function Home(props) {
   return (
     <VStack w="full">
       <Head>
+        <meta
+          httpEquiv="Content-Security-Policy"
+          content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'"
+        ></meta>
         <title>Welcome to {process.env.NEXT_PUBLIC_BRAND_NAME}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -152,9 +156,9 @@ export default function Home(props) {
           fontWeight="medium"
           mt={5}
         >
-          {process.env.NEXT_PUBLIC_BRAND_NAME} makes it very easy to add and manage comments to your blogs
-          or product reviews to your e-Commerce website with a minimal setup.
-          Start with our{" "}
+          {process.env.NEXT_PUBLIC_BRAND_NAME} makes it very easy to add and
+          manage comments to your blogs or product reviews to your e-Commerce
+          website with a minimal setup. Start with our{" "}
           <NextLink href="/docs">
             <Link color="#AC36C9">documentation</Link>
           </NextLink>

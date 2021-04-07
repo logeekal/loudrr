@@ -1,6 +1,7 @@
 const { RSA_NO_PADDING } = require("constants");
 const express = require("express");
 const passport = require("passport");
+const { pass, redirect } = require("../passport/local");
 
 const router = express.Router();
 
@@ -50,5 +51,37 @@ router.get("/logout", (req, res) => {
   req.logout();
   res.send(200);
 });
+
+router.get("/github", passport.authenticate("github"));
+router.get("/google", passport.authenticate("google", {scope: ["profile", "email"]}));
+router.get("/facebook", passport.authenticate("facebook",{authType: "reauthenticate", scope: ["public_profile","email"], display:"popup"}));
+
+
+
+router.get(
+  "/callback/github",
+  passport.authenticate("github", { failureRedirect: "/login?result=fail" }),
+  function (req, res) {
+    console.log("Github login succcessfull");
+    res.redirect('/login?result=success');
+  }
+);
+
+router.get(
+  "/callback/google",
+  passport.authenticate("google", { failureRedirect: "/login?result=fail" }),
+  function (req, res) {
+    console.log("Google login succcessfull");
+    res.redirect('/login?result=success');
+  }
+);
+router.get(
+  "/callback/facebook",
+  passport.authenticate("facebook", { failureRedirect: "/login?result=fail" }),
+  function (req, res) {
+    console.log("FB login succcessfull");
+    res.redirect('/login?result=success');
+  }
+);
 
 module.exports = router;

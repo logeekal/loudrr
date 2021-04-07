@@ -10,6 +10,8 @@ const domains = require("./routes/domains");
 const comments = require("./routes/comments");
 const cors = require("cors");
 const next = require("next");
+const { pass } = require("./passport/local");
+const { githubStrategy, googleStrategy, fbStrategy } = require("./passport/social");
 
 const dev = process.env.NODE_ENV !== "production";
 
@@ -32,9 +34,10 @@ nextApp.prepare().then(() => {
       secret: "$$$$ SAMPLE_SECRET_OF_COMMENTER_APP $$$$$$",
       resave: false,
       saveUninitialized: true,
+      proxy: process.env.NODE_ENV === 'production',
       cookie: {
-        secure: false,
-        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: process.env.NODE_ENV === 'production',
         sameSite: "none"
       },
     })
@@ -43,6 +46,9 @@ nextApp.prepare().then(() => {
   app.use(passport.session());
 
   passport.use(localStrategy);
+  passport.use(githubStrategy);
+  passport.use(googleStrategy);
+  passport.use(fbStrategy);
 
   // app.use((req,res,next)=>{
   //   console.log(req);
@@ -55,7 +61,8 @@ nextApp.prepare().then(() => {
   app.use("/domains", domains);
   app.use("/comments", comments);
 
-  const PORT = 3030;
+  const PORT = process.env.PORT || 3030;
+  console.log(`Starting on PORT: ${process.env.PORT}`)
 
   app.get("/health", (req, res) => {
     res.send("Don't worry. I am still UP");
